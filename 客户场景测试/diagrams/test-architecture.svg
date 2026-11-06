@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="620" viewBox="0 0 960 620" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="960" height="620" fill="#ffffff"/>
+  <text x="480" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">大文件读测试架构</text>
+
+  <!-- 客户端 -->
+  <rect x="40" y="80" width="230" height="140" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="155" y="108" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e40af">客户端</text>
+  <text x="155" y="134" text-anchor="middle" font-size="13" fill="#334155">PyCharm / read_bench.py</text>
+  <text x="155" y="158" text-anchor="middle" font-size="12" fill="#475569">控制面：Sandbox.create / kill</text>
+  <text x="155" y="180" text-anchor="middle" font-size="12" fill="#475569">数据面：commands.run 下发 shell</text>
+  <text x="155" y="202" text-anchor="middle" font-size="12" fill="#475569">端到端计时：monotonic 墙钟</text>
+
+  <!-- 控制面 API -->
+  <rect x="390" y="62" width="230" height="64" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <text x="505" y="88" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">控制面 API</text>
+  <text x="505" y="110" text-anchor="middle" font-size="12" fill="#475569">创建 / 销毁沙箱实例</text>
+
+  <!-- 数据面 gateway -->
+  <rect x="390" y="162" width="230" height="64" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <text x="505" y="188" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">数据面 Gateway</text>
+  <text x="505" y="210" text-anchor="middle" font-size="12" fill="#475569">envd 代理，沙箱内执行命令</text>
+
+  <!-- 热池 -->
+  <rect x="390" y="286" width="230" height="96" rx="10" fill="#f0fdf4" stroke="#059669" stroke-width="1.5"/>
+  <text x="505" y="312" text-anchor="middle" font-size="15" font-weight="bold" fill="#065f46">平台热池</text>
+  <text x="505" y="334" text-anchor="middle" font-size="12" fill="#334155">预开机 VM（create − 20s）</text>
+  <text x="505" y="354" text-anchor="middle" font-size="12" fill="#334155">envd / UI / chromium 全就绪</text>
+  <text x="505" y="372" text-anchor="middle" font-size="12" fill="#065f46">交付恒定 ~1s</text>
+
+  <!-- 沙箱 -->
+  <rect x="700" y="70" width="230" height="270" rx="10" fill="#fefce8" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="815" y="98" text-anchor="middle" font-size="16" font-weight="bold" fill="#854d0e">沙箱（2vCPU / 4GiB）</text>
+  <text x="815" y="128" text-anchor="middle" font-size="13" fill="#334155">UI 服务 :3001</text>
+  <text x="815" y="152" text-anchor="middle" font-size="13" fill="#334155">chromium CDP :9222</text>
+  <text x="815" y="182" text-anchor="middle" font-size="13" fill="#334155">cat 500MB × 3（&gt; /dev/null）</text>
+  <text x="815" y="206" text-anchor="middle" font-size="12" fill="#475569">毫秒打点在沙箱内（date +%s%3N）</text>
+  <text x="815" y="230" text-anchor="middle" font-size="12" fill="#475569">首读 r1：暴露存储层状态</text>
+  <text x="815" y="250" text-anchor="middle" font-size="12" fill="#475569">二读 r2 / 三读 r3：页缓存对照</text>
+  <line x1="720" y1="268" x2="910" y2="268" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="815" y="292" text-anchor="middle" font-size="12" fill="#713f12">磁盘 = 镜像的懒物化视图</text>
+  <text x="815" y="314" text-anchor="middle" font-size="12" fill="#713f12">数据块按需落到宿主盘</text>
+
+  <!-- SWR -->
+  <rect x="700" y="430" width="230" height="90" rx="10" fill="#faf5ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="815" y="458" text-anchor="middle" font-size="15" font-weight="bold" fill="#5b21b6">SWR 镜像库</text>
+  <text x="815" y="482" text-anchor="middle" font-size="12" fill="#475569">单层镜像（整盘快照）</text>
+  <text x="815" y="502" text-anchor="middle" font-size="12" fill="#475569">tag 之间零共享</text>
+
+  <!-- 箭头 -->
+  <line x1="270" y1="94" x2="384" y2="94" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="327" y="86" text-anchor="middle" font-size="12" fill="#475569">create / kill</text>
+
+  <line x1="270" y1="194" x2="384" y2="194" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="327" y="186" text-anchor="middle" font-size="12" fill="#475569">shell 脚本</text>
+
+  <line x1="620" y1="94" x2="694" y2="130" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="660" y="106" text-anchor="middle" font-size="12" fill="#475569">实例生命周期</text>
+
+  <line x1="620" y1="194" x2="694" y2="194" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="657" y="186" text-anchor="middle" font-size="12" fill="#475569">envd 执行</text>
+
+  <line x1="505" y1="126" x2="505" y2="280" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arr)"/>
+  <text x="558" y="248" text-anchor="middle" font-size="12" fill="#64748b">按需补池</text>
+
+  <line x1="620" y1="334" x2="694" y2="300" stroke="#059669" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="655" y="330" text-anchor="middle" font-size="12" fill="#065f46">预热交付 ~1s</text>
+
+  <line x1="815" y1="424" x2="815" y2="346" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="913" y="392" text-anchor="middle" font-size="12" fill="#6d28d9">懒物化：首读 = 真冷 46s</text>
+
+  <!-- 图例 -->
+  <text x="40" y="560" font-size="13" fill="#64748b">三条面：控制面（生命周期） · 数据面（命令下发） · 存储面（镜像物化）</text>
+  <text x="40" y="584" font-size="13" fill="#64748b">读速度毫秒数在沙箱内打点，不含客户端网络往返；端到端由客户端单独计量</text>
+</svg>
