@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#475569"/>
+    </marker>
+    <marker id="arrb" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect width="900" height="700" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">read_bench.py 测试流程（顺序 N 台 · 测完统一销毁）</text>
+
+  <!-- 开始 -->
+  <rect x="330" y="56" width="240" height="44" rx="22" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="450" y="83" text-anchor="middle" font-size="14" fill="#1e40af">开始</text>
+  <line x1="450" y1="100" x2="450" y2="124" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- 输入 -->
+  <rect x="300" y="128" width="300" height="64" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <text x="450" y="152" text-anchor="middle" font-size="13" fill="#0f172a">交互输入（回车取默认）</text>
+  <text x="450" y="174" text-anchor="middle" font-size="12" fill="#475569">模板 ID · 台数 N · 目标文件路径</text>
+  <line x1="450" y1="192" x2="450" y2="216" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- 循环容器 -->
+  <rect x="150" y="222" width="600" height="316" rx="12" fill="#f0f9ff" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="180" y="248" font-size="14" font-weight="bold" fill="#1e40af">循环 i = 0 … N−1（顺序，一台全完成才下一台）</text>
+
+  <rect x="270" y="262" width="360" height="40" rx="8" fill="#ffffff" stroke="#64748b"/>
+  <text x="450" y="287" text-anchor="middle" font-size="13" fill="#0f172a">① Sandbox.create（计时）</text>
+  <line x1="450" y1="302" x2="450" y2="318" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="270" y="320" width="360" height="40" rx="8" fill="#ffffff" stroke="#64748b"/>
+  <text x="450" y="345" text-anchor="middle" font-size="13" fill="#0f172a">② envd 可执行探测（重试至通）</text>
+  <line x1="450" y1="360" x2="450" y2="376" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="270" y="378" width="360" height="40" rx="8" fill="#ffffff" stroke="#64748b"/>
+  <text x="450" y="403" text-anchor="middle" font-size="13" fill="#0f172a">③ 就绪探测：UI :3001 + chromium :9222 + uptime</text>
+  <line x1="450" y1="418" x2="450" y2="434" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="270" y="436" width="360" height="40" rx="8" fill="#ffffff" stroke="#64748b"/>
+  <text x="450" y="461" text-anchor="middle" font-size="13" fill="#0f172a">④ cat 文件 ×3（沙箱内毫秒打点 r1/r2/r3）</text>
+  <line x1="450" y1="476" x2="450" y2="492" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="270" y="494" width="360" height="36" rx="8" fill="#fefce8" stroke="#ca8a04"/>
+  <text x="450" y="517" text-anchor="middle" font-size="13" fill="#713f12">⑤ 打印明细 + 端到端 —— 沙箱保持存活，不销毁</text>
+
+  <!-- 循环回边 -->
+  <path d="M 630 512 L 740 512 Q 764 512 764 480 L 764 282 Q 764 282 740 282 L 636 282" fill="none" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrb)"/>
+  <text x="795" y="400" font-size="13" fill="#2563eb">下一台</text>
+
+  <line x1="450" y1="538" x2="450" y2="562" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- 统一销毁 -->
+  <rect x="300" y="566" width="300" height="44" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="450" y="593" text-anchor="middle" font-size="13" fill="#7f1d1d">⑥ 全部测完 → 统一 kill N 台（含兜底清理）</text>
+  <line x1="450" y1="610" x2="450" y2="628" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- 汇总 -->
+  <rect x="270" y="632" width="360" height="52" rx="8" fill="#f0fdf4" stroke="#059669" stroke-width="1.5"/>
+  <text x="450" y="654" text-anchor="middle" font-size="13" fill="#064e3b">⑦ 汇总：三档分布（真冷/盘读/页缓存）· min/p50/max</text>
+  <text x="450" y="672" text-anchor="middle" font-size="12" fill="#065f46">落盘 readbench_&lt;时间戳&gt;.txt + .csv</text>
+</svg>

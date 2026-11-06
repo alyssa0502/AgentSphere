@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="560" viewBox="0 0 960 560" font-family="Microsoft YaHei, PingFang SC, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="960" height="560" fill="#ffffff"/>
+  <text x="480" y="36" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">镜像制作链路：运行中沙箱 → 单层 OCI → SWR → 新模板</text>
+
+  <!-- 第一行 -->
+  <rect x="40" y="80" width="200" height="96" rx="10" fill="#fefce8" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="140" y="106" text-anchor="middle" font-size="14" font-weight="bold" fill="#713f12">运行中沙箱</text>
+  <text x="140" y="128" text-anchor="middle" font-size="12" fill="#334155">apt 装 chromium</text>
+  <text x="140" y="148" text-anchor="middle" font-size="12" fill="#334155">dd 写 500MB 测试文件</text>
+  <text x="140" y="166" text-anchor="middle" font-size="12" fill="#475569">（整盘快照的源）</text>
+
+  <line x1="240" y1="128" x2="274" y2="128" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="280" y="80" width="180" height="96" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <text x="370" y="106" text-anchor="middle" font-size="14" font-weight="bold" fill="#0f172a">tar rootfs</text>
+  <text x="370" y="128" text-anchor="middle" font-size="12" fill="#334155">--one-file-system</text>
+  <text x="370" y="148" text-anchor="middle" font-size="12" fill="#334155">排除 NFS/erofs/tmpfs</text>
+  <text x="370" y="166" text-anchor="middle" font-size="12" fill="#475569">rc=1 容忍</text>
+
+  <line x1="460" y1="128" x2="494" y2="128" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="500" y="80" width="180" height="96" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <text x="590" y="106" text-anchor="middle" font-size="14" font-weight="bold" fill="#0f172a">digest 计算</text>
+  <text x="590" y="128" text-anchor="middle" font-size="12" fill="#334155">sha256 = diff_id</text>
+  <text x="590" y="148" text-anchor="middle" font-size="12" fill="#334155">gzip -1 → layer digest</text>
+  <text x="590" y="166" text-anchor="middle" font-size="12" fill="#475569">1.28 GB / 75s</text>
+
+  <line x1="680" y1="128" x2="714" y2="128" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="720" y="80" width="200" height="96" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <text x="820" y="106" text-anchor="middle" font-size="14" font-weight="bold" fill="#0f172a">schema2 manifest</text>
+  <text x="820" y="128" text-anchor="middle" font-size="12" fill="#334155">手写 config + manifest</text>
+  <text x="820" y="148" text-anchor="middle" font-size="12" fill="#334155">单层（无基础层引用）</text>
+  <text x="820" y="166" text-anchor="middle" font-size="12" fill="#475569">Cmd: /sbin/init</text>
+
+  <!-- 换行箭头 -->
+  <path d="M 820 176 L 820 216 L 140 216 L 140 252" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- 第二行 -->
+  <rect x="40" y="256" width="200" height="100" rx="10" fill="#faf5ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="140" y="282" text-anchor="middle" font-size="14" font-weight="bold" fill="#5b21b6">registry v2 直推</text>
+  <text x="140" y="304" text-anchor="middle" font-size="12" fill="#334155">Basic 换 Bearer token</text>
+  <text x="140" y="324" text-anchor="middle" font-size="12" fill="#334155">blob 上传 + manifest PUT</text>
+  <text x="140" y="344" text-anchor="middle" font-size="12" fill="#6d28d9">内网 25-36 MB/s</text>
+
+  <line x1="240" y1="306" x2="274" y2="306" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="280" y="256" width="180" height="100" rx="10" fill="#faf5ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="370" y="282" text-anchor="middle" font-size="14" font-weight="bold" fill="#5b21b6">SWR 镜像库</text>
+  <text x="370" y="304" text-anchor="middle" font-size="12" fill="#334155">如 20261105c</text>
+  <text x="370" y="324" text-anchor="middle" font-size="12" fill="#334155">单层 · tag 间零共享</text>
+  <text x="370" y="344" text-anchor="middle" font-size="12" fill="#6d28d9">回读校验 digest</text>
+
+  <line x1="460" y1="306" x2="494" y2="306" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="500" y="256" width="180" height="100" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <text x="590" y="282" text-anchor="middle" font-size="14" font-weight="bold" fill="#0f172a">控制台建模板</text>
+  <text x="590" y="304" text-anchor="middle" font-size="12" fill="#334155">引用 SWR 镜像</text>
+  <text x="590" y="324" text-anchor="middle" font-size="12" fill="#334155">配置启动命令</text>
+  <text x="590" y="344" text-anchor="middle" font-size="12" fill="#475569">（watcher 版 chromium）</text>
+
+  <line x1="680" y1="306" x2="714" y2="306" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="720" y="256" width="200" height="100" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="820" y="282" text-anchor="middle" font-size="14" font-weight="bold" fill="#7f1d1d">新沙箱首读</text>
+  <text x="820" y="304" text-anchor="middle" font-size="12" fill="#334155">纯数据文件：真冷 46s</text>
+  <text x="820" y="324" text-anchor="middle" font-size="12" fill="#334155">≈30 分钟传导 → 2.4s</text>
+  <text x="820" y="344" text-anchor="middle" font-size="12" fill="#7f1d1d">boot 路径文件：永远热</text>
+
+  <!-- 底部要点 -->
+  <line x1="40" y1="400" x2="920" y2="400" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="40" y="432" font-size="14" font-weight="bold" fill="#0f172a">为什么单层？</text>
+  <text x="40" y="458" font-size="13" fill="#334155">· 平台模板 API 不透出基础镜像来源，无法走 Dockerfile 叠层构建；整盘快照让任何沙箱状态都能一步固化</text>
+  <text x="40" y="482" font-size="13" fill="#334155">· 代价：tag 之间零共享 —— 每个新镜像即使内容 95% 相同，平台也当全新数据全量重新物化</text>
+  <text x="40" y="506" font-size="13" fill="#334155">· 这就是"每个新镜像都要重付一次真冷读（L1）"的直接原因，详见 docs/02-平台机制发现.md</text>
+</svg>
