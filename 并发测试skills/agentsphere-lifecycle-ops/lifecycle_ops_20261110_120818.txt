@@ -1,0 +1,36 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  模板 92db8659-f980-4576-80ec-c7cf9b69348f
+ 2026-11-10 12:08:18  台数 1  模式 serial  TTL=90s
+════════════════════════════════════════════════════════════════
+[1] d9dd5ff4 create=0.53s
+    print_ok=0.888s (通道就绪累计 1.42s)
+    pause=1.02s
+    verify_paused=0.10s state=paused
+    resume(connect)=1.22s
+    resume_verify=0.336s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.10s
+
+──────── 管理操作耗时统计（串行=纯执行口径）────────
+
+操作                n     min     p50     p90     p95     max    mean  失败/其他
+create            1    0.53    0.53    0.53    0.53    0.53    0.53  -
+print_ok          1    0.89    0.89    0.89    0.89    0.89    0.89  -
+pause             1    1.02    1.02    1.02    1.02    1.02    1.02  -
+verify_paused     1    0.10    0.10    0.10    0.10    0.10    0.10  -
+resume            1    1.22    1.22    1.22    1.22    1.22    1.22  -
+resume_verify     1    0.34    0.34    0.34    0.34    0.34    0.34  -
+restart           0       -       -       -       -       -       -  unsupported x1
+kill              1    0.10    0.10    0.10    0.10    0.10    0.10  -
+
+══ TTL 自动销毁观察：1 台 / TTL=90s / 轮询 2.0s ══
+  TTL[0] 1bd55509 create=0.12s，90s 后到期
+  TTL[0] 1bd55509 判死: 到期 +60.8s（观察粒度 ±2s）
+
+  TTL销毁延迟（计划到期→观察到死亡，n=1，未观察到 0 台）:
+    min +60.8s   p50 +60.8s   max +60.8s   mean +60.8s
+    注：读数含 0~2s 轮询粒度；负值=提前于计划到期回收
+
+ 总墙钟 159s
+ 报告 -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261110_120818.txt
+ CSV  -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261110_120818.csv

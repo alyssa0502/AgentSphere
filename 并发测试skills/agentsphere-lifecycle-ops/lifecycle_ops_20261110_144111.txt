@@ -1,0 +1,72 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  模板 bb468965-b760-451e-ab47-e04930296073
+ 2026-11-10 14:41:11  台数 5  模式 serial  TTL=180s
+════════════════════════════════════════════════════════════════
+[1] 49659e8c create=0.40s
+    print_ok=0.454s (通道就绪累计 0.85s)
+    pause=0.61s
+    verify_paused=0.09s state=paused
+    resume(connect)=1.14s
+    resume_verify=0.270s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.09s
+[2] bfd67c8d create=0.10s
+    print_ok=0.180s (通道就绪累计 0.28s)
+    pause=0.60s
+    verify_paused=0.09s state=paused
+    resume(connect)=0.63s
+    resume_verify=0.271s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.09s
+[3] 00ebdb03 create=0.11s
+    print_ok=0.138s (通道就绪累计 0.25s)
+    pause=0.60s
+    verify_paused=0.08s state=paused
+    resume(connect)=1.15s
+    resume_verify=0.240s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.09s
+[4] f87345ae create=0.10s
+    print_ok=0.141s (通道就绪累计 0.24s)
+    pause=0.59s
+    verify_paused=0.08s state=paused
+    resume(connect)=0.62s
+    resume_verify=0.269s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.10s
+[5] 4562df77 create=0.11s
+    print_ok=0.147s (通道就绪累计 0.26s)
+    pause=0.61s
+    verify_paused=0.09s state=paused
+    resume(connect)=0.63s
+    resume_verify=0.251s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.08s
+
+──────── 管理操作耗时统计（串行=纯执行口径）────────
+
+操作                n     min     p50     p90     p95     max    mean  失败/其他
+create            5    0.10    0.11    0.28    0.34    0.40    0.16  -
+print_ok          5    0.14    0.15    0.34    0.40    0.45    0.21  -
+pause             5    0.59    0.60    0.61    0.61    0.61    0.60  -
+verify_paused     5    0.08    0.09    0.09    0.09    0.09    0.09  -
+resume            5    0.62    0.64    1.15    1.15    1.15    0.84  -
+resume_verify     5    0.24    0.27    0.27    0.27    0.27    0.26  -
+restart           0       -       -       -       -       -       -  unsupported x5
+kill              5    0.08    0.09    0.10    0.10    0.10    0.09  -
+
+══ TTL 自动销毁观察：3 台 / TTL=180s / 轮询 2.0s ══
+  TTL[0] edb1967c create=0.10s，180s 后到期
+  TTL[1] 7a9824a5 create=0.10s，180s 后到期
+  TTL[2] 86ae4072 create=0.11s，180s 后到期
+  TTL[0] edb1967c 判死: 到期 +60.3s（观察粒度 ±2s）
+  TTL[1] 7a9824a5 判死: 到期 +60.2s（观察粒度 ±2s）
+  TTL[2] 86ae4072 判死: 到期 +60.1s（观察粒度 ±2s）
+
+  TTL销毁延迟（计划到期→观察到死亡，n=3，未观察到 0 台）:
+    min +60.1s   p50 +60.2s   max +60.3s   mean +60.2s
+    注：读数含 0~2s 轮询粒度；负值=提前于计划到期回收
+
+ 总墙钟 256s
+ 报告 -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261110_144111.txt
+ CSV  -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261110_144111.csv
