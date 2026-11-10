@@ -33,7 +33,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 # 0) 冒烟：3 台确认环境通
 & $py burst_create.py --count 3
 
-# 1) 快照路线：先造快照引用（也可 --list-only 盘点账号已有快照）
+# 1) 快照路线：先造快照引用（⚠ 11-10 实测当前网关未发布快照 API，此路线暂不可用，见"坑"7）
 & $py make_snapshots.py --template 92db8659-f980-4576-80ec-c7cf9b69348f --count 5
 & $py make_snapshots.py --verify @snapshots.txt     # 拉一台验证引用可用
 & $py burst_create.py --snapshots @snapshots.txt --count 50 --sla 2.0
@@ -76,6 +76,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 4. **并发规模**：单进程 asyncio 实测 50 正常；要更大规模分波跑多次，先 `--count 3` 冒烟
 5. **测完必清理**：默认统一 kill；`--keep` 留的台靠平台 TTL 回收，压测前确认账号配额
 6. **换区域**：三件套整体换（如 cn-north-4 的 URL + 网关 + 该区域 key），模板 ID 不跨区通用
+7. **快照 API 当前未发布（2026-11-10 实测）**：cn-southwest-2 网关上 `list_snapshots` 和 `create_snapshot` 均 404（APIGW.0101 接口未发布），快照路线整体不可用——`make_snapshots.py` 的现做/`--list-only`/`--verify` 都会失败；`--snapshots` 参数保留，等平台发布接口后再启用
 
 ## 新模板/新环境接入清单（执行前逐项确认并声明）
 
@@ -96,4 +97,5 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 |---|---|
 | 平台瞬时并发容量 | `burst_create.py --count 50`（模板直拉） |
 | 快照恢复交付速度 | `make_snapshots.py` → `burst_create.py --snapshots @snapshots.txt --count 50` |
+| 1 个快照拉多台 / N 个快照齐射 | `burst_create.py --snapshots <ref> --count 50` / `--snapshots ref1,ref2,ref3 --count 50`（不足自动循环复用） |
 | SLA 达标率报告 | 加 `--sla 2.0`，看"达标率"行 + CSV |

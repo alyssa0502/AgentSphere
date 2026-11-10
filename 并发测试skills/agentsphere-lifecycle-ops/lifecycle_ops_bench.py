@@ -19,6 +19,12 @@ AgentSphere 沙箱生命周期管理操作批量计时
   - print(ok)：只对成功那次调用计时；重试等待单列（*_verify 列的 off 起点可见）
   - 状态核实（get_info==paused）单列 verify_paused，不混入 pause 耗时
 
+拉起来源：--template 模板直拉，或 --snapshots 快照引用（templateID:buildID，逗号分隔或 @refs.txt，
+不足台数自动循环复用）。三种场景：
+  1 个快照拉 N 台          python lifecycle_ops_bench.py --snapshots <ref> --count N
+  N 个快照同时拉 N 台      python lifecycle_ops_bench.py --snapshots a,b,c --count N --mode burst
+  N 个快照并发生命周期     python lifecycle_ops_bench.py --snapshots a,b,c --mode burst --skip-ttl
+
 用法（agentsphere-demo venv）：
   python lifecycle_ops_bench.py                                    # 串行 5 台 + TTL 3台/180s
   python lifecycle_ops_bench.py --count 1 --ttl-count 1 --ttl 90   # 冒烟
@@ -69,6 +75,20 @@ def R(phase, idx, sid, op, elapsed, status="ok", off=0.0, detail=""):
             "off": round(off, 3), "detail": detail}
 
 
+def load_refs(spec, count, fallback):
+    """快照引用/模板 → 长度 count 的引用列表（循环复用）。返回 (refs, 去重源数)。"""
+    if not spec:
+        return [fallback] * count, 1
+    if spec.startswith("@"):
+        with open(spec[1:], encoding="utf-8") as f:
+            ids = [l.strip() for l in f if l.strip() and not l.strip().startswith("#")]
+    else:
+        ids = [s.strip() for s in spec.split(",") if s.strip()]
+    if not ids:
+        raise SystemExit("快照引用列表为空")
+    return [ids[i % len(ids)] for i in range(count)], len(ids)
+
+
 class Report:
     def __init__(self, txt_path):
         self.txt_path = txt_path
@@ -109,7 +129,7 @@ def echo_timed(sb, label, idx, sid, t0, rows, ready_timeout):
         time.sleep(0.5)
 
 
-def run_ops_one(idx, args, rep):
+def run_ops_one(idx, ref, args, rep):
     """单台全流程；逐操作即时打印。返回 rows。"""
     rows = []
     t0 = time.perf_counter()
@@ -119,15 +139,16 @@ def run_ops_one(idx, args, rep):
 
     a0 = time.perf_counter()
     try:
-        sb = Sandbox.create(template=args.template, timeout=args.ops_timeout)
+        sb = Sandbox.create(template=ref, timeout=args.ops_timeout)
     except Exception as e:
-        rows.append(R("ops", idx, "-", "create", -1, f"fail({type(e).__name__})", off()))
-        rep.emit(f"[{idx + 1}] create 失败: {str(e)[:120]}")
+        rows.append(R("ops", idx, "-", "create", -1, f"fail({type(e).__name__})",
+                      off(), f"ref={ref}"))
+        rep.emit(f"[{idx + 1}] ref={ref} create 失败: {str(e)[:120]}")
         return rows
     a1 = time.perf_counter()
     sid = sb.sandbox_id
-    rows.append(R("ops", idx, sid, "create", a1 - a0, "ok", off()))
-    rep.emit(f"[{idx + 1}] {sid[:8]} create={a1 - a0:.2f}s")
+    rows.append(R("ops", idx, sid, "create", a1 - a0, "ok", off(), f"ref={ref}"))
+    rep.emit(f"[{idx + 1}] {sid[:8]} ref={ref[:28]} create={a1 - a0:.2f}s")
 
     t_ok, ok_s = echo_timed(sb, "print_ok", idx, sid, t0, rows, args.ready_timeout)
     if ok_s is not None:
@@ -198,20 +219,20 @@ def run_ops_one(idx, args, rep):
     return rows
 
 
-def run_ttl(args, rep, all_rows):
+def run_ttl(args, refs, rep, all_rows):
     rep.emit(f"\n══ TTL 自动销毁观察：{args.ttl_count} 台 / TTL={args.ttl:.0f}s / "
              f"轮询 {args.poll:.1f}s ══")
     recs = []
     for i in range(args.ttl_count):
         t0 = time.perf_counter()
-        sb = Sandbox.create(template=args.template, timeout=args.ttl)
+        sb = Sandbox.create(template=refs[i], timeout=args.ttl)
         t_done = time.perf_counter()
-        recs.append({"idx": i, "sid": sb.sandbox_id, "sb": sb,
+        recs.append({"idx": i, "sid": sb.sandbox_id, "sb": sb, "ref": refs[i],
                      "create_s": t_done - t0, "t_done": t_done,
                      "expiry": t_done + args.ttl,
                      "dead": None, "delta": None, "status": "watching"})
-        rep.emit(f"  TTL[{i}] {sb.sandbox_id[:8]} create={t_done - t0:.2f}s，"
-                 f"{args.ttl:.0f}s 后到期")
+        rep.emit(f"  TTL[{i}] {sb.sandbox_id[:8]} ref={refs[i][:28]} "
+                 f"create={t_done - t0:.2f}s，{args.ttl:.0f}s 后到期")
 
     deadline = max(r["expiry"] for r in recs) + args.grace
     fail_streak, first_fail = {}, {}
@@ -252,7 +273,8 @@ def run_ttl(args, rep, all_rows):
     for r in recs:
         all_rows.append(R("ttl", r["idx"], r["sid"], "ttl_destroy",
                           r["delta"] if r["delta"] is not None else -1,
-                          r["status"], 0.0, f"create={r['create_s']:.2f}s"))
+                          r["status"], 0.0,
+                          f"create={r['create_s']:.2f}s ref={r['ref']}"))
 
 
 def print_op_stats(rows, rep):
@@ -290,6 +312,9 @@ def main():
     ap = argparse.ArgumentParser(description="沙箱生命周期管理操作批量计时")
     ap.add_argument("--template", default=os.environ.get(
         "TEMPLATE_ID", "92db8659-f980-4576-80ec-c7cf9b69348f"))
+    ap.add_argument("--snapshots", default="",
+                    help="快照引用（templateID:buildID），逗号分隔或 @refs.txt；"
+                         "给了它就不看 --template；不足台数自动循环复用")
     ap.add_argument("--count", type=int, default=5, help="管理操作阶段的沙箱台数")
     ap.add_argument("--mode", choices=["serial", "burst"], default="serial",
                     help="serial=精准口径(默认)；burst=并发对照(含排队)")
@@ -313,12 +338,16 @@ def main():
                          "PowerShell:  $env:E2B_API_KEY='<你的key>'；"
                          "永久:  setx E2B_API_KEY <你的key>（重开终端生效）")
 
+    refs_ops, n_src = load_refs(args.snapshots, args.count, args.template)
+    src_desc = (f"快照引用 x{n_src}（循环至 {args.count} 台）" if args.snapshots
+                else f"模板 {args.template}")
+
     rep = Report(os.path.join(BASE, f"lifecycle_ops_{TS}.txt"))
     csv_path = os.path.join(BASE, f"lifecycle_ops_{TS}.csv")
     all_rows = []
     t0 = time.monotonic()
     rep.emit("═" * 64)
-    rep.emit(f" 生命周期管理操作计时  模板 {args.template}")
+    rep.emit(f" 生命周期管理操作计时  来源: {src_desc}")
     rep.emit(f" {time.strftime('%Y-%m-%d %H:%M:%S')}  台数 {args.count}  "
              f"模式 {args.mode}  TTL={'关' if args.skip_ttl else f'{args.ttl:.0f}s'}")
     rep.emit("═" * 64)
@@ -326,7 +355,7 @@ def main():
         if not args.skip_ops:
             if args.mode == "serial":
                 for i in range(args.count):
-                    all_rows.extend(run_ops_one(i, args, rep))
+                    all_rows.extend(run_ops_one(i, refs_ops[i], args, rep))
             else:
                 rep.emit(f"[{time.strftime('%H:%M:%S')}] === 齐射 {args.count} 台"
                          f"（对照口径：墙钟含平台排队） ===")
@@ -339,7 +368,7 @@ def main():
                     except threading.BrokenBarrierError:
                         rep.emit(f"[{i + 1}] 发令前掉线，跳过")
                         return
-                    rows = run_ops_one(i, args, rep)
+                    rows = run_ops_one(i, refs_ops[i], args, rep)
                     with lock:
                         all_rows.extend(rows)
 
@@ -358,7 +387,8 @@ def main():
                 rep.emit("  排队分量 ≈ 并发p50 − 串行p50（先跑一轮 serial 再对比）")
 
         if not args.skip_ttl:
-            run_ttl(args, rep, all_rows)
+            refs_ttl, _ = load_refs(args.snapshots, args.ttl_count, args.template)
+            run_ttl(args, refs_ttl, rep, all_rows)
 
         rep.emit(f"\n 总墙钟 {time.monotonic() - t0:.0f}s")
         rep.emit(f" 报告 -> {rep.txt_path}")
