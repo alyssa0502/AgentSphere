@@ -38,13 +38,23 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 # 只测管理操作 / 只测 TTL
 & $py lifecycle_ops_bench.py --skip-ttl
 & $py lifecycle_ops_bench.py --skip-ops --ttl 120 --ttl-count 5
+
+# 场景：1 个快照引用拉 N 台（循环复用同一引用）
+& $py lifecycle_ops_bench.py --snapshots <templateID:buildID> --count 5
+
+# 场景：N 个快照同时拉 N 台（齐射对照口径）
+& $py lifecycle_ops_bench.py --snapshots <ref1>,<ref2>,<ref3> --count 6 --mode burst
+
+# 场景：N 个快照并发跑生命周期管理
+& $py lifecycle_ops_bench.py --snapshots @refs.txt --mode burst --count 9 --skip-ttl
 ```
 
 ## 参数
 
 | 参数 | 默认 | 说明 |
 |---|---|---|
-| `--template` | 92db8659…（env `TEMPLATE_ID`） | 被测模板 |
+| `--template` | 92db8659…（env `TEMPLATE_ID`） | 被测模板（直拉） |
+| `--snapshots` | 无 | 快照引用（templateID:buildID），逗号分隔或 `@refs.txt`；给了它就不看 --template；不足台数自动循环复用；管理操作和 TTL 两个阶段吃同一份引用 |
 | `--count` | 5 | 管理操作阶段台数 |
 | `--mode` | serial | serial=精准口径（队列深度=1）；burst=并发对照 |
 | `--ttl` | 180 | TTL 观察时长（秒，≥60） |
@@ -82,6 +92,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 4. **TTL 判死别用单次异常**：网络抖动同样抛异常，必须连续 2 次；也别指望 get_info 返回 DEAD 状态（枚举里没有）
 5. **--ttl 最小 60**：平台下限；TTL 观察期间那几台别去动它，动了会刷新存活判定
 6. **TTL 与管理操作用不同沙箱**：测 TTL 的台从头到尾只许轮询，保证"无操作干扰的自然到期"
+7. **快照引用先冒烟**：引用 = create_snapshot 返回的 templateID:buildID 整串；2026-11-10 实测本网关快照 API（create/list）未发布（404 APIGW.0101），引用拉起路径未真机验证过——拿到真实引用先 `--count 1 --skip-ttl` 冒烟再上量
 
 ## 新模板/新环境接入清单（执行前逐项确认并声明）
 
