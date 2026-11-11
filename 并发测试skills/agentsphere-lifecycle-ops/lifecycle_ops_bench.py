@@ -11,8 +11,12 @@ AgentSphere 沙箱生命周期管理操作批量计时
 「计划到期 → 观察到死亡」的回收延迟（含 ±一个轮询周期的观察粒度）。
 
 两种模式：
-  serial（默认，精准口径）任一时刻只有 1 个管理操作在途 → 服务端队列深度=1，无排队污染
-  burst （对照口径）      N 台齐跑 → 墙钟含平台排队；排队分量 ≈ 并发p50 − 串行p50
+  serial（精准口径）任一时刻只有 1 个管理操作在途 → 服务端队列深度=1，无排队污染
+  burst （独立流水并发对照）N 台各自跑完整链路，相位错开 → 墙钟含平台排队
+  volley（同相齐射并发）  N 台先全部 create 到位，然后每个操作一发令枪：
+                          同一瞬间 N 台全 pause、同一瞬间全 resume、同一瞬间全 kill。
+                          每个操作的读数 = 该操作在队列深度=N 时的单台耗时分布，
+                          这是"n 个快照同时执行生命周期管理"的严格口径。
 
 计时口径（全部 perf_counter 单调时钟）：
   - 每个操作：调用发出前最后一个打点 → 返回后第一个打点，窗口内零打印零日志零额外网络调用
@@ -22,13 +26,14 @@ AgentSphere 沙箱生命周期管理操作批量计时
 拉起来源：--template 模板直拉，或 --snapshots 快照引用（templateID:buildID，逗号分隔或 @refs.txt，
 不足台数自动循环复用）。三种场景：
   1 个快照拉 N 台          python lifecycle_ops_bench.py --snapshots <ref> --count N
-  N 个快照同时拉 N 台      python lifecycle_ops_bench.py --snapshots a,b,c --count N --mode burst
-  N 个快照并发生命周期     python lifecycle_ops_bench.py --snapshots a,b,c --mode burst --skip-ttl
+  N 个快照同时拉 N 台      python lifecycle_ops_bench.py --snapshots a,b,c --count N --mode volley
+  N 个快照并发生命周期     python lifecycle_ops_bench.py --snapshots a,b,c --mode volley --skip-ttl
 
 用法（agentsphere-demo venv）：
   python lifecycle_ops_bench.py                                    # 串行 5 台 + TTL 3台/180s
   python lifecycle_ops_bench.py --count 1 --ttl-count 1 --ttl 90   # 冒烟
-  python lifecycle_ops_bench.py --mode burst --count 20            # 并发对照（看排队分量）
+  python lifecycle_ops_bench.py --mode volley --count 20 --skip-ttl  # 同相齐射并发
+  python lifecycle_ops_bench.py --mode burst --count 20            # 独立流水并发对照
   python lifecycle_ops_bench.py --skip-ttl                         # 只测管理操作
 
 输出：屏幕明细 + 每操作分位数统计 + lifecycle_ops_<时间戳>.txt/.csv
@@ -219,6 +224,173 @@ def run_ops_one(idx, ref, args, rep):
     return rows
 
 
+def run_volley(args, refs, rep):
+    """同相齐射并发：N 台先全部 create 到位，然后每个操作一发令枪，
+    N 台在同一瞬间执行同一个操作（全 pause / 全 resume / 全 kill）。
+    每个操作的读数 = 该操作在并发度=N 时的单台耗时分布。返回 rows。"""
+    from concurrent.futures import ThreadPoolExecutor
+
+    n = args.count
+    rows = []
+    lock = threading.Lock()
+    recs = [None] * n
+
+    def phase(op, label, cur, worker_fn):
+        if not cur:
+            return
+        rep.emit(f"── {label}：{len(cur)} 台齐射 ──")
+        g = threading.Barrier(len(cur) + 1)
+
+        def guarded(i, rec):
+            local = []
+            try:
+                g.wait(timeout=180)
+                worker_fn(i, rec, local)
+            except threading.BrokenBarrierError:
+                pass
+            except Exception as e:
+                local.append(R("ops", i, rec["sid"], op, -1,
+                               f"fail({type(e).__name__})", 0.0, str(e)[:80]))
+            finally:
+                with lock:
+                    rows.extend(local)
+
+        with ThreadPoolExecutor(max_workers=len(cur)) as pool:
+            futs = [pool.submit(guarded, i, rec) for i, rec in cur]
+            g.wait(timeout=180)
+            for f in futs:
+                f.result()
+        ok = sorted(r["elapsed"] for r in rows
+                    if r["op"] == op and r["status"] == "ok" and r["elapsed"] >= 0)
+        if ok:
+            rep.emit(f"   {op}: n={len(ok)} min={ok[0]:.2f}s "
+                     f"p50={percentile(ok, 50):.2f}s max={ok[-1]:.2f}s")
+
+    def living():
+        return [(i, r) for i, r in enumerate(recs) if r and not r["dead"]]
+
+    # ── 相 1：create 齐射（发令枪统一放行）──
+    rep.emit(f"── create：{n} 台齐射 ──")
+    g = threading.Barrier(n + 1)
+
+    def create_worker(i):
+        local = []
+        try:
+            g.wait(timeout=180)
+            a0 = time.perf_counter()
+            try:
+                sb = Sandbox.create(template=refs[i], timeout=args.ops_timeout)
+            except Exception as e:
+                local.append(R("ops", i, "-", "create", -1,
+                               f"fail({type(e).__name__})", 0.0, f"ref={refs[i]}"))
+                rep.emit(f"  [{i + 1}] create 失败: {str(e)[:100]}")
+                return
+            a1 = time.perf_counter()
+            recs[i] = {"sid": sb.sandbox_id, "sb": sb, "sb2": None,
+                       "ref": refs[i], "dead": False}
+            local.append(R("ops", i, recs[i]["sid"], "create", a1 - a0, "ok",
+                           0.0, f"ref={refs[i]}"))
+        except threading.BrokenBarrierError:
+            pass
+        finally:
+            with lock:
+                rows.extend(local)
+
+    with ThreadPoolExecutor(max_workers=n) as pool:
+        futs = [pool.submit(create_worker, i) for i in range(n)]
+        g.wait(timeout=180)
+        for f in futs:
+            f.result()
+    rep.emit(f"   create: {sum(1 for r in recs if r)}/{n} 台到位")
+
+    def w_print_ok(i, rec, local):
+        echo_timed(rec["sb"], "print_ok", i, rec["sid"],
+                   time.perf_counter(), local, args.ready_timeout)
+
+    phase("print_ok", "print(ok) 通道就绪", living(), w_print_ok)
+
+    def w_pause(i, rec, local):
+        a0 = time.perf_counter()
+        rec["sb"].pause()
+        local.append(R("ops", i, rec["sid"], "pause",
+                       time.perf_counter() - a0, "ok", 0.0))
+
+    phase("pause", "pause", living(), w_pause)
+
+    def w_verify(i, rec, local):
+        v0 = time.perf_counter()
+        info = rec["sb"].get_info()
+        v1 = time.perf_counter()
+        local.append(R("ops", i, rec["sid"], "verify_paused", v1 - v0,
+                       "ok" if info.state == SandboxState.PAUSED else "state_wrong",
+                       0.0, f"state={info.state}"))
+
+    phase("verify_paused", "状态核实 paused", living(), w_verify)
+
+    def w_resume(i, rec, local):
+        c0 = time.perf_counter()
+        try:
+            rec["sb2"] = Sandbox.connect(rec["sid"])
+        except Exception as e:
+            rec["dead"] = True
+            local.append(R("ops", i, rec["sid"], "resume", -1,
+                           f"fail({type(e).__name__})", 0.0, str(e)[:80]))
+            return
+        local.append(R("ops", i, rec["sid"], "resume",
+                       time.perf_counter() - c0, "ok", 0.0, "connect(paused)"))
+
+    phase("resume", "resume(connect)", living(), w_resume)
+
+    def w_resume_verify(i, rec, local):
+        echo_timed(rec["sb2"], "resume_verify", i, rec["sid"],
+                   time.perf_counter(), local, args.ready_timeout)
+
+    phase("resume_verify", "resume 后命令核实", living(), w_resume_verify)
+
+    def w_restart(i, rec, local):
+        fn = getattr(rec["sb2"], "restart", None)
+        if fn is None:
+            local.append(R("ops", i, rec["sid"], "restart", -1, "unsupported",
+                           0.0, "SDK/平台无 restart 接口"))
+            return
+        a0 = time.perf_counter()
+        fn()
+        local.append(R("ops", i, rec["sid"], "restart",
+                       time.perf_counter() - a0, "ok", 0.0))
+
+    phase("restart", "restart", living(), w_restart)
+
+    def w_restart_verify(i, rec, local):
+        if getattr(rec["sb2"], "restart", None) is None:
+            return
+        echo_timed(rec["sb2"], "restart_verify", i, rec["sid"],
+                   time.perf_counter(), local, args.ready_timeout)
+
+    phase("restart_verify", "restart 后命令核实", living(), w_restart_verify)
+
+    cur = [(i, r) for i, r in enumerate(recs) if r]
+    if args.keep:
+        with lock:
+            rows.extend(R("ops", i, r["sid"], "kill", -1, "skipped(--keep)", 0.0)
+                        for i, r in cur)
+        rep.emit("── kill：skipped(--keep) ──")
+    else:
+        def w_kill(i, rec, local):
+            k0 = time.perf_counter()
+            try:
+                rec["sb"].kill()
+            except Exception as e:
+                local.append(R("ops", i, rec["sid"], "kill", -1,
+                               f"fail({type(e).__name__})", 0.0, str(e)[:80]))
+                return
+            local.append(R("ops", i, rec["sid"], "kill",
+                           time.perf_counter() - k0, "ok", 0.0))
+
+        phase("kill", "kill", cur, w_kill)
+
+    return rows
+
+
 def run_ttl(args, refs, rep, all_rows):
     rep.emit(f"\n══ TTL 自动销毁观察：{args.ttl_count} 台 / TTL={args.ttl:.0f}s / "
              f"轮询 {args.poll:.1f}s ══")
@@ -316,8 +488,9 @@ def main():
                     help="快照引用（templateID:buildID），逗号分隔或 @refs.txt；"
                          "给了它就不看 --template；不足台数自动循环复用")
     ap.add_argument("--count", type=int, default=5, help="管理操作阶段的沙箱台数")
-    ap.add_argument("--mode", choices=["serial", "burst"], default="serial",
-                    help="serial=精准口径(默认)；burst=并发对照(含排队)")
+    ap.add_argument("--mode", choices=["serial", "burst", "volley"], default="serial",
+                    help="serial=精准口径(默认,队列深度=1)；burst=独立流水并发对照；"
+                         "volley=同相齐射并发(N 台同相同时执行同一操作)")
     ap.add_argument("--skip-ttl", action="store_true", help="跳过 TTL 销毁观察")
     ap.add_argument("--skip-ops", action="store_true", help="跳过管理操作，只测 TTL")
     ap.add_argument("--ttl", type=int, default=180, help="TTL 时长（秒，≥60）")
@@ -358,6 +531,10 @@ def main():
             if args.mode == "serial":
                 for i in range(args.count):
                     all_rows.extend(run_ops_one(i, refs_ops[i], args, rep))
+            elif args.mode == "volley":
+                rep.emit(f"[{time.strftime('%H:%M:%S')}] === 同相齐射 {args.count} 台"
+                         f"（每操作一发令枪，N 台同相同时执行同一操作） ===")
+                all_rows.extend(run_volley(args, refs_ops, rep))
             else:
                 rep.emit(f"[{time.strftime('%H:%M:%S')}] === 齐射 {args.count} 台"
                          f"（对照口径：墙钟含平台排队） ===")
@@ -381,11 +558,12 @@ def main():
                     for f in futs:
                         f.result()
 
-            rep.emit("\n──────── 管理操作耗时统计（"
-                     + ("串行=纯执行口径" if args.mode == "serial" else "并发=含平台排队")
-                     + "）────────")
+            header = {"serial": "串行=纯执行口径",
+                      "volley": "同相齐射=并发口径（每相同刻执行，含该相队列深度=N）",
+                      "burst": "独立流水并发=含平台排队"}[args.mode]
+            rep.emit(f"\n──────── 管理操作耗时统计（{header}）────────")
             print_op_stats(all_rows, rep)
-            if args.mode == "burst":
+            if args.mode in ("burst", "volley"):
                 rep.emit("  排队分量 ≈ 并发p50 − 串行p50（先跑一轮 serial 再对比）")
 
         if not args.skip_ttl:
