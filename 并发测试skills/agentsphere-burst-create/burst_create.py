@@ -147,7 +147,9 @@ async def main():
     ap.add_argument("--count", type=int, default=int(os.environ.get("COUNT", "50")))
     ap.add_argument("--sla", type=float, default=2.0, help="达标阈值（秒）")
     ap.add_argument("--bin", type=float, default=0.5, help="直方图桶宽（秒）")
-    ap.add_argument("--timeout", type=int, default=60, help="单次 create 超时（秒）")
+    ap.add_argument("--timeout", type=int, default=60,
+                    help="沙箱 TTL 存活时长（秒，到期平台自动回收；"
+                         "--keep 也只能活这么久，要留活就调大）")
     ap.add_argument("--keep", action="store_true", help="测完保留沙箱不销毁")
     ap.add_argument("--csv", default="", help="CSV 明细路径（默认时间戳文件）")
     args = ap.parse_args()
