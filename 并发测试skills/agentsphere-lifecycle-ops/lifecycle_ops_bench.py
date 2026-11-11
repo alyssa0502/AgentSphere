@@ -428,12 +428,12 @@ def run_ttl(args, refs, rep, all_rows):
                     r["delta"] = r["dead"] - r["expiry"]
                     r["status"] = "dead"
                     rep.emit(f"  TTL[{r['idx']}] {r['sid'][:8]} 判死: "
-                             f"到期 {r['delta']:+.1f}s（观察粒度 ±{args.poll:.0f}s）")
+                             f"到期 {r['delta']:+.1f}s")
         time.sleep(args.poll)
     for r in recs:
         if r["status"] == "watching":
             r["status"] = "not_observed"
-            rep.emit(f"  TTL[{r['idx']}] {r['sid'][:8]} grace 内未观察到销毁（本身即发现）")
+            rep.emit(f"  TTL[{r['idx']}] {r['sid'][:8]} grace 内未观察到销毁")
 
     deltas = sorted(r["delta"] for r in recs if r["status"] == "dead")
     rep.emit(f"\n  TTL销毁延迟（计划到期→观察到死亡，n={len(deltas)}，"
@@ -441,7 +441,6 @@ def run_ttl(args, refs, rep, all_rows):
     if deltas:
         rep.emit(f"    min {deltas[0]:+.1f}s   p50 {percentile(deltas, 50):+.1f}s   "
                  f"max {deltas[-1]:+.1f}s   mean {st.mean(deltas):+.1f}s")
-        rep.emit(f"    注：读数含 0~{args.poll:.0f}s 轮询粒度；负值=提前于计划到期回收")
     for r in recs:
         all_rows.append(R("ttl", r["idx"], r["sid"], "ttl_destroy",
                           r["delta"] if r["delta"] is not None else -1,
@@ -532,12 +531,10 @@ def main():
                 for i in range(args.count):
                     all_rows.extend(run_ops_one(i, refs_ops[i], args, rep))
             elif args.mode == "volley":
-                rep.emit(f"[{time.strftime('%H:%M:%S')}] === 同相齐发 {args.count} 台"
-                         f"（每操作一发令枪，N 台同相同时执行同一操作） ===")
+                rep.emit(f"[{time.strftime('%H:%M:%S')}] === 同相齐发 {args.count} 台 ===")
                 all_rows.extend(run_volley(args, refs_ops, rep))
             else:
-                rep.emit(f"[{time.strftime('%H:%M:%S')}] === 齐发 {args.count} 台"
-                         f"（对照口径：墙钟含平台排队） ===")
+                rep.emit(f"[{time.strftime('%H:%M:%S')}] === 齐发 {args.count} 台 ===")
                 gun = threading.Barrier(args.count + 1)
                 lock = threading.Lock()
 
@@ -558,13 +555,8 @@ def main():
                     for f in futs:
                         f.result()
 
-            header = {"serial": "串行=纯执行口径",
-                      "volley": "同相齐发=并发口径（每相同刻执行，含该相队列深度=N）",
-                      "burst": "独立流水并发=含平台排队"}[args.mode]
-            rep.emit(f"\n──────── 管理操作耗时统计（{header}）────────")
+            rep.emit("\n──────── 管理操作耗时统计 ────────")
             print_op_stats(all_rows, rep)
-            if args.mode in ("burst", "volley"):
-                rep.emit("  排队分量 ≈ 并发p50 − 串行p50（先跑一轮 serial 再对比）")
 
         if not args.skip_ttl:
             refs_ttl, _ = load_refs(args.snapshots, args.ttl_count, args.template)

@@ -201,7 +201,7 @@ async def main():
         print(f"统一销毁 {len(live)} 台...")
         await asyncio.gather(*[kill_one(s) for s in live])
     else:
-        print(f"保留 {len(ok)} 台存活（--keep，注意平台 TTL 会自动回收）")
+        print(f"保留 {len(ok)} 台存活（--keep）")
 
 
 if __name__ == "__main__":
