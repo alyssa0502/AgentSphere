@@ -13,7 +13,7 @@ AgentSphere 沙箱生命周期管理操作批量计时
 两种模式：
   serial（精准口径）任一时刻只有 1 个管理操作在途 → 服务端队列深度=1，无排队污染
   burst （独立流水并发对照）N 台各自跑完整链路，相位错开 → 墙钟含平台排队
-  volley（同相齐发并发）  N 台先全部 create 到位，然后每个操作一发令枪：
+  volley（并发生命周期）    N 个 sandbox 先全部 create 到位，然后每个操作一发令枪：
                           同一瞬间 N 台全 pause、同一瞬间全 resume、同一瞬间全 kill。
                           每个操作的读数 = 该操作在队列深度=N 时的单台耗时分布，
                           这是"n 个快照同时执行生命周期管理"的严格口径。
@@ -32,7 +32,7 @@ AgentSphere 沙箱生命周期管理操作批量计时
 用法（agentsphere-demo venv）：
   python lifecycle_ops_bench.py                                    # 串行 5 台 + TTL 3台/180s
   python lifecycle_ops_bench.py --count 1 --ttl-count 1 --ttl 90   # 冒烟
-  python lifecycle_ops_bench.py --mode volley --count 20 --skip-ttl  # 同相齐发并发
+  python lifecycle_ops_bench.py --mode volley --count 20 --skip-ttl  # 并发生命周期操作
   python lifecycle_ops_bench.py --mode burst --count 20            # 独立流水并发对照
   python lifecycle_ops_bench.py --skip-ttl                         # 只测管理操作
 
@@ -225,7 +225,7 @@ def run_ops_one(idx, ref, args, rep):
 
 
 def run_volley(args, refs, rep):
-    """同相齐发并发：N 台先全部 create 到位，然后每个操作一发令枪，
+    """并发生命周期操作：N 个 sandbox 先全部 create 到位，然后每个操作一发令枪，
     N 台在同一瞬间执行同一个操作（全 pause / 全 resume / 全 kill）。
     每个操作的读数 = 该操作在并发度=N 时的单台耗时分布。返回 rows。"""
     from concurrent.futures import ThreadPoolExecutor
@@ -238,7 +238,7 @@ def run_volley(args, refs, rep):
     def phase(op, label, cur, worker_fn):
         if not cur:
             return
-        rep.emit(f"── {label}：{len(cur)} 台齐发 ──")
+        rep.emit(f"── {label}：{len(cur)} 台并发 ──")
         g = threading.Barrier(len(cur) + 1)
 
         def guarded(i, rec):
@@ -269,8 +269,8 @@ def run_volley(args, refs, rep):
     def living():
         return [(i, r) for i, r in enumerate(recs) if r and not r["dead"]]
 
-    # ── 相 1：create 齐发（发令枪统一放行）──
-    rep.emit(f"── create：{n} 台齐发 ──")
+    # ── 相 1：create 并发（发令枪统一放行）──
+    rep.emit(f"── create：{n} 台并发 ──")
     g = threading.Barrier(n + 1)
 
     def create_worker(i):
@@ -489,7 +489,7 @@ def main():
     ap.add_argument("--count", type=int, default=5, help="管理操作阶段的沙箱台数")
     ap.add_argument("--mode", choices=["serial", "burst", "volley"], default="serial",
                     help="serial=精准口径(默认,队列深度=1)；burst=独立流水并发对照；"
-                         "volley=同相齐发并发(N 台同相同时执行同一操作)")
+                         "volley=N 个 sandbox 并发执行同一操作(并发 pause/resume/kill))")
     ap.add_argument("--skip-ttl", action="store_true", help="跳过 TTL 销毁观察")
     ap.add_argument("--skip-ops", action="store_true", help="跳过管理操作，只测 TTL")
     ap.add_argument("--ttl", type=int, default=180, help="TTL 时长（秒，≥60）")
@@ -531,10 +531,10 @@ def main():
                 for i in range(args.count):
                     all_rows.extend(run_ops_one(i, refs_ops[i], args, rep))
             elif args.mode == "volley":
-                rep.emit(f"[{time.strftime('%H:%M:%S')}] === 同相齐发 {args.count} 台 ===")
+                rep.emit(f"[{time.strftime('%H:%M:%S')}] === {args.count} 个 sandbox 并发生命周期操作 ===")
                 all_rows.extend(run_volley(args, refs_ops, rep))
             else:
-                rep.emit(f"[{time.strftime('%H:%M:%S')}] === 齐发 {args.count} 台 ===")
+                rep.emit(f"[{time.strftime('%H:%M:%S')}] === {args.count} 个 sandbox 并发生命周期操作（独立流水） ===")
                 gun = threading.Barrier(args.count + 1)
                 lock = threading.Lock()
 
