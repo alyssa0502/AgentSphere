@@ -279,11 +279,20 @@ def run_volley(args, refs, rep):
         with ThreadPoolExecutor(max_workers=len(cur)) as pool:
             futs = [pool.submit(guarded, i, rec) for i, rec in cur]
             g.wait(timeout=180)
+            t_gun_w = time.time()
             for f in futs:
                 f.result()
+            t_end_w = time.time()
         ok = sorted(r["elapsed"] for r in rows
                     if r["op"] == op and r["status"] == "ok" and r["elapsed"] >= 0)
         if ok:
+            rep.emit(f"{op} 下发时间: {datetime.fromtimestamp(t_gun_w).strftime('%H:%M:%S.%f')[:-3]}"
+                     f"  {op} 结束时间: {datetime.fromtimestamp(t_end_w).strftime('%H:%M:%S.%f')[:-3]}")
+            ok_rows = [r for r in rows
+                       if r["op"] == op and r["status"] == "ok" and r["elapsed"] >= 0]
+            for r in sorted(ok_rows, key=lambda r: r["elapsed"]):
+                ref = recs[r["idx"]]["ref"] if recs[r["idx"]] else ""
+                rep.emit(f"sandbox {r['sid']} [{ref[:24]}] {op} 耗时: {r['elapsed']:.3f}s")
             rep.emit(f"   {op}: n={len(ok)} min={ok[0]:.2f}s "
                      f"p50={percentile(ok, 50):.2f}s max={ok[-1]:.2f}s")
 
