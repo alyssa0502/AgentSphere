@@ -1,0 +1,28 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  来源: 模板 bb468965-b760-451e-ab47-e04930296073
+ 2026-11-10 15:29:35  台数 1  模式 serial  TTL=关
+════════════════════════════════════════════════════════════════
+[1] 5d153e9a ref=bb468965-b760-451e-ab47-e049 create=0.56s
+    print_ok=0.497s (通道就绪累计 1.06s)
+    pause=0.62s
+    verify_paused=0.09s state=paused
+    resume(connect)=1.13s
+    resume_verify=0.252s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.09s
+
+──────── 管理操作耗时统计（串行=纯执行口径）────────
+
+操作                n     min     p50     p90     p95     max    mean  失败/其他
+create            1    0.56    0.56    0.56    0.56    0.56    0.56  -
+print_ok          1    0.50    0.50    0.50    0.50    0.50    0.50  -
+pause             1    0.62    0.62    0.62    0.62    0.62    0.62  -
+verify_paused     1    0.10    0.10    0.10    0.10    0.10    0.10  -
+resume            1    1.13    1.13    1.13    1.13    1.13    1.13  -
+resume_verify     1    0.25    0.25    0.25    0.25    0.25    0.25  -
+restart           0       -       -       -       -       -       -  unsupported x1
+kill              1    0.09    0.09    0.09    0.09    0.09    0.09  -
+
+ 总墙钟 3s
+ 报告 -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261110_152935.txt
+ CSV  -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261110_152935.csv

@@ -1,11 +1,11 @@
 ---
 name: agentsphere-burst-create
-description: AgentSphere 沙箱并发拉起压测（齐射模式）。N 个沙箱同一瞬间批量创建，统计 create 时延分位数（p50/p95/p99）、成功率、吞吐、SLA 达标率与直方图；支持模板直拉和快照引用拉起（templateID:buildID 循环复用），附带快照现做/盘点/验证工具。当用户要压测沙箱并发创建、批量拉起、快照恢复并发、统计创建延迟分位数、验证平台容量/热池承压时使用此技能。
+description: AgentSphere 沙箱并发拉起压测（齐射模式）。N 个沙箱同一瞬间批量创建，统计 create 时延分位数（p50/p95/p99）、成功率、吞吐、SLA 达标率与直方图；支持模板直拉和快照引用拉起（templateID:buildID 循环复用），附带快照盘点工具（按模板枚举全部快照 ID）。当用户要压测沙箱并发创建、批量拉起、快照恢复并发、统计创建延迟分位数、验证平台容量/热池承压时使用此技能。
 ---
 
 # AgentSphere 并发拉起压测
 
-对应旧脚本：`create_snapshot50.py` / `create_snapshot50_new.py` / `create_snapshot_latest50.py` / `create_snapshot_latest50_stats.py`（已合并为下面两个脚本）。
+主脚本 `burst_create.py`（并发拉起）+ 辅助工具 `snapshot_probe.py`（按模板盘点快照、生成引用文件）。
 
 ## 客户场景
 
@@ -36,10 +36,9 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 # 0.5) 盘点模板下有多少快照（快照=模板的 build），列出全部快照 ID 并生成引用文件
 & $py snapshot_probe.py --template <模板ID>          # --all-builds 连 error 的也列出
 
-# 1) 快照路线：先造快照引用（⚠ 11-10 实测当前网关未发布快照 API，此路线暂不可用，见"坑"7）
-& $py make_snapshots.py --template 92db8659-f980-4576-80ec-c7cf9b69348f --count 5
-& $py make_snapshots.py --verify @snapshots.txt     # 拉一台验证引用可用
-& $py burst_create.py --snapshots @snapshots.txt --count 50 --sla 2.0
+# 1) 快照路线：用盘点出的引用齐射（引用=模板ID:快照ID 复合串，见"坑"3/7）
+& $py burst_create.py --snapshots @snapshots_found.txt --count 52 --sla 2.0
+& $py burst_create.py --snapshots <模板ID>:<快照ID> --count 50 --sla 2.0   # 1 个快照拉 50 台
 
 # 2) 模板直拉路线
 & $py burst_create.py --template 92db8659-f980-4576-80ec-c7cf9b69348f --count 50
@@ -92,7 +91,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 硬规则：
 - **模板 ID 不跨区**——换区域必须连三件套整体换，只换 ID 必 404
 - **新模板首发无热池**——首轮 create 是冷启动，不能拿热池基线（p50≈0.86s）评判；先 `--count 3` 冒烟看量级
-- 快照路线换新模板：先用 `make_snapshots.py --template <新模板>` 造引用，再 `--verify` 验一下，然后齐射
+- 快照路线换新模板：先用 `snapshot_probe.py --template <新模板>` 盘点快照拿到引用（现做快照的 API 未发布，快照 ID 由平台侧提供），再齐射
 
 ## 测试人员速查
 
@@ -100,6 +99,6 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 |---|---|
 | 模板下有多少快照、ID 是什么 | `snapshot_probe.py --template <ID>`（产出 snapshots_found.txt） |
 | 平台瞬时并发容量 | `burst_create.py --count 50`（模板直拉） |
-| 快照恢复交付速度 | `make_snapshots.py` → `burst_create.py --snapshots @snapshots.txt --count 50` |
+| 快照恢复交付速度 | `burst_create.py --snapshots @snapshots_found.txt --count 50` |
 | 1 个快照拉多台 / N 个快照齐射 | `burst_create.py --snapshots 模板ID:快照ID --count 50` / `--snapshots 模板ID:快照ID1,模板ID:快照ID2 --count 50`（引用必须复合格式，见"坑"3；不足自动循环复用） |
 | SLA 达标率报告 | 加 `--sla 2.0`，看"达标率"行 + CSV |

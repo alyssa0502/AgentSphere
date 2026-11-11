@@ -6,8 +6,8 @@
 
 | 目录 | 测什么 | 核心口径 |
 |---|---|---|
-| `agentsphere-burst-create/` | 齐射并发拉起：平台容量、批量交付、快照恢复速度（含 `snapshot_probe.py` 按模板盘点快照（快照=build，走 GET /templates/{id}）、`make_snapshots.py` 快照现做/验证） | 单请求 = 发出→返回；端到端 = 最早发出→最晚返回 |
-| `agentsphere-lifecycle-ops/` | 生命周期管理操作计时：pause / resume(connect) / print(ok) / restart / kill + TTL 到期销毁延迟 | serial=精准口径（队列深度=1，纯执行耗时不含下发排队）；burst=齐射对照，排队分量 ≈ 并发p50 − 串行p50 |
+| `agentsphere-burst-create/` | **并发拉起测试**：齐射批量创建，平台容量、批量交付、快照恢复速度（附 `snapshot_probe.py` 按模板盘点快照——快照=build，走 GET /templates/{id}） | 单请求 = 发出→返回；端到端 = 最早发出→最晚返回 |
+| `agentsphere-lifecycle-ops/` | **并发生命周期操作**：pause / resume(connect) / print(ok) / restart / kill 计时 + TTL 到期销毁延迟 | serial=精准口径（队列深度=1）；**volley=同相齐射并发（每操作一发令枪，N 台同相同时执行同一操作——并发生命周期的严格口径）**；burst=独立流水对照；排队分量 ≈ 并发p50 − 串行p50 |
 
 详细参数、坑表、新模板接入清单见各自 `SKILL.md`。
 
@@ -19,6 +19,9 @@ $env:E2B_API_KEY = "<你的key>"   # setx E2B_API_KEY <key> 可永久
 
 # 并发拉起 50 台
 & $py agentsphere-burst-create\burst_create.py --count 50
+
+# 并发生命周期操作（同相齐射：N 台先全部到位，每操作一发令枪同时执行）
+& $py agentsphere-lifecycle-ops\lifecycle_ops_bench.py --mode volley --count 20 --skip-ttl
 
 # 生命周期计时（串行 5 台 + TTL 3 台/180s）
 & $py agentsphere-lifecycle-ops\lifecycle_ops_bench.py
@@ -32,6 +35,7 @@ $env:E2B_API_KEY = "<你的key>"   # setx E2B_API_KEY <key> 可永久
 - 快照恢复（2026-11-11，模板 bb468965，引用=`模板ID:快照ID` 复合串）：1 引用×50 台 50/50 全通（p50 0.584s，吞吐 52.3 个/s）；**52 快照×各 1 台 52/52 全通（p50 0.552s，stddev 0.017s）——多快照并发交付无互相争抢**
 - 快照枚举：`GET /templates/{模板ID}` 已发布（builds[] 即快照库，bb468965 下 55 build/52 ready）；`GET /snapshots`、`GET /templates` 团队级接口未发布（APIGW.0101）；裸快照 UUID 直接当引用传会 404，必须拼 `模板ID:快照ID`
 - 生命周期（模板 bb468965，串行 n=5）：pause p50 0.60s、resume(connect) p50 0.64s、kill 0.09s、print_ok p50 0.15s
-- **TTL 到期回收滞后 ~60s（跨模板确认）**：92db8659 单台 +60.8s；bb468965 三台 +60.1/60.2/60.3s——平台疑似固定加 60s 宽限，报 TTL 行为时按"设 T 实际活 ~T+60s"表述
+- 并发生命周期（volley 同相齐射 n=3 冒烟，模板 92db8659）：pause p50 0.89s、resume p50 1.13s、kill 0.10s——对比串行可见排队分量；正式并发基线待更大规模实测
+- **TTL 到期回收滞后 ~60s，且为周期性批量清扫**（跨模板 + 三场景确认）：92db8659 单台 +60.8s；bb468965 三台 +60.1/60.2/60.3s；10 台不同快照 TTL180 全部在 +60.6~+61.6s（p50 +61.1s）同一 2s 轮询窗内判死，死亡时刻随创建顺序递减（=创建时间差）——平台周期性批量清扫而非逐台定时器。报 TTL 行为按"设 T 实际活 ~T+60s"表述
 
 样例数据：各 skill 目录内的 `*_20261110_*.txt/.csv` 为真实运行留档（92db8659 冒烟、bb468965 冒烟 + 全量），可作为输出格式参照。

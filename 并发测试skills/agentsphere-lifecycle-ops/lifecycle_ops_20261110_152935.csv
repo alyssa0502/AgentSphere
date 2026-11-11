@@ -1,0 +1,9 @@
+﻿phase,idx,sid,op,elapsed,status,off,detail
+ops,0,5d153e9a-849a-4b95-9259-eeb5f0bd4390,create,0.564,ok,0.564,ref=bb468965-b760-451e-ab47-e04930296073
+ops,0,5d153e9a-849a-4b95-9259-eeb5f0bd4390,print_ok,0.497,ok,1.062,attempt1
+ops,0,5d153e9a-849a-4b95-9259-eeb5f0bd4390,pause,0.619,ok,1.682,
+ops,0,5d153e9a-849a-4b95-9259-eeb5f0bd4390,verify_paused,0.095,ok,1.777,state=paused
+ops,0,5d153e9a-849a-4b95-9259-eeb5f0bd4390,resume,1.127,ok,2.904,connect(paused)
+ops,0,5d153e9a-849a-4b95-9259-eeb5f0bd4390,resume_verify,0.252,ok,3.157,attempt1
+ops,0,5d153e9a-849a-4b95-9259-eeb5f0bd4390,restart,-1,unsupported,3.157,SDK/平台无 restart 接口
+ops,0,5d153e9a-849a-4b95-9259-eeb5f0bd4390,kill,0.093,ok,3.25,
