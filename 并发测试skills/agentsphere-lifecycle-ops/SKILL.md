@@ -1,9 +1,9 @@
 ---
 name: agentsphere-lifecycle-ops
-description: AgentSphere 沙箱生命周期管理操作计时（含并发生命周期压测）。三种模式：serial 精准统计 pause、resume(connect)、print(ok)、restart（平台无接口则标注）、kill 的纯执行耗时；volley 同相齐射并发（N 台先全部到位，每个操作一发令枪，同一瞬间全员执行同一操作）= "n 个快照同时执行生命周期管理"的严格口径；burst 独立流水并发对照。另含 TTL 到期自动销毁的回收延迟观察（双确认轮询，实测平台批量清扫 +60s）。当用户要测沙箱暂停/恢复/重连/命令执行/销毁耗时、并发生命周期管理、TTL 回收速度、管理面操作延迟分位数时使用此技能。
+description: AgentSphere 沙箱生命周期管理操作计时（含并发生命周期压测）。三种模式：serial 精准统计 pause、resume(connect)、print(ok)、restart（平台无接口则标注）、kill 的纯执行耗时；volley 同相齐发并发（N 台先全部到位，每个操作一发令枪，同一瞬间全员执行同一操作）= "n 个快照同时执行生命周期管理"的严格口径；burst 独立流水并发对照。另含 TTL 到期自动销毁的回收延迟观察（双确认轮询，实测平台批量清扫 +60s）。当用户要测沙箱暂停/恢复/重连/命令执行/销毁耗时、并发生命周期管理、TTL 回收速度、管理面操作延迟分位数时使用此技能。
 ---
 
-# AgentSphere 生命周期管理操作计时（串行精准 / 并发齐射 / TTL 观察）
+# AgentSphere 生命周期管理操作计时（串行精准 / 并发齐发 / TTL 观察）
 
 ## 客户场景
 
@@ -33,7 +33,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 # 标准测试：串行 5 台 + TTL 3 台/180s
 & $py lifecycle_ops_bench.py
 
-# ★ 并发生命周期操作（同相齐射）：N 台先全部 create 到位，
+# ★ 并发生命周期操作（同相齐发）：N 台先全部 create 到位，
 #   然后每个操作一发令枪——同一瞬间 N 台全 pause、全 resume、全 kill
 & $py lifecycle_ops_bench.py --mode volley --count 20 --skip-ttl
 
@@ -59,7 +59,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 | `--template` | 92db8659…（env `TEMPLATE_ID`） | 被测模板（直拉） |
 | `--snapshots` | 无 | 快照引用（templateID:buildID），逗号分隔或 `@refs.txt`；给了它就不看 --template；不足台数自动循环复用；管理操作和 TTL 两个阶段吃同一份引用 |
 | `--count` | 5 | 管理操作阶段台数 |
-| `--mode` | serial | serial=精准口径（队列深度=1）；**volley=同相齐射并发（每个操作一发令枪，N 台同相同时执行）**；burst=独立流水并发对照（相位错开） |
+| `--mode` | serial | serial=精准口径（队列深度=1）；**volley=同相齐发并发（每个操作一发令枪，N 台同相同时执行）**；burst=独立流水并发对照（相位错开） |
 | `--ttl` | 180 | TTL 观察时长（秒，≥60） |
 | `--ttl-count` | 3 | TTL 观察台数 |
 | `--poll` | 2.0 | TTL 轮询周期（秒）= 销毁读数的观察粒度 |
@@ -82,7 +82,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 
 **怎么排除"下发队列"耗时**（关键设计）：
 1. **串行默认模式**：任一时刻整个账号只有 1 个管理操作在途。平台管理面队列深度恒为 1，不存在排队——读数即纯执行耗时。
-2. **volley 同相齐射并发**（并发生命周期操作的严格口径）：N 台先全部 create 到位，然后**每个操作一发令枪**——同一瞬间 N 台全 pause、全 verify、全 resume、全 kill。每个操作的读数 = "该操作在并发度=N 时的单台耗时分布"，操作间互不重叠、同一相内并发度恰好是 N。与 serial 相减得排队分量（11-11 冒烟 n=3：serial pause 0.60s → volley 0.89s，resume 0.64s → 1.13s）。
+2. **volley 同相齐发并发**（并发生命周期操作的严格口径）：N 台先全部 create 到位，然后**每个操作一发令枪**——同一瞬间 N 台全 pause、全 verify、全 resume、全 kill。每个操作的读数 = "该操作在并发度=N 时的单台耗时分布"，操作间互不重叠、同一相内并发度恰好是 N。与 serial 相减得排队分量（11-11 冒烟 n=3：serial pause 0.60s → volley 0.89s，resume 0.64s → 1.13s）。
 3. **burst 独立流水对照**：N 台各自跑完整链路、相位错开，测的是"N 个用户各自独立操作"的真实混合负载，墙钟含平台排队。
 4. **状态核实与操作分离**：pause 的耗时只含 pause 调用本身；"状态真的变成 paused 了吗"用单独的 `verify_paused`（get_info）行记录，不污染 pause 读数。
 5. **print(ok) 只计成功那次**：create 返回到命令通道真正可用之间可能要重试，重试等待属于"就绪时间"不是"命令执行时间"——脚本只对最终成功的那次 echo 计时，重试次数记在 detail。
@@ -112,7 +112,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 | 你要测什么 | 命令 |
 |---|---|
 | pause/resume/kill 纯执行耗时 | `lifecycle_ops_bench.py --skip-ttl`（serial） |
-| **N 台并发生命周期管理**（同相齐射） | `lifecycle_ops_bench.py --mode volley --count 20 --skip-ttl` |
+| **N 台并发生命周期管理**（同相齐发） | `lifecycle_ops_bench.py --mode volley --count 20 --skip-ttl` |
 | N 个快照并发生命周期 | `lifecycle_ops_bench.py --snapshots @refs.txt --mode volley --count 30 --skip-ttl` |
 | TTL 到期多久真回收 | `lifecycle_ops_bench.py --skip-ops --ttl 120` |
 | 排队分量差分 | 同参数跑一轮 volley/burst + 一轮 serial，p50 相减 |

@@ -1,6 +1,6 @@
 ---
 name: agentsphere-burst-create
-description: AgentSphere 沙箱并发拉起压测（齐射模式）。N 个沙箱同一瞬间批量创建，统计 create 时延分位数（p50/p95/p99）、成功率、吞吐、SLA 达标率与直方图；支持模板直拉和快照引用拉起（templateID:buildID 循环复用），附带快照盘点工具（按模板枚举全部快照 ID）。当用户要压测沙箱并发创建、批量拉起、快照恢复并发、统计创建延迟分位数、验证平台容量/热池承压时使用此技能。
+description: AgentSphere 沙箱并发拉起压测（齐发模式）。N 个沙箱同一瞬间批量创建，统计 create 时延分位数（p50/p95/p99）、成功率、吞吐、SLA 达标率与直方图；支持模板直拉和快照引用拉起（templateID:buildID 循环复用），附带快照盘点工具（按模板枚举全部快照 ID）。当用户要压测沙箱并发创建、批量拉起、快照恢复并发、统计创建延迟分位数、验证平台容量/热池承压时使用此技能。
 ---
 
 # AgentSphere 并发拉起压测
@@ -9,7 +9,7 @@ description: AgentSphere 沙箱并发拉起压测（齐射模式）。N 个沙�
 
 ## 客户场景
 
-- **容量压测**：平台高峰期能否承受 N 个用户同时开沙箱（齐射 = 最恶劣瞬间并发）
+- **容量压测**：平台高峰期能否承受 N 个用户同时开沙箱（齐发 = 最恶劣瞬间并发）
 - **批量交付**：活动/开学季一次性交付 N 个同规格环境
 - **快照恢复速度**：从快照拉起的交付时延分布（快照 = 带状态镜像，比裸模板重）
 
@@ -36,7 +36,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 # 0.5) 盘点模板下有多少快照（快照=模板的 build），列出全部快照 ID 并生成引用文件
 & $py snapshot_probe.py --template <模板ID>          # --all-builds 连 error 的也列出
 
-# 1) 快照路线：用盘点出的引用齐射（引用=模板ID:快照ID 复合串，见"坑"3/7）
+# 1) 快照路线：用盘点出的引用齐发（引用=模板ID:快照ID 复合串，见"坑"3/7）
 & $py burst_create.py --snapshots @snapshots_found.txt --count 52 --sla 2.0
 & $py burst_create.py --snapshots <模板ID>:<快照ID> --count 50 --sla 2.0   # 1 个快照拉 50 台
 
@@ -50,7 +50,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 |---|---|---|
 | `--template` | 92db8659…（env `TEMPLATE_ID`） | 模板直拉模式 |
 | `--snapshots` | 无 | 快照引用，逗号分隔或 `@snapshots.txt`；不足 count 自动循环复用 |
-| `--count` | 50（env `COUNT`） | 齐射数量 |
+| `--count` | 50（env `COUNT`） | 齐发数量 |
 | `--sla` | 2.0 | 达标阈值（秒），统计达标率 |
 | `--bin` | 0.5 | 直方图桶宽（秒） |
 | `--keep` | 关 | 测完不销毁（默认统一 kill） |
@@ -58,7 +58,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 
 ## 输出解读
 
-- **成功率 / 吞吐**：齐射 N 台成功几台、每秒交付几台
+- **成功率 / 吞吐**：齐发 N 台成功几台、每秒交付几台
 - **时延分位数**（仅成功样本）：p50 = 中位交付体验，p95/p99 = 长尾，达标率 = SLA 视角
 - **端到端** = 最早发出 → 最晚返回 ≈ 最慢一台
 - **直方图**：双峰 = 热池台 + 冷启动台混合；右尾拖长 = 后端排队
@@ -92,7 +92,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 硬规则：
 - **模板 ID 不跨区**——换区域必须连三件套整体换，只换 ID 必 404
 - **新模板首发无热池**——首轮 create 是冷启动，不能拿热池基线（p50≈0.86s）评判；先 `--count 3` 冒烟看量级
-- 快照路线换新模板：先用 `snapshot_probe.py --template <新模板>` 盘点快照拿到引用（现做快照的 API 未发布，快照 ID 由平台侧提供），再齐射
+- 快照路线换新模板：先用 `snapshot_probe.py --template <新模板>` 盘点快照拿到引用（现做快照的 API 未发布，快照 ID 由平台侧提供），再齐发
 
 ## 测试人员速查
 
@@ -101,5 +101,5 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 | 模板下有多少快照、ID 是什么 | `snapshot_probe.py --template <ID>`（产出 snapshots_found.txt） |
 | 平台瞬时并发容量 | `burst_create.py --count 50`（模板直拉） |
 | 快照恢复交付速度 | `burst_create.py --snapshots @snapshots_found.txt --count 50` |
-| 1 个快照拉多台 / N 个快照齐射 | `burst_create.py --snapshots 模板ID:快照ID --count 50` / `--snapshots 模板ID:快照ID1,模板ID:快照ID2 --count 50`（引用必须复合格式，见"坑"3；不足自动循环复用） |
+| 1 个快照拉多台 / N 个快照齐发 | `burst_create.py --snapshots 模板ID:快照ID --count 50` / `--snapshots 模板ID:快照ID1,模板ID:快照ID2 --count 50`（引用必须复合格式，见"坑"3；不足自动循环复用） |
 | SLA 达标率报告 | 加 `--sla 2.0`，看"达标率"行 + CSV |
