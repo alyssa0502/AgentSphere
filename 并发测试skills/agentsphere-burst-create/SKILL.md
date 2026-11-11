@@ -72,7 +72,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 
 1. **域名必须是 `agentsandbox.`**：`agentsphere.` 是平行后端，鉴权能过但模板 404
 2. **模板 c4bf4922 已不可建**：现行正典 92db8659（pilotdeck）、f6c0b17f（chromium watcher 版）
-3. **快照引用格式**：`create_snapshot` 返回的 `snapshot_id` 就是 `templateID:buildID`，直接当 `template=` 用；不要只填模板 ID 前半段
+3. **快照引用格式**：要拼成 `模板ID:快照ID` 复合串再传（如 `bb468965-…:40ad37f4-…`）——SDK `create_snapshot` 返回的 snapshot_id 天然就是这个格式；**平台侧发的裸快照 UUID 直接传会 404 template not found**（11-11 实测：裸 ID 3/3 失败，复合格式 50 台全通）
 4. **并发规模**：单进程 asyncio 实测 50 正常；要更大规模分波跑多次，先 `--count 3` 冒烟
 5. **测完必清理**：默认统一 kill；`--keep` 留的台靠平台 TTL 回收，压测前确认账号配额
 6. **换区域**：三件套整体换（如 cn-north-4 的 URL + 网关 + 该区域 key），模板 ID 不跨区通用
@@ -97,5 +97,5 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 |---|---|
 | 平台瞬时并发容量 | `burst_create.py --count 50`（模板直拉） |
 | 快照恢复交付速度 | `make_snapshots.py` → `burst_create.py --snapshots @snapshots.txt --count 50` |
-| 1 个快照拉多台 / N 个快照齐射 | `burst_create.py --snapshots <ref> --count 50` / `--snapshots ref1,ref2,ref3 --count 50`（不足自动循环复用） |
+| 1 个快照拉多台 / N 个快照齐射 | `burst_create.py --snapshots 模板ID:快照ID --count 50` / `--snapshots 模板ID:快照ID1,模板ID:快照ID2 --count 50`（引用必须复合格式，见"坑"3；不足自动循环复用） |
 | SLA 达标率报告 | 加 `--sla 2.0`，看"达标率"行 + CSV |
