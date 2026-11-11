@@ -1,0 +1,34 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  来源: 快照引用 x52（循环至 5 台）
+ 2026-11-11 14:18:18  台数 5  模式 serial  TTL=180s
+════════════════════════════════════════════════════════════════
+
+══ TTL 自动销毁观察：10 台 / TTL=180s / 轮询 2.0s ══
+  TTL[0] e24242ce ref=bb468965-b760-451e-ab47-e049 create=0.60s，180s 后到期
+  TTL[1] ff81e367 ref=bb468965-b760-451e-ab47-e049 create=0.11s，180s 后到期
+  TTL[2] 1081ee4d ref=bb468965-b760-451e-ab47-e049 create=0.13s，180s 后到期
+  TTL[3] aa415a8a ref=bb468965-b760-451e-ab47-e049 create=0.11s，180s 后到期
+  TTL[4] 4fb3e9f6 ref=bb468965-b760-451e-ab47-e049 create=0.11s，180s 后到期
+  TTL[5] 02ad2773 ref=bb468965-b760-451e-ab47-e049 create=0.12s，180s 后到期
+  TTL[6] 79fb5a28 ref=bb468965-b760-451e-ab47-e049 create=0.11s，180s 后到期
+  TTL[7] b6f014ce ref=bb468965-b760-451e-ab47-e049 create=0.11s，180s 后到期
+  TTL[8] b21feffd ref=bb468965-b760-451e-ab47-e049 create=0.12s，180s 后到期
+  TTL[9] 93922ee0 ref=bb468965-b760-451e-ab47-e049 create=0.12s，180s 后到期
+  TTL[0] e24242ce 判死: 到期 +61.6s（观察粒度 ±2s）
+  TTL[1] ff81e367 判死: 到期 +61.5s（观察粒度 ±2s）
+  TTL[2] 1081ee4d 判死: 到期 +61.4s（观察粒度 ±2s）
+  TTL[3] aa415a8a 判死: 到期 +61.3s（观察粒度 ±2s）
+  TTL[4] 4fb3e9f6 判死: 到期 +61.1s（观察粒度 ±2s）
+  TTL[5] 02ad2773 判死: 到期 +61.0s（观察粒度 ±2s）
+  TTL[6] 79fb5a28 判死: 到期 +60.9s（观察粒度 ±2s）
+  TTL[7] b6f014ce 判死: 到期 +60.8s（观察粒度 ±2s）
+  TTL[8] b21feffd 判死: 到期 +60.7s（观察粒度 ±2s）
+  TTL[9] 93922ee0 判死: 到期 +60.6s（观察粒度 ±2s）
+
+  TTL销毁延迟（计划到期→观察到死亡，n=10，未观察到 0 台）:
+    min +60.6s   p50 +61.1s   max +61.6s   mean +61.1s
+    注：读数含 0~2s 轮询粒度；负值=提前于计划到期回收
+
+ 总墙钟 248s
+ 报告 -> C:\Users\Administrator\agentsphere-demo\agentsphere-lifecycle-ops\lifecycle_ops_20261111_141818.txt
+ CSV  -> C:\Users\Administrator\agentsphere-demo\agentsphere-lifecycle-ops\lifecycle_ops_20261111_141818.csv

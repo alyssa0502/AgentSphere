@@ -338,8 +338,9 @@ def main():
                          "PowerShell:  $env:E2B_API_KEY='<你的key>'；"
                          "永久:  setx E2B_API_KEY <你的key>（重开终端生效）")
 
-    refs_ops, n_src = load_refs(args.snapshots, args.count, args.template)
-    src_desc = (f"快照引用 x{n_src}（循环至 {args.count} 台）" if args.snapshots
+    display_n = args.ttl_count if args.skip_ops else args.count
+    refs_ops, n_src = load_refs(args.snapshots, max(display_n, 1), args.template)
+    src_desc = (f"快照引用 x{n_src}（循环至 {display_n} 台）" if args.snapshots
                 else f"模板 {args.template}")
 
     rep = Report(os.path.join(BASE, f"lifecycle_ops_{TS}.txt"))
@@ -348,8 +349,9 @@ def main():
     t0 = time.monotonic()
     rep.emit("═" * 64)
     rep.emit(f" 生命周期管理操作计时  来源: {src_desc}")
-    rep.emit(f" {time.strftime('%Y-%m-%d %H:%M:%S')}  台数 {args.count}  "
-             f"模式 {args.mode}  TTL={'关' if args.skip_ttl else f'{args.ttl:.0f}s'}")
+    rep.emit(f" {time.strftime('%Y-%m-%d %H:%M:%S')}  操作台数 {args.count}  "
+             f"TTL 台数 {args.ttl_count}  模式 {args.mode}  "
+             f"TTL={'关' if args.skip_ttl else f'{args.ttl:.0f}s'}")
     rep.emit("═" * 64)
     try:
         if not args.skip_ops:
