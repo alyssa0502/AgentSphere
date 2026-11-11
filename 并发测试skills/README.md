@@ -6,7 +6,7 @@
 
 | 目录 | 测什么 | 核心口径 |
 |---|---|---|
-| `agentsphere-burst-create/` | 齐射并发拉起：平台容量、批量交付、快照恢复速度（含 `make_snapshots.py` 快照现做/盘点/验证） | 单请求 = 发出→返回；端到端 = 最早发出→最晚返回 |
+| `agentsphere-burst-create/` | 齐射并发拉起：平台容量、批量交付、快照恢复速度（含 `snapshot_probe.py` 按模板盘点快照（快照=build，走 GET /templates/{id}）、`make_snapshots.py` 快照现做/验证） | 单请求 = 发出→返回；端到端 = 最早发出→最晚返回 |
 | `agentsphere-lifecycle-ops/` | 生命周期管理操作计时：pause / resume(connect) / print(ok) / restart / kill + TTL 到期销毁延迟 | serial=精准口径（队列深度=1，纯执行耗时不含下发排队）；burst=齐射对照，排队分量 ≈ 并发p50 − 串行p50 |
 
 详细参数、坑表、新模板接入清单见各自 `SKILL.md`。
@@ -29,6 +29,8 @@ $env:E2B_API_KEY = "<你的key>"   # setx E2B_API_KEY <key> 可永久
 ## 实测基线（2026-11-10，cn-southwest-2）
 
 - 并发拉起：热池交付 p50 ≈ 0.86s（30 并发打不空热池），热池单台 create ≈ 0.11–0.48s
+- 快照恢复（2026-11-11，模板 bb468965，引用=`模板ID:快照ID` 复合串）：1 引用×50 台 50/50 全通（p50 0.584s，吞吐 52.3 个/s）；**52 快照×各 1 台 52/52 全通（p50 0.552s，stddev 0.017s）——多快照并发交付无互相争抢**
+- 快照枚举：`GET /templates/{模板ID}` 已发布（builds[] 即快照库，bb468965 下 55 build/52 ready）；`GET /snapshots`、`GET /templates` 团队级接口未发布（APIGW.0101）；裸快照 UUID 直接当引用传会 404，必须拼 `模板ID:快照ID`
 - 生命周期（模板 bb468965，串行 n=5）：pause p50 0.60s、resume(connect) p50 0.64s、kill 0.09s、print_ok p50 0.15s
 - **TTL 到期回收滞后 ~60s（跨模板确认）**：92db8659 单台 +60.8s；bb468965 三台 +60.1/60.2/60.3s——平台疑似固定加 60s 宽限，报 TTL 行为时按"设 T 实际活 ~T+60s"表述
 
