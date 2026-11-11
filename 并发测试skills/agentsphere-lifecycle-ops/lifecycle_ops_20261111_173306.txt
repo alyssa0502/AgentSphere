@@ -1,0 +1,73 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  来源: 模板 92db8659-f980-4576-80ec-c7cf9b69348f
+ 2026-11-11 17:33:06  操作台数 2  TTL 台数 3  模式 volley  TTL=关
+════════════════════════════════════════════════════════════════
+[17:33:06] === 2 个 sandbox 并发生命周期操作 ===
+计划拉起 2 个沙箱，SLA 2s
+── create：2 台并发 ──
+
+成功 2/2（成功率 100.0%），总墙钟（发令->全部返回）0.524s
+端到端（最早发出 -> 最晚返回）: 0.524s，吞吐 3.81 个/s
+create 下发时间: 17:33:06.775  create 结束时间: 17:33:07.299
+sandbox b59608f2-8982-40cc-a9c1-814508dbb55a [92db8659-f980-4576-80ec-] 拉起延迟: 0.489s
+sandbox 86c71b3e-b727-40c0-903f-866e948aa040 [92db8659-f980-4576-80ec-] 拉起延迟: 0.524s
+
+==================== 时延统计（n=2，仅成功样本） ====================
+  min     0.489s
+  p50     0.506s
+  p75     0.515s
+  p90     0.520s
+  p95     0.522s
+  p99     0.523s
+  p99.9   0.524s
+  max     0.524s
+  mean    0.506s   stddev 0.024s
+  达标率(<=2s): 2/2 (100.0%)
+── print(ok) 通道就绪：2 台并发 ──
+print_ok 下发时间: 17:33:07.301  print_ok 结束时间: 17:33:07.506
+sandbox 86c71b3e-b727-40c0-903f-866e948aa040 [92db8659-f980-4576-80ec-] print_ok 耗时: 0.206s
+sandbox b59608f2-8982-40cc-a9c1-814508dbb55a [92db8659-f980-4576-80ec-] print_ok 耗时: 0.210s
+   print_ok: n=2 min=0.21s p50=0.21s max=0.21s
+── pause：2 台并发 ──
+pause 下发时间: 17:33:07.506  pause 结束时间: 17:33:08.247
+sandbox b59608f2-8982-40cc-a9c1-814508dbb55a [92db8659-f980-4576-80ec-] pause 耗时: 0.734s
+sandbox 86c71b3e-b727-40c0-903f-866e948aa040 [92db8659-f980-4576-80ec-] pause 耗时: 0.737s
+   pause: n=2 min=0.73s p50=0.74s max=0.74s
+── 状态核实 paused：2 台并发 ──
+verify_paused 下发时间: 17:33:08.247  verify_paused 结束时间: 17:33:08.341
+sandbox 86c71b3e-b727-40c0-903f-866e948aa040 [92db8659-f980-4576-80ec-] verify_paused 耗时: 0.080s
+sandbox b59608f2-8982-40cc-a9c1-814508dbb55a [92db8659-f980-4576-80ec-] verify_paused 耗时: 0.091s
+   verify_paused: n=2 min=0.08s p50=0.09s max=0.09s
+── resume(connect)：2 台并发 ──
+resume 下发时间: 17:33:08.341  resume 结束时间: 17:33:09.475
+sandbox 86c71b3e-b727-40c0-903f-866e948aa040 [92db8659-f980-4576-80ec-] resume 耗时: 1.130s
+sandbox b59608f2-8982-40cc-a9c1-814508dbb55a [92db8659-f980-4576-80ec-] resume 耗时: 1.145s
+   resume: n=2 min=1.13s p50=1.14s max=1.15s
+── resume 后命令核实：2 台并发 ──
+resume_verify 下发时间: 17:33:09.475  resume_verify 结束时间: 17:33:09.860
+sandbox b59608f2-8982-40cc-a9c1-814508dbb55a [92db8659-f980-4576-80ec-] resume_verify 耗时: 0.263s
+sandbox 86c71b3e-b727-40c0-903f-866e948aa040 [92db8659-f980-4576-80ec-] resume_verify 耗时: 0.371s
+   resume_verify: n=2 min=0.26s p50=0.32s max=0.37s
+── restart：2 台并发 ──
+── restart 后命令核实：2 台并发 ──
+── kill：2 台并发 ──
+kill 下发时间: 17:33:09.860  kill 结束时间: 17:33:09.948
+sandbox b59608f2-8982-40cc-a9c1-814508dbb55a [92db8659-f980-4576-80ec-] kill 耗时: 0.083s
+sandbox 86c71b3e-b727-40c0-903f-866e948aa040 [92db8659-f980-4576-80ec-] kill 耗时: 0.085s
+   kill: n=2 min=0.08s p50=0.08s max=0.09s
+
+管理操作耗时统计（并发口径：2 个 sandbox 同一瞬间执行同一操作，队列深度=2）────────
+
+操作                n     min     p50     p90     p95     max    mean  失败/其他
+create            2    0.49    0.51    0.52    0.52    0.52    0.51  -
+print_ok          2    0.21    0.21    0.21    0.21    0.21    0.21  -
+pause             2    0.73    0.74    0.74    0.74    0.74    0.74  -
+verify_paused     2    0.08    0.09    0.09    0.09    0.09    0.09  -
+resume            2    1.13    1.14    1.14    1.14    1.15    1.14  -
+resume_verify     2    0.26    0.32    0.36    0.37    0.37    0.32  -
+restart           0       -       -       -       -       -       -  unsupported x2
+kill              2    0.08    0.08    0.08    0.08    0.09    0.08  -
+
+ 总墙钟 3s
+ 报告 -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261111_173306.txt
+ CSV  -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261111_173306.csv
