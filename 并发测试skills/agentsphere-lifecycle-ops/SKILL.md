@@ -59,6 +59,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 | `--template` | 92db8659…（env `TEMPLATE_ID`） | 被测模板（直拉） |
 | `--snapshots` | 无 | 快照引用（templateID:buildID），逗号分隔或 `@refs.txt`；给了它就不看 --template；不足台数自动循环复用；管理操作和 TTL 两个阶段吃同一份引用 |
 | `--count` | 5 | 管理操作阶段台数 |
+| `--sla` | 2.0 | create 相达标阈值（秒），volley 拉起报告的达标率用 |
 | `--mode` | serial | serial=精准口径（队列深度=1）；**volley=并发（N 个 sandbox 同一瞬间执行同一操作）**；burst=独立流水并发对照（相位错开） |
 | `--ttl` | 180 | TTL 观察时长（秒，≥60） |
 | `--ttl-count` | 3 | TTL 观察台数 |
@@ -70,6 +71,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 ## 输出解读
 
 - 每台逐操作即时明细（`pause=0.42s` 一目了然），末尾按操作汇总分位数表
+- volley 的 create 相输出完整拉起报告：计划拉起/SLA、成功率 + 总墙钟（发令->全部返回）、端到端 + 吞吐、create 下发时间与结束时间、逐台拉起延迟（按耗时升序）、分位数统计块（p50~p99.9/mean/stddev）+ SLA 达标率——口径与 burst_create 一致
 - `print_ok` / `resume_verify`：只对成功那次调用计时；次数写在 detail（attempt2 = 首次未通）
 - `restart=UNSUPPORTED`：当前 SDK/平台无 restart 接口，脚本标注而非报错——接口上线后自动开始测量
 - `ttl_destroy` 读数 = 计划到期 → 观察到死亡；**含 0~poll 秒轮询粒度**，负值 = 提前回收

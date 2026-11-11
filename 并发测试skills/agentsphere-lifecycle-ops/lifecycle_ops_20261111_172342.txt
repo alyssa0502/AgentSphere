@@ -1,0 +1,55 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  来源: 模板 92db8659-f980-4576-80ec-c7cf9b69348f
+ 2026-11-11 17:23:42  操作台数 2  TTL 台数 3  模式 volley  TTL=关
+════════════════════════════════════════════════════════════════
+[17:23:42] === 2 个 sandbox 并发生命周期操作 ===
+计划拉起 2 个沙箱，SLA 2s
+── create：2 台并发 ──
+
+成功 2/2（成功率 100.0%），总墙钟（发令->全部返回）0.545s
+端到端（最早发出 -> 最晚返回）: 0.545s，吞吐 3.67 个/s
+create 下发时间: 17:23:42.223  create 结束时间: 17:23:42.768
+sandbox 7a243237-44e5-4948-93e3-93df32f052cf [92db8659-f980-4576-80ec-] 拉起延迟: 0.537s
+sandbox 499ff5c0-1f86-465a-b55a-3acbe72ccac4 [92db8659-f980-4576-80ec-] 拉起延迟: 0.544s
+
+==================== 时延统计（n=2，仅成功样本） ====================
+  min     0.537s
+  p50     0.540s
+  p75     0.542s
+  p90     0.543s
+  p95     0.544s
+  p99     0.544s
+  p99.9   0.544s
+  max     0.544s
+  mean    0.540s   stddev 0.005s
+  达标率(<=2s): 2/2 (100.0%)
+── print(ok) 通道就绪：2 台并发 ──
+   print_ok: n=2 min=0.46s p50=0.46s max=0.47s
+── pause：2 台并发 ──
+   pause: n=2 min=0.74s p50=0.76s max=0.78s
+── 状态核实 paused：2 台并发 ──
+   verify_paused: n=2 min=0.08s p50=0.09s max=0.09s
+── resume(connect)：2 台并发 ──
+   resume: n=2 min=1.13s p50=1.14s max=1.15s
+── resume 后命令核实：2 台并发 ──
+   resume_verify: n=2 min=0.27s p50=0.33s max=0.39s
+── restart：2 台并发 ──
+── restart 后命令核实：2 台并发 ──
+── kill：2 台并发 ──
+   kill: n=2 min=0.09s p50=0.10s max=0.10s
+
+管理操作耗时统计（并发口径：2 个 sandbox 同一瞬间执行同一操作，队列深度=2）────────
+
+操作                n     min     p50     p90     p95     max    mean  失败/其他
+create            2    0.54    0.54    0.54    0.54    0.54    0.54  -
+print_ok          2    0.46    0.46    0.47    0.47    0.47    0.46  -
+pause             2    0.74    0.76    0.78    0.78    0.78    0.76  -
+verify_paused     2    0.08    0.09    0.09    0.09    0.09    0.09  -
+resume            2    1.13    1.14    1.14    1.15    1.15    1.14  -
+resume_verify     2    0.27    0.33    0.37    0.38    0.39    0.33  -
+restart           0       -       -       -       -       -       -  unsupported x2
+kill              2    0.09    0.10    0.10    0.10    0.10    0.10  -
+
+ 总墙钟 4s
+ 报告 -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261111_172342.txt
+ CSV  -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261111_172342.csv

@@ -1,0 +1,17 @@
+﻿phase,idx,sid,op,elapsed,status,off,detail
+ops,0,7a243237-44e5-4948-93e3-93df32f052cf,create,0.537,ok,0.0,ref=92db8659-f980-4576-80ec-c7cf9b69348f
+ops,1,499ff5c0-1f86-465a-b55a-3acbe72ccac4,create,0.544,ok,0.0,ref=92db8659-f980-4576-80ec-c7cf9b69348f
+ops,1,499ff5c0-1f86-465a-b55a-3acbe72ccac4,print_ok,0.459,ok,0.459,attempt1
+ops,0,7a243237-44e5-4948-93e3-93df32f052cf,print_ok,0.467,ok,0.467,attempt1
+ops,1,499ff5c0-1f86-465a-b55a-3acbe72ccac4,pause,0.736,ok,0.0,
+ops,0,7a243237-44e5-4948-93e3-93df32f052cf,pause,0.781,ok,0.0,
+ops,0,7a243237-44e5-4948-93e3-93df32f052cf,verify_paused,0.081,ok,0.0,state=paused
+ops,1,499ff5c0-1f86-465a-b55a-3acbe72ccac4,verify_paused,0.093,ok,0.0,state=paused
+ops,1,499ff5c0-1f86-465a-b55a-3acbe72ccac4,resume,1.131,ok,0.0,connect(paused)
+ops,0,7a243237-44e5-4948-93e3-93df32f052cf,resume,1.146,ok,0.0,connect(paused)
+ops,1,499ff5c0-1f86-465a-b55a-3acbe72ccac4,resume_verify,0.267,ok,0.267,attempt1
+ops,0,7a243237-44e5-4948-93e3-93df32f052cf,resume_verify,0.385,ok,0.385,attempt1
+ops,0,7a243237-44e5-4948-93e3-93df32f052cf,restart,-1,unsupported,0.0,SDK/平台无 restart 接口
+ops,1,499ff5c0-1f86-465a-b55a-3acbe72ccac4,restart,-1,unsupported,0.0,SDK/平台无 restart 接口
+ops,0,7a243237-44e5-4948-93e3-93df32f052cf,kill,0.094,ok,0.0,
+ops,1,499ff5c0-1f86-465a-b55a-3acbe72ccac4,kill,0.099,ok,0.0,

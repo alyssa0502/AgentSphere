@@ -36,10 +36,12 @@ AgentSphere 沙箱生命周期管理操作批量计时
   python lifecycle_ops_bench.py --mode burst --count 20            # 独立流水并发对照
   python lifecycle_ops_bench.py --skip-ttl                         # 只测管理操作
 
-输出：屏幕明细 + 每操作分位数统计 + lifecycle_ops_<时间戳>.txt/.csv
+输出：屏幕明细 + create 相拉起报告（逐台延迟/分位数/达标率，volley）
+     + 每操作分位数统计 + lifecycle_ops_<时间戳>.txt/.csv
 """
 import argparse
 import csv
+from datetime import datetime
 import os
 import statistics as st
 import sys
@@ -72,6 +74,23 @@ def percentile(vals, p):
     f = int(k)
     c = min(f + 1, len(vals) - 1)
     return vals[f] if f == c else vals[f] + (vals[c] - vals[f]) * (k - f)
+
+
+PERCENTILES = [50, 75, 90, 95, 99, 99.9]
+
+
+def print_lat_stats(data, sla, rep):
+    """create 相拉起报告的分位数统计块（与 burst_create 口径一致）。"""
+    n = len(data)
+    rep.emit(f"\n==================== 时延统计（n={n}，仅成功样本） ====================")
+    rep.emit(f"  {'min':<8}{data[0]:.3f}s")
+    for p in PERCENTILES:
+        rep.emit(f"  {'p' + f'{p:g}':<8}{percentile(data, p):.3f}s")
+    rep.emit(f"  {'max':<8}{data[-1]:.3f}s")
+    std = st.stdev(data) if n >= 2 else 0.0
+    rep.emit(f"  {'mean':<8}{st.mean(data):.3f}s   stddev {std:.3f}s")
+    met = sum(1 for x in data if x <= sla)
+    rep.emit(f"  达标率(<={sla:g}s): {met}/{n} ({met / n * 100:.1f}%)")
 
 
 def R(phase, idx, sid, op, elapsed, status="ok", off=0.0, detail=""):
@@ -234,6 +253,8 @@ def run_volley(args, refs, rep):
     rows = []
     lock = threading.Lock()
     recs = [None] * n
+    fails = []              # (ref, err)
+    times = [None] * n      # 每台 create 的 (send, ret) perf_counter 打点
 
     def phase(op, label, cur, worker_fn):
         if not cur:
@@ -270,6 +291,7 @@ def run_volley(args, refs, rep):
         return [(i, r) for i, r in enumerate(recs) if r and not r["dead"]]
 
     # ── 相 1：create 并发（发令枪统一放行）──
+    rep.emit(f"计划拉起 {n} 个沙箱，SLA {args.sla:g}s")
     rep.emit(f"── create：{n} 台并发 ──")
     g = threading.Barrier(n + 1)
 
@@ -283,9 +305,11 @@ def run_volley(args, refs, rep):
             except Exception as e:
                 local.append(R("ops", i, "-", "create", -1,
                                f"fail({type(e).__name__})", 0.0, f"ref={refs[i]}"))
-                rep.emit(f"  [{i + 1}] create 失败: {str(e)[:100]}")
+                with lock:
+                    fails.append((refs[i], str(e)))
                 return
             a1 = time.perf_counter()
+            times[i] = (a0, a1)
             recs[i] = {"sid": sb.sandbox_id, "sb": sb, "sb2": None,
                        "ref": refs[i], "dead": False}
             local.append(R("ops", i, recs[i]["sid"], "create", a1 - a0, "ok",
@@ -299,9 +323,35 @@ def run_volley(args, refs, rep):
     with ThreadPoolExecutor(max_workers=n) as pool:
         futs = [pool.submit(create_worker, i) for i in range(n)]
         g.wait(timeout=180)
+        t_gun = time.perf_counter()
+        t_gun_wall = time.time()
         for f in futs:
             f.result()
-    rep.emit(f"   create: {sum(1 for r in recs if r)}/{n} 台到位")
+
+    ok_pairs = [(i, recs[i]) for i in range(n) if recs[i] is not None]
+    if ok_pairs:
+        wall = max(times[i][1] for i, _ in ok_pairs) - t_gun
+        rep.emit(f"\n成功 {len(ok_pairs)}/{n}（成功率 {len(ok_pairs) / n * 100:.1f}%），"
+                 f"总墙钟（发令->全部返回）{wall:.3f}s")
+        min_send = min(times[i][0] for i, _ in ok_pairs)
+        max_ret = max(times[i][1] for i, _ in ok_pairs)
+        e2e = max_ret - min_send
+        t_send = datetime.fromtimestamp(t_gun_wall + (min_send - t_gun))
+        t_done = datetime.fromtimestamp(t_gun_wall + (max_ret - t_gun))
+        rep.emit(f"端到端（最早发出 -> 最晚返回）: {e2e:.3f}s，"
+                 f"吞吐 {len(ok_pairs) / wall:.2f} 个/s")
+        rep.emit(f"create 下发时间: {t_send.strftime('%H:%M:%S.%f')[:-3]}  "
+                 f"create 结束时间: {t_done.strftime('%H:%M:%S.%f')[:-3]}")
+    else:
+        rep.emit(f"\n成功 0/{n}（成功率 0.0%）")
+    for ref, err in fails:
+        rep.emit(f"创建失败 [{ref[:24]}]: {err[:160]}")
+    for i, rec in sorted(ok_pairs, key=lambda p: times[p[0]][1] - times[p[0]][0]):
+        rep.emit(f"sandbox {rec['sid']} [{rec['ref'][:24]}] "
+                 f"拉起延迟: {times[i][1] - times[i][0]:.3f}s")
+    lats = sorted(times[i][1] - times[i][0] for i, _ in ok_pairs)
+    if lats:
+        print_lat_stats(lats, args.sla, rep)
 
     def w_print_ok(i, rec, local):
         echo_timed(rec["sb"], "print_ok", i, rec["sid"],
@@ -487,6 +537,8 @@ def main():
                     help="快照引用（templateID:buildID），逗号分隔或 @refs.txt；"
                          "给了它就不看 --template；不足台数自动循环复用")
     ap.add_argument("--count", type=int, default=5, help="管理操作阶段的沙箱台数")
+    ap.add_argument("--sla", type=float, default=2.0,
+                    help="create 相达标阈值（秒），volley 拉起报告的达标率用")
     ap.add_argument("--mode", choices=["serial", "burst", "volley"], default="serial",
                     help="serial=精准口径(默认,队列深度=1)；burst=独立流水并发对照；"
                          "volley=N 个 sandbox 并发执行同一操作(并发 pause/resume/kill))")
@@ -512,7 +564,7 @@ def main():
 
     display_n = args.ttl_count if args.skip_ops else args.count
     refs_ops, n_src = load_refs(args.snapshots, max(display_n, 1), args.template)
-    src_desc = (f"快照引用 x{n_src}（循环至 {display_n} 台）" if args.snapshots
+    src_desc = (f"快照引用 x{n_src}（循环复用至 {display_n} 台）" if args.snapshots
                 else f"模板 {args.template}")
 
     rep = Report(os.path.join(BASE, f"lifecycle_ops_{TS}.txt"))
@@ -555,7 +607,11 @@ def main():
                     for f in futs:
                         f.result()
 
-            rep.emit("\n──────── 管理操作耗时统计 ────────")
+            if args.mode == "volley":
+                rep.emit(f"\n管理操作耗时统计（并发口径：{args.count} 个 sandbox "
+                         f"同一瞬间执行同一操作，队列深度={args.count}）────────")
+            else:
+                rep.emit("\n──────── 管理操作耗时统计 ────────")
             print_op_stats(all_rows, rep)
 
         if not args.skip_ttl:
