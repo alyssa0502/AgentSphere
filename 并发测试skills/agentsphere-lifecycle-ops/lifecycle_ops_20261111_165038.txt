@@ -1,0 +1,38 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  来源: 快照引用 x52（循环至 50 台）
+ 2026-11-11 16:50:38  操作台数 50  TTL 台数 3  模式 volley  TTL=关
+════════════════════════════════════════════════════════════════
+[16:50:38] === 同相齐射 50 台（每操作一发令枪，N 台同相同时执行同一操作） ===
+── create：50 台齐射 ──
+   create: 50/50 台到位
+── print(ok) 通道就绪：50 台齐射 ──
+   print_ok: n=50 min=0.26s p50=2.70s max=8.41s
+── pause：50 台齐射 ──
+   pause: n=50 min=0.59s p50=0.77s max=1.00s
+── 状态核实 paused：50 台齐射 ──
+   verify_paused: n=50 min=0.07s p50=0.15s max=0.22s
+── resume(connect)：50 台齐射 ──
+   resume: n=50 min=0.10s p50=0.20s max=1.28s
+── resume 后命令核实：50 台齐射 ──
+   resume_verify: n=50 min=0.08s p50=0.21s max=0.43s
+── restart：50 台齐射 ──
+── restart 后命令核实：50 台齐射 ──
+── kill：50 台齐射 ──
+   kill: n=50 min=0.08s p50=0.16s max=0.23s
+
+──────── 管理操作耗时统计（同相齐射=并发口径（每相同刻执行，含该相队列深度=N））────────
+
+操作                n     min     p50     p90     p95     max    mean  失败/其他
+create           50    0.40    0.44    0.46    0.46    0.47    0.44  -
+print_ok         50    0.26    2.70    7.70    7.77    8.41    3.66  -
+pause            50    0.59    0.77    0.89    0.93    1.00    0.76  -
+verify_paused    50    0.07    0.15    0.20    0.20    0.22    0.13  -
+resume           50    0.10    0.20    1.24    1.27    1.28    0.54  -
+resume_verify    50    0.08    0.21    0.34    0.37    0.43    0.22  -
+restart           0       -       -       -       -       -       -  unsupported x50
+kill             50    0.08    0.16    0.20    0.21    0.23    0.14  -
+  排队分量 ≈ 并发p50 − 串行p50（先跑一轮 serial 再对比）
+
+ 总墙钟 21s
+ 报告 -> C:\Users\Administrator\agentsphere-demo\agentsphere-lifecycle-ops\lifecycle_ops_20261111_165038.txt
+ CSV  -> C:\Users\Administrator\agentsphere-demo\agentsphere-lifecycle-ops\lifecycle_ops_20261111_165038.csv
