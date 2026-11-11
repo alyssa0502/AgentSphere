@@ -79,6 +79,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 5. **测完必清理**：默认统一 kill；`--keep` 留的台靠平台 TTL 回收，压测前确认账号配额
 6. **换区域**：三件套整体换（如 cn-north-4 的 URL + 网关 + 该区域 key），模板 ID 不跨区通用
 7. **快照管理 API 现状（11-11 实测）**：SDK 的 `list_snapshots`/`create_snapshot`（GET/POST /snapshots…）在本网关**未发布**——现做/盘点团队级快照不可用；但 **`GET /templates/{模板ID}` 已发布**，响应体 `builds[]` 就是该模板全部快照（buildID+status+规格），`snapshot_probe.py` 用它盘点并把 `模板ID:buildID` 引用写到 `snapshots_found.txt`。**引用拉起已真机验证**：1 引用×50 台 50/50（p50 0.584s）、52 引用×各 1 台 52/52（p50 0.552s，stddev 仅 0.017s）
+8. **沙箱清单接口已发布（11-11 探明）**：`GET /v2/sandboxes` 必须**带必填参数 `?limit=N`**（不带则 400 `AgentSphere.0208` Limit required），返回运行中沙箱清单（sandboxID/templateID/规格/state/endAt/onTimeout）——盘点 `--keep` 残留台、配额审计用。三接口鉴权头统一 `X-API-KEY`；POST /sandboxes payload 用 camelCase `{"templateID":…,"timeout":…}`
 
 ## 新模板/新环境接入清单（执行前逐项确认并声明）
 
