@@ -157,7 +157,7 @@ def echo_timed(sb, label, idx, sid, t0, rows, ready_timeout, anchor=None):
             rows.append(R("ops", idx, sid, label, -1, "timeout", a1 - t0,
                           f"{attempt}次尝试未通"))
             return None, None
-        time.sleep(0.5)
+        time.sleep(0.1)
 
 
 def run_ops_one(idx, ref, args, rep):
