@@ -1,0 +1,79 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  来源: 模板 92db8659-f980-4576-80ec-c7cf9b69348f
+ 2026-11-12 09:44:05  操作台数 2  TTL 台数 3  模式 volley  TTL=关
+════════════════════════════════════════════════════════════════
+[09:44:05] === 2 个 sandbox 并发生命周期操作 ===
+计划拉起 2 个沙箱，SLA 2s
+── create：2 台并发 ──
+
+成功 2/2（成功率 100.0%），总墙钟（发令->全部返回）0.579s
+端到端（最早发出 -> 最晚返回）: 0.579s，吞吐 3.45 个/s
+create 下发时间: 09:44:05.367  create 结束时间: 09:44:05.946
+sandbox 1ba36113-b8f5-4e1f-bd8c-326143d50dd3 [92db8659-f980-4576-80ec-] 拉起延迟: 0.572s
+sandbox 7e63c247-4169-442f-b1c2-67125f170c72 [92db8659-f980-4576-80ec-] 拉起延迟: 0.579s
+
+==================== 时延统计（n=2，仅成功样本） ====================
+  min     0.572s
+  p50     0.576s
+  p75     0.577s
+  p90     0.578s
+  p95     0.579s
+  p99     0.579s
+  p99.9   0.579s
+  max     0.579s
+  mean    0.576s   stddev 0.005s
+  达标率(<=2s): 2/2 (100.0%)
+── print(ok) 通道就绪：2 台并发 ──
+print_ok 下发时间: 09:44:05.950  print_ok 结束时间: 09:44:06.332
+sandbox 7e63c247-4169-442f-b1c2-67125f170c72 [92db8659-f980-4576-80ec-] print_ok 耗时: 0.369s
+sandbox 1ba36113-b8f5-4e1f-bd8c-326143d50dd3 [92db8659-f980-4576-80ec-] print_ok 耗时: 0.383s
+   print_ok: n=2 min=0.37s p50=0.38s max=0.38s
+── pause：2 台并发 ──
+pause 下发时间: 09:44:06.332  pause 结束时间: 09:44:07.081
+sandbox 1ba36113-b8f5-4e1f-bd8c-326143d50dd3 [92db8659-f980-4576-80ec-] pause 耗时: 0.748s
+sandbox 7e63c247-4169-442f-b1c2-67125f170c72 [92db8659-f980-4576-80ec-] pause 耗时: 0.749s
+   pause: n=2 min=0.75s p50=0.75s max=0.75s
+── 状态核实 paused：2 台并发 ──
+verify_paused 下发时间: 09:44:07.081  verify_paused 结束时间: 09:44:07.224
+sandbox 7e63c247-4169-442f-b1c2-67125f170c72 [92db8659-f980-4576-80ec-] verify_paused 耗时: 0.095s
+sandbox 1ba36113-b8f5-4e1f-bd8c-326143d50dd3 [92db8659-f980-4576-80ec-] verify_paused 耗时: 0.140s
+   verify_paused: n=2 min=0.10s p50=0.12s max=0.14s
+── resume(connect)：2 台并发 ──
+resume 下发时间: 09:44:07.232  resume 结束时间: 09:44:08.405
+sandbox 7e63c247-4169-442f-b1c2-67125f170c72 [92db8659-f980-4576-80ec-] resume 耗时: 1.167s
+sandbox 1ba36113-b8f5-4e1f-bd8c-326143d50dd3 [92db8659-f980-4576-80ec-] resume 耗时: 1.173s
+   resume: n=2 min=1.17s p50=1.17s max=1.17s
+── resume 后命令核实：2 台并发 ──
+resume_verify 下发时间: 09:44:08.408  resume_verify 结束时间: 09:44:08.769
+sandbox 7e63c247-4169-442f-b1c2-67125f170c72 [92db8659-f980-4576-80ec-] resume_verify 耗时: 0.253s
+sandbox 1ba36113-b8f5-4e1f-bd8c-326143d50dd3 [92db8659-f980-4576-80ec-] resume_verify 耗时: 0.362s
+   resume_verify: n=2 min=0.25s p50=0.31s max=0.36s
+── restart：2 台并发 ──
+── restart 后命令核实：2 台并发 ──
+── update_timeout(TTL+60s)：2 台并发 ──
+update_timeout 下发时间: 09:44:08.769  update_timeout 结束时间: 09:44:08.865
+sandbox 1ba36113-b8f5-4e1f-bd8c-326143d50dd3 [92db8659-f980-4576-80ec-] update_timeout 耗时: 0.101s
+sandbox 7e63c247-4169-442f-b1c2-67125f170c72 [92db8659-f980-4576-80ec-] update_timeout 耗时: 0.101s
+   update_timeout: n=2 min=0.10s p50=0.10s max=0.10s
+── kill：2 台并发 ──
+kill 下发时间: 09:44:08.865  kill 结束时间: 09:44:08.973
+sandbox 1ba36113-b8f5-4e1f-bd8c-326143d50dd3 [92db8659-f980-4576-80ec-] kill 耗时: 0.100s
+sandbox 7e63c247-4169-442f-b1c2-67125f170c72 [92db8659-f980-4576-80ec-] kill 耗时: 0.100s
+   kill: n=2 min=0.10s p50=0.10s max=0.10s
+
+管理操作耗时统计（并发口径：2 个 sandbox 同一瞬间执行同一操作，队列深度=2）────────
+
+操作                n     min     p50     p90     p95     max    mean  失败/其他
+create            2    0.57    0.58    0.58    0.58    0.58    0.58  -
+print_ok          2    0.37    0.38    0.38    0.38    0.38    0.38  -
+pause             2    0.75    0.75    0.75    0.75    0.75    0.75  -
+verify_paused     2    0.10    0.12    0.14    0.14    0.14    0.12  -
+resume            2    1.17    1.17    1.17    1.17    1.17    1.17  -
+resume_verify     2    0.25    0.31    0.35    0.36    0.36    0.31  -
+restart           0       -       -       -       -       -       -  unsupported x2
+update_timeout    2    0.10    0.10    0.10    0.10    0.10    0.10  -
+kill              2    0.10    0.10    0.10    0.10    0.10    0.10  -
+
+ 总墙钟 4s
+ 报告 -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261112_094405.txt
+ CSV  -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261112_094405.csv

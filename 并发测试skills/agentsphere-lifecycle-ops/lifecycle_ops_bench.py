@@ -5,7 +5,8 @@ AgentSphere 沙箱生命周期管理操作批量计时
 精准统计每台沙箱的管理操作耗时（默认串行口径 = 纯执行耗时，不含下发队列）：
 
   create → print(ok) → pause → 状态核实(paused) → resume(connect)
-        → print(ok)核实 → restart(平台无此接口则标 UNSUPPORTED) → kill(主动销毁参照)
+        → print(ok)核实 → restart(平台无此接口则标 UNSUPPORTED) → update_timeout
+        (set_timeout 把 TTL 延长 60s，覆盖平台 updated 事件) → kill(主动销毁参照)
 
 外加 TTL 自动销毁观察：M 台 timeout=T 的沙箱，双确认轮询测
 「计划到期 → 观察到死亡」的回收延迟（含 ±一个轮询周期的观察粒度）。
@@ -65,7 +66,7 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 TS = time.strftime("%Y%m%d_%H%M%S")
 
 OPS_ORDER = ["create", "print_ok", "pause", "verify_paused", "resume",
-             "resume_verify", "restart", "restart_verify", "kill"]
+             "resume_verify", "restart", "restart_verify", "update_timeout", "kill"]
 
 
 def percentile(vals, p):
@@ -225,6 +226,18 @@ def run_ops_one(idx, ref, args, rep):
                              args.ready_timeout)
         if ok_s is not None:
             rep.emit(f"    restart_verify={ok_s:.3f}s")
+
+    a0 = time.perf_counter()
+    try:
+        sb2.set_timeout(args.ops_timeout + 60)
+        a1 = time.perf_counter()
+        rows.append(R("ops", idx, sid, "update_timeout", a1 - a0, "ok", off(),
+                      "TTL+60s"))
+        rep.emit(f"    update_timeout={a1 - a0:.2f}s (TTL+60s)")
+    except Exception as e:
+        rows.append(R("ops", idx, sid, "update_timeout", -1,
+                      f"fail({type(e).__name__})", off(), str(e)[:80]))
+        rep.emit(f"    update_timeout 失败: {str(e)[:80]}")
 
     if args.keep:
         rows.append(R("ops", idx, sid, "kill", -1, "skipped(--keep)", off()))
@@ -426,6 +439,14 @@ def run_volley(args, refs, rep):
                    time.perf_counter(), local, args.ready_timeout)
 
     phase("restart_verify", "restart 后命令核实", living(), w_restart_verify)
+
+    def w_update(i, rec, local):
+        a0 = time.perf_counter()
+        rec["sb2"].set_timeout(args.ops_timeout + 60)
+        local.append(R("ops", i, rec["sid"], "update_timeout",
+                       time.perf_counter() - a0, "ok", 0.0, "TTL+60s"))
+
+    phase("update_timeout", "update_timeout(TTL+60s)", living(), w_update)
 
     cur = [(i, r) for i, r in enumerate(recs) if r]
     if args.keep:
