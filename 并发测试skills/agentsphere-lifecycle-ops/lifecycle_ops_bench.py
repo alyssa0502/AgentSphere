@@ -22,6 +22,8 @@ AgentSphere 沙箱生命周期管理操作批量计时
 计时口径（全部 perf_counter 单调时钟）：
   - 每个操作：调用发出前最后一个打点 → 返回后第一个打点，窗口内零打印零日志零额外网络调用
   - print(ok)：只对成功那次调用计时；重试等待单列（*_verify 列的 off 起点可见）
+  - resume_verify：该台 resume(connect) 返回后到首条命令真正跑通的耗时
+    （锚点 = 该台 resume 返回时刻，含失败重试——回答"恢复后多久能真正执行代码/业务"）
   - 状态核实（get_info==paused）单列 verify_paused，不混入 pause 耗时
 
 拉起来源：--template 模板直拉，或 --snapshots 快照引用（templateID:buildID，逗号分隔或 @refs.txt，
@@ -130,8 +132,11 @@ class Report:
         self._txt.close()
 
 
-def echo_timed(sb, label, idx, sid, t0, rows, ready_timeout):
-    """echo ok 直到成功；只对成功那次调用计时。返回 (成功时刻, 成功调用耗时)。"""
+def echo_timed(sb, label, idx, sid, t0, rows, ready_timeout, anchor=None):
+    """echo ok 直到成功。返回 (成功时刻, 计时值)。
+    anchor=None：只对成功那次调用计时（print_ok / restart_verify 口径）。
+    anchor=时刻：成功时刻−anchor（resume_verify 口径 = resume 返回后到真正能执行
+    命令的耗时，含失败尝试与重试间隔——首条命令成功那一刻才算真正可用）。"""
     t_start = time.perf_counter()
     attempt = 0
     while True:
@@ -144,9 +149,10 @@ def echo_timed(sb, label, idx, sid, t0, rows, ready_timeout):
             ok = False
         a1 = time.perf_counter()
         if ok:
-            rows.append(R("ops", idx, sid, label, a1 - a0, "ok", a1 - t0,
+            elapsed = (a1 - anchor) if anchor is not None else (a1 - a0)
+            rows.append(R("ops", idx, sid, label, elapsed, "ok", a1 - t0,
                           f"attempt{attempt}"))
-            return a1, a1 - a0
+            return a1, elapsed
         if time.perf_counter() - t_start > ready_timeout:
             rows.append(R("ops", idx, sid, label, -1, "timeout", a1 - t0,
                           f"{attempt}次尝试未通"))
@@ -207,7 +213,8 @@ def run_ops_one(idx, ref, args, rep):
                   "connect(paused)"))
     rep.emit(f"    resume(connect)={c1 - c0:.2f}s")
 
-    _, ok_s = echo_timed(sb2, "resume_verify", idx, sid, t0, rows, args.ready_timeout)
+    _, ok_s = echo_timed(sb2, "resume_verify", idx, sid, t0, rows,
+                         args.ready_timeout, anchor=c1)
     if ok_s is not None:
         rep.emit(f"    resume_verify={ok_s:.3f}s")
 
@@ -408,14 +415,17 @@ def run_volley(args, refs, rep):
             local.append(R("ops", i, rec["sid"], "resume", -1,
                            f"fail({type(e).__name__})", 0.0, str(e)[:80]))
             return
+        ret = time.perf_counter()
+        rec["resume_ret"] = ret                    # 锚点：该台 resume 返回时刻
         local.append(R("ops", i, rec["sid"], "resume",
-                       time.perf_counter() - c0, "ok", 0.0, "connect(paused)"))
+                       ret - c0, "ok", 0.0, "connect(paused)"))
 
     phase("resume", "resume(connect)", living(), w_resume)
 
     def w_resume_verify(i, rec, local):
         echo_timed(rec["sb2"], "resume_verify", i, rec["sid"],
-                   time.perf_counter(), local, args.ready_timeout)
+                   time.perf_counter(), local, args.ready_timeout,
+                   anchor=rec.get("resume_ret"))
 
     phase("resume_verify", "resume 后命令核实", living(), w_resume_verify)
 
