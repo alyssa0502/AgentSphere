@@ -7,7 +7,7 @@
 | 目录 | 测什么 | 核心口径 |
 |---|---|---|
 | `agentsphere-burst-create/` | **并发拉起测试**：同一瞬间批量创建，平台容量、批量交付、快照恢复速度（附 `snapshot_probe.py` 按模板盘点快照——快照=build，走 GET /templates/{id}） | 单请求 = 发出→返回；端到端 = 最早发出→最晚返回 |
-| `agentsphere-lifecycle-ops/` | **并发生命周期操作**：pause / resume(connect) / print(ok) / restart / kill 计时 + TTL 到期销毁延迟 | serial=精准口径（队列深度=1）；**volley=并发（N 个 sandbox 同一瞬间执行同一操作：并发 pause/resume/kill——并发生命周期的严格口径）**；burst=独立流水对照；排队分量 ≈ 并发p50 − 串行p50 |
+| `agentsphere-lifecycle-ops/` | **并发生命周期操作**：pause / resume(connect) / print(ok) / restart / update_timeout(TTL 更新，覆盖 updated 事件) / kill 计时 + TTL 到期销毁延迟 | serial=精准口径（队列深度=1）；**volley=并发（N 个 sandbox 同一瞬间执行同一操作：并发 pause/resume/kill——并发生命周期的严格口径）**；burst=独立流水对照；排队分量 ≈ 并发p50 − 串行p50 |
 
 详细参数、坑表、新模板接入清单见各自 `SKILL.md`。
 

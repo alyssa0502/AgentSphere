@@ -1,6 +1,6 @@
 ---
 name: agentsphere-lifecycle-ops
-description: AgentSphere 沙箱生命周期管理操作计时（含并发生命周期压测）。三种模式：serial 精准统计 pause、resume(connect)、print(ok)、restart（平台无接口则标注）、kill 的纯执行耗时；volley 并发模式（N 个 sandbox 先全部到位，然后同一瞬间全员执行同一操作——50 个 sandbox 并发 pause / 并发 resume / 并发 kill）= "n 个快照同时执行生命周期管理"的严格口径；burst 独立流水并发对照。另含 TTL 到期自动销毁的回收延迟观察（双确认轮询，实测平台批量清扫 +60s）。当用户要测沙箱暂停/恢复/重连/命令执行/销毁耗时、并发生命周期管理、TTL 回收速度、管理面操作延迟分位数时使用此技能。
+description: AgentSphere 沙箱生命周期管理操作计时（含并发生命周期压测）。三种模式：serial 精准统计 pause、resume(connect)、print(ok)、restart（平台无接口则标注）、update_timeout（set_timeout 更新 TTL，覆盖 updated 事件）、kill 的纯执行耗时；volley 并发模式（N 个 sandbox 先全部到位，然后同一瞬间全员执行同一操作——50 个 sandbox 并发 pause / 并发 resume / 并发 kill）= "n 个快照同时执行生命周期管理"的严格口径；burst 独立流水并发对照。另含 TTL 到期自动销毁的回收延迟观察（双确认轮询，实测平台批量清扫 +60s）。当用户要测沙箱暂停/恢复/重连/命令执行/销毁耗时、并发生命周期管理、TTL 回收速度、管理面操作延迟分位数时使用此技能。
 ---
 
 # AgentSphere 生命周期管理操作计时（串行精准 / 并发 / TTL 观察）
@@ -74,6 +74,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 - volley 的 create 相输出完整拉起报告：计划拉起/SLA、成功率 + 总墙钟（发令->全部返回）、端到端 + 吞吐、create 下发时间与结束时间、逐台拉起延迟（按耗时升序）、分位数统计块（p50~p99.9/mean/stddev）+ SLA 达标率——口径与 burst_create 一致
 - `print_ok` / `resume_verify`：只对成功那次调用计时；次数写在 detail（attempt2 = 首次未通）
 - `restart=UNSUPPORTED`：当前 SDK/平台无 restart 接口，脚本标注而非报错——接口上线后自动开始测量
+- `update_timeout`：运行中调 `set_timeout` 把 TTL 延长 60s（覆盖平台 updated 事件，与 create/pause/resume/kill 事件并列凑齐）；SDK 有此接口，平台若未支持会记 fail 而非 UNSUPPORTED
 - `ttl_destroy` 读数 = 计划到期 → 观察到死亡；**含 0~poll 秒轮询粒度**，负值 = 提前回收
 - `not_observed` = grace 内没死，这本身就是要上报的发现
 - CSV 列：`phase,idx,sid,op,elapsed,status,off,detail`（off = 距该台流程起点的偏移，可还原时间线）
