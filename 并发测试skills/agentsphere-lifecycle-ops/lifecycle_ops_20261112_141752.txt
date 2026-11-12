@@ -1,0 +1,463 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  来源: 快照引用 x52（循环复用至 50 台）
+ 2026-11-12 14:17:52  操作台数 50  TTL 台数 3  模式 volley  TTL=关
+════════════════════════════════════════════════════════════════
+[14:17:52] === 50 个 sandbox 并发生命周期操作 ===
+计划拉起 50 个沙箱，SLA 2s
+── create：50 台并发 ──
+
+成功 50/50（成功率 100.0%），总墙钟（发令->全部返回）0.552s
+端到端（最早发出 -> 最晚返回）: 0.552s，吞吐 90.51 个/s
+create 下发时间: 14:17:52.573  create 结束时间: 14:17:53.125
+sandbox 9f88a75e-4000-47df-aa6c-987be16d5ea8 [bb468965-b760-451e-ab47-] 拉起延迟: 0.480s
+sandbox dca91b97-c423-45b3-910d-56b75913c392 [bb468965-b760-451e-ab47-] 拉起延迟: 0.490s
+sandbox 12c714cc-bebc-4d7d-9c4c-f00b074f500e [bb468965-b760-451e-ab47-] 拉起延迟: 0.491s
+sandbox f92b457d-f6ed-409d-890a-fa6b570f53c4 [bb468965-b760-451e-ab47-] 拉起延迟: 0.493s
+sandbox a73b7526-c764-465e-9289-9c8357a3cb34 [bb468965-b760-451e-ab47-] 拉起延迟: 0.493s
+sandbox 801b847b-5177-4032-8bcf-606fbc37ea4a [bb468965-b760-451e-ab47-] 拉起延迟: 0.496s
+sandbox 3b283f43-aa9e-44a6-a7ec-6f72880bad4d [bb468965-b760-451e-ab47-] 拉起延迟: 0.496s
+sandbox fa28aa06-96e0-4475-8743-e30b79902358 [bb468965-b760-451e-ab47-] 拉起延迟: 0.497s
+sandbox 5e374998-2a07-4299-84e5-0757e29fccc8 [bb468965-b760-451e-ab47-] 拉起延迟: 0.497s
+sandbox 20ff766c-d474-4b48-8d06-89b6f49c0db7 [bb468965-b760-451e-ab47-] 拉起延迟: 0.498s
+sandbox 7dff1a58-815e-4b7d-b0fb-377cc3e93719 [bb468965-b760-451e-ab47-] 拉起延迟: 0.499s
+sandbox 169cdb3b-90b7-41de-95e9-5369846693f5 [bb468965-b760-451e-ab47-] 拉起延迟: 0.501s
+sandbox 789b04e8-5757-4d04-8bee-3abd29595ead [bb468965-b760-451e-ab47-] 拉起延迟: 0.503s
+sandbox 6a40f530-897b-416d-aeaf-fbddb76df535 [bb468965-b760-451e-ab47-] 拉起延迟: 0.504s
+sandbox 738024f3-d7e1-4d7b-aba6-9208bb9d4f86 [bb468965-b760-451e-ab47-] 拉起延迟: 0.505s
+sandbox f049a888-a826-4e2c-ae42-0d98cbf5d26c [bb468965-b760-451e-ab47-] 拉起延迟: 0.506s
+sandbox 8fb5c4d9-c5d1-4ed6-8dad-79631b2742f4 [bb468965-b760-451e-ab47-] 拉起延迟: 0.508s
+sandbox d722681a-aaf1-4f39-944a-f237ac291711 [bb468965-b760-451e-ab47-] 拉起延迟: 0.509s
+sandbox db14d871-1a58-4e35-8c72-6cd064d5d5c5 [bb468965-b760-451e-ab47-] 拉起延迟: 0.510s
+sandbox 64b4839d-a34c-456c-854e-8af1108580c3 [bb468965-b760-451e-ab47-] 拉起延迟: 0.510s
+sandbox 2d3c8028-7983-49dc-b7cf-e08776231d6b [bb468965-b760-451e-ab47-] 拉起延迟: 0.511s
+sandbox 3d9167de-baac-4164-8ea6-2104856db70f [bb468965-b760-451e-ab47-] 拉起延迟: 0.511s
+sandbox 2b31edab-5ee1-48fc-b185-7467dce6c367 [bb468965-b760-451e-ab47-] 拉起延迟: 0.511s
+sandbox a18dcb57-cdca-4d53-ad03-8c8444fde0f8 [bb468965-b760-451e-ab47-] 拉起延迟: 0.513s
+sandbox ad1a1b25-c35a-4691-9bbf-6a72a951fdba [bb468965-b760-451e-ab47-] 拉起延迟: 0.513s
+sandbox bad2393b-cc9f-454f-b7c6-2b0322c57cdb [bb468965-b760-451e-ab47-] 拉起延迟: 0.515s
+sandbox 96c92a23-ec86-494d-aab0-4c5e26226fe2 [bb468965-b760-451e-ab47-] 拉起延迟: 0.515s
+sandbox a4e231a4-7836-4f4d-80fb-41196f98a4e9 [bb468965-b760-451e-ab47-] 拉起延迟: 0.518s
+sandbox 57e51db0-d661-44ed-a6f8-95f3f8333bfc [bb468965-b760-451e-ab47-] 拉起延迟: 0.519s
+sandbox 8c43a877-914d-4657-a5e4-db5f3d33edc6 [bb468965-b760-451e-ab47-] 拉起延迟: 0.532s
+sandbox 3b05031c-4868-45eb-861c-361023c99509 [bb468965-b760-451e-ab47-] 拉起延迟: 0.534s
+sandbox e70d694a-3d32-458a-81a6-fb0b7341838a [bb468965-b760-451e-ab47-] 拉起延迟: 0.534s
+sandbox 73affd6b-315b-4550-8e81-c2cf413710fc [bb468965-b760-451e-ab47-] 拉起延迟: 0.534s
+sandbox 39132045-e437-48da-8568-704ce207b842 [bb468965-b760-451e-ab47-] 拉起延迟: 0.535s
+sandbox 26b22468-2cad-42ea-8c48-9400594c3d77 [bb468965-b760-451e-ab47-] 拉起延迟: 0.535s
+sandbox f57cbea0-6126-4b78-928c-3b466dd7830d [bb468965-b760-451e-ab47-] 拉起延迟: 0.536s
+sandbox 76ef3eff-4ca1-4bf2-b6e4-451f8398d470 [bb468965-b760-451e-ab47-] 拉起延迟: 0.538s
+sandbox 8eb920a9-c77c-4487-95f6-ac38d43bb93e [bb468965-b760-451e-ab47-] 拉起延迟: 0.541s
+sandbox ab9e15ac-6bfd-4173-9521-5db3a39509f9 [bb468965-b760-451e-ab47-] 拉起延迟: 0.542s
+sandbox e84985c2-05c4-4e03-b0d7-87b98b089449 [bb468965-b760-451e-ab47-] 拉起延迟: 0.543s
+sandbox a5c1d0ef-c022-4570-8d79-2ae9f2312f64 [bb468965-b760-451e-ab47-] 拉起延迟: 0.543s
+sandbox 18afb35e-56f3-4ae1-968d-274cda750f45 [bb468965-b760-451e-ab47-] 拉起延迟: 0.546s
+sandbox 9e0f8be5-74cf-4148-b5f9-afef2f120a31 [bb468965-b760-451e-ab47-] 拉起延迟: 0.546s
+sandbox 2832d61d-9821-49f1-a451-36def56df7f2 [bb468965-b760-451e-ab47-] 拉起延迟: 0.547s
+sandbox 6350dff5-4e17-407f-a938-b9798a797d43 [bb468965-b760-451e-ab47-] 拉起延迟: 0.548s
+sandbox 79fc0874-4301-4ca7-888c-272a5a6addc9 [bb468965-b760-451e-ab47-] 拉起延迟: 0.548s
+sandbox b7ba8538-4ce3-4dc9-8891-6735f6aa3a05 [bb468965-b760-451e-ab47-] 拉起延迟: 0.549s
+sandbox e9e92701-3c5f-4490-b9f9-842aa82cbb7f [bb468965-b760-451e-ab47-] 拉起延迟: 0.550s
+sandbox c8ea4107-4080-424b-ab76-cfda545d3cd3 [bb468965-b760-451e-ab47-] 拉起延迟: 0.551s
+sandbox 55fc3b74-b2f2-4e75-8cbe-52509816e481 [bb468965-b760-451e-ab47-] 拉起延迟: 0.552s
+
+==================== 时延统计（n=50，仅成功样本） ====================
+  min     0.480s
+  p50     0.514s
+  p75     0.541s
+  p90     0.548s
+  p95     0.550s
+  p99     0.551s
+  p99.9   0.552s
+  max     0.552s
+  mean    0.520s   stddev 0.021s
+  达标率(<=2s): 50/50 (100.0%)
+── print(ok) 通道就绪：50 台并发 ──
+print_ok 下发时间: 14:17:53.136  print_ok 结束时间: 14:17:54.957
+sandbox 12c714cc-bebc-4d7d-9c4c-f00b074f500e [bb468965-b760-451e-ab47-] print_ok 耗时: 0.327s
+sandbox 5e374998-2a07-4299-84e5-0757e29fccc8 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.341s
+sandbox 2b31edab-5ee1-48fc-b185-7467dce6c367 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.345s
+sandbox 789b04e8-5757-4d04-8bee-3abd29595ead [bb468965-b760-451e-ab47-] print_ok 耗时: 0.348s
+sandbox 6350dff5-4e17-407f-a938-b9798a797d43 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.350s
+sandbox 2832d61d-9821-49f1-a451-36def56df7f2 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.351s
+sandbox ab9e15ac-6bfd-4173-9521-5db3a39509f9 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.351s
+sandbox 57e51db0-d661-44ed-a6f8-95f3f8333bfc [bb468965-b760-451e-ab47-] print_ok 耗时: 0.351s
+sandbox 9e0f8be5-74cf-4148-b5f9-afef2f120a31 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.353s
+sandbox f92b457d-f6ed-409d-890a-fa6b570f53c4 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.353s
+sandbox a5c1d0ef-c022-4570-8d79-2ae9f2312f64 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.353s
+sandbox 801b847b-5177-4032-8bcf-606fbc37ea4a [bb468965-b760-451e-ab47-] print_ok 耗时: 0.354s
+sandbox 169cdb3b-90b7-41de-95e9-5369846693f5 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.355s
+sandbox 3b283f43-aa9e-44a6-a7ec-6f72880bad4d [bb468965-b760-451e-ab47-] print_ok 耗时: 0.355s
+sandbox a73b7526-c764-465e-9289-9c8357a3cb34 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.356s
+sandbox db14d871-1a58-4e35-8c72-6cd064d5d5c5 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.357s
+sandbox e84985c2-05c4-4e03-b0d7-87b98b089449 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.361s
+sandbox dca91b97-c423-45b3-910d-56b75913c392 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.362s
+sandbox a18dcb57-cdca-4d53-ad03-8c8444fde0f8 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.366s
+sandbox 2d3c8028-7983-49dc-b7cf-e08776231d6b [bb468965-b760-451e-ab47-] print_ok 耗时: 0.368s
+sandbox e9e92701-3c5f-4490-b9f9-842aa82cbb7f [bb468965-b760-451e-ab47-] print_ok 耗时: 0.369s
+sandbox 8eb920a9-c77c-4487-95f6-ac38d43bb93e [bb468965-b760-451e-ab47-] print_ok 耗时: 0.369s
+sandbox 9f88a75e-4000-47df-aa6c-987be16d5ea8 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.371s
+sandbox 73affd6b-315b-4550-8e81-c2cf413710fc [bb468965-b760-451e-ab47-] print_ok 耗时: 0.371s
+sandbox 76ef3eff-4ca1-4bf2-b6e4-451f8398d470 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.373s
+sandbox d722681a-aaf1-4f39-944a-f237ac291711 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.375s
+sandbox 7dff1a58-815e-4b7d-b0fb-377cc3e93719 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.375s
+sandbox fa28aa06-96e0-4475-8743-e30b79902358 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.380s
+sandbox ad1a1b25-c35a-4691-9bbf-6a72a951fdba [bb468965-b760-451e-ab47-] print_ok 耗时: 0.509s
+sandbox e70d694a-3d32-458a-81a6-fb0b7341838a [bb468965-b760-451e-ab47-] print_ok 耗时: 0.855s
+sandbox a4e231a4-7836-4f4d-80fb-41196f98a4e9 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.858s
+sandbox 738024f3-d7e1-4d7b-aba6-9208bb9d4f86 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.863s
+sandbox b7ba8538-4ce3-4dc9-8891-6735f6aa3a05 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.864s
+sandbox 79fc0874-4301-4ca7-888c-272a5a6addc9 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.867s
+sandbox 8fb5c4d9-c5d1-4ed6-8dad-79631b2742f4 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.873s
+sandbox 26b22468-2cad-42ea-8c48-9400594c3d77 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.879s
+sandbox 55fc3b74-b2f2-4e75-8cbe-52509816e481 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.890s
+sandbox 6a40f530-897b-416d-aeaf-fbddb76df535 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.890s
+sandbox 8c43a877-914d-4657-a5e4-db5f3d33edc6 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.892s
+sandbox bad2393b-cc9f-454f-b7c6-2b0322c57cdb [bb468965-b760-451e-ab47-] print_ok 耗时: 0.894s
+sandbox 39132045-e437-48da-8568-704ce207b842 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.899s
+sandbox 18afb35e-56f3-4ae1-968d-274cda750f45 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.903s
+sandbox f049a888-a826-4e2c-ae42-0d98cbf5d26c [bb468965-b760-451e-ab47-] print_ok 耗时: 0.904s
+sandbox f57cbea0-6126-4b78-928c-3b466dd7830d [bb468965-b760-451e-ab47-] print_ok 耗时: 0.908s
+sandbox 64b4839d-a34c-456c-854e-8af1108580c3 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.908s
+sandbox 20ff766c-d474-4b48-8d06-89b6f49c0db7 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.915s
+sandbox 96c92a23-ec86-494d-aab0-4c5e26226fe2 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.919s
+sandbox c8ea4107-4080-424b-ab76-cfda545d3cd3 [bb468965-b760-451e-ab47-] print_ok 耗时: 0.924s
+sandbox 3d9167de-baac-4164-8ea6-2104856db70f [bb468965-b760-451e-ab47-] print_ok 耗时: 0.949s
+sandbox 3b05031c-4868-45eb-861c-361023c99509 [bb468965-b760-451e-ab47-] print_ok 耗时: 1.823s
+   print_ok: n=50 min=0.33s p50=0.37s max=1.82s
+── pause：50 台并发 ──
+pause 下发时间: 14:17:54.976  pause 结束时间: 14:17:56.085
+sandbox ad1a1b25-c35a-4691-9bbf-6a72a951fdba [bb468965-b760-451e-ab47-] pause 耗时: 0.585s
+sandbox db14d871-1a58-4e35-8c72-6cd064d5d5c5 [bb468965-b760-451e-ab47-] pause 耗时: 0.585s
+sandbox 9e0f8be5-74cf-4148-b5f9-afef2f120a31 [bb468965-b760-451e-ab47-] pause 耗时: 0.585s
+sandbox 169cdb3b-90b7-41de-95e9-5369846693f5 [bb468965-b760-451e-ab47-] pause 耗时: 0.592s
+sandbox 9f88a75e-4000-47df-aa6c-987be16d5ea8 [bb468965-b760-451e-ab47-] pause 耗时: 0.596s
+sandbox f92b457d-f6ed-409d-890a-fa6b570f53c4 [bb468965-b760-451e-ab47-] pause 耗时: 0.603s
+sandbox 5e374998-2a07-4299-84e5-0757e29fccc8 [bb468965-b760-451e-ab47-] pause 耗时: 0.613s
+sandbox a18dcb57-cdca-4d53-ad03-8c8444fde0f8 [bb468965-b760-451e-ab47-] pause 耗时: 0.617s
+sandbox 12c714cc-bebc-4d7d-9c4c-f00b074f500e [bb468965-b760-451e-ab47-] pause 耗时: 0.619s
+sandbox 2832d61d-9821-49f1-a451-36def56df7f2 [bb468965-b760-451e-ab47-] pause 耗时: 0.627s
+sandbox e9e92701-3c5f-4490-b9f9-842aa82cbb7f [bb468965-b760-451e-ab47-] pause 耗时: 0.667s
+sandbox d722681a-aaf1-4f39-944a-f237ac291711 [bb468965-b760-451e-ab47-] pause 耗时: 0.674s
+sandbox 2b31edab-5ee1-48fc-b185-7467dce6c367 [bb468965-b760-451e-ab47-] pause 耗时: 0.694s
+sandbox 801b847b-5177-4032-8bcf-606fbc37ea4a [bb468965-b760-451e-ab47-] pause 耗时: 0.696s
+sandbox a5c1d0ef-c022-4570-8d79-2ae9f2312f64 [bb468965-b760-451e-ab47-] pause 耗时: 0.710s
+sandbox b7ba8538-4ce3-4dc9-8891-6735f6aa3a05 [bb468965-b760-451e-ab47-] pause 耗时: 0.716s
+sandbox 2d3c8028-7983-49dc-b7cf-e08776231d6b [bb468965-b760-451e-ab47-] pause 耗时: 0.718s
+sandbox 20ff766c-d474-4b48-8d06-89b6f49c0db7 [bb468965-b760-451e-ab47-] pause 耗时: 0.742s
+sandbox 55fc3b74-b2f2-4e75-8cbe-52509816e481 [bb468965-b760-451e-ab47-] pause 耗时: 0.744s
+sandbox 738024f3-d7e1-4d7b-aba6-9208bb9d4f86 [bb468965-b760-451e-ab47-] pause 耗时: 0.744s
+sandbox 76ef3eff-4ca1-4bf2-b6e4-451f8398d470 [bb468965-b760-451e-ab47-] pause 耗时: 0.753s
+sandbox 8fb5c4d9-c5d1-4ed6-8dad-79631b2742f4 [bb468965-b760-451e-ab47-] pause 耗时: 0.754s
+sandbox 64b4839d-a34c-456c-854e-8af1108580c3 [bb468965-b760-451e-ab47-] pause 耗时: 0.755s
+sandbox 73affd6b-315b-4550-8e81-c2cf413710fc [bb468965-b760-451e-ab47-] pause 耗时: 0.756s
+sandbox c8ea4107-4080-424b-ab76-cfda545d3cd3 [bb468965-b760-451e-ab47-] pause 耗时: 0.759s
+sandbox 57e51db0-d661-44ed-a6f8-95f3f8333bfc [bb468965-b760-451e-ab47-] pause 耗时: 0.767s
+sandbox e70d694a-3d32-458a-81a6-fb0b7341838a [bb468965-b760-451e-ab47-] pause 耗时: 0.771s
+sandbox 789b04e8-5757-4d04-8bee-3abd29595ead [bb468965-b760-451e-ab47-] pause 耗时: 0.773s
+sandbox fa28aa06-96e0-4475-8743-e30b79902358 [bb468965-b760-451e-ab47-] pause 耗时: 0.773s
+sandbox a73b7526-c764-465e-9289-9c8357a3cb34 [bb468965-b760-451e-ab47-] pause 耗时: 0.779s
+sandbox 8eb920a9-c77c-4487-95f6-ac38d43bb93e [bb468965-b760-451e-ab47-] pause 耗时: 0.787s
+sandbox ab9e15ac-6bfd-4173-9521-5db3a39509f9 [bb468965-b760-451e-ab47-] pause 耗时: 0.793s
+sandbox 7dff1a58-815e-4b7d-b0fb-377cc3e93719 [bb468965-b760-451e-ab47-] pause 耗时: 0.793s
+sandbox dca91b97-c423-45b3-910d-56b75913c392 [bb468965-b760-451e-ab47-] pause 耗时: 0.802s
+sandbox 6350dff5-4e17-407f-a938-b9798a797d43 [bb468965-b760-451e-ab47-] pause 耗时: 0.810s
+sandbox e84985c2-05c4-4e03-b0d7-87b98b089449 [bb468965-b760-451e-ab47-] pause 耗时: 0.814s
+sandbox 3b283f43-aa9e-44a6-a7ec-6f72880bad4d [bb468965-b760-451e-ab47-] pause 耗时: 0.820s
+sandbox f049a888-a826-4e2c-ae42-0d98cbf5d26c [bb468965-b760-451e-ab47-] pause 耗时: 0.885s
+sandbox 79fc0874-4301-4ca7-888c-272a5a6addc9 [bb468965-b760-451e-ab47-] pause 耗时: 0.893s
+sandbox 96c92a23-ec86-494d-aab0-4c5e26226fe2 [bb468965-b760-451e-ab47-] pause 耗时: 0.916s
+sandbox 8c43a877-914d-4657-a5e4-db5f3d33edc6 [bb468965-b760-451e-ab47-] pause 耗时: 0.927s
+sandbox 18afb35e-56f3-4ae1-968d-274cda750f45 [bb468965-b760-451e-ab47-] pause 耗时: 0.929s
+sandbox 26b22468-2cad-42ea-8c48-9400594c3d77 [bb468965-b760-451e-ab47-] pause 耗时: 0.936s
+sandbox f57cbea0-6126-4b78-928c-3b466dd7830d [bb468965-b760-451e-ab47-] pause 耗时: 0.942s
+sandbox 6a40f530-897b-416d-aeaf-fbddb76df535 [bb468965-b760-451e-ab47-] pause 耗时: 0.949s
+sandbox 3d9167de-baac-4164-8ea6-2104856db70f [bb468965-b760-451e-ab47-] pause 耗时: 0.952s
+sandbox a4e231a4-7836-4f4d-80fb-41196f98a4e9 [bb468965-b760-451e-ab47-] pause 耗时: 0.965s
+sandbox 39132045-e437-48da-8568-704ce207b842 [bb468965-b760-451e-ab47-] pause 耗时: 0.966s
+sandbox bad2393b-cc9f-454f-b7c6-2b0322c57cdb [bb468965-b760-451e-ab47-] pause 耗时: 0.975s
+sandbox 3b05031c-4868-45eb-861c-361023c99509 [bb468965-b760-451e-ab47-] pause 耗时: 1.099s
+   pause: n=50 min=0.58s p50=0.76s max=1.10s
+── 状态核实 paused：50 台并发 ──
+verify_paused 下发时间: 14:17:56.097  verify_paused 结束时间: 14:17:56.319
+sandbox 2832d61d-9821-49f1-a451-36def56df7f2 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.070s
+sandbox a18dcb57-cdca-4d53-ad03-8c8444fde0f8 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.073s
+sandbox c8ea4107-4080-424b-ab76-cfda545d3cd3 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.074s
+sandbox 12c714cc-bebc-4d7d-9c4c-f00b074f500e [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.075s
+sandbox 20ff766c-d474-4b48-8d06-89b6f49c0db7 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.075s
+sandbox 9f88a75e-4000-47df-aa6c-987be16d5ea8 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.075s
+sandbox e9e92701-3c5f-4490-b9f9-842aa82cbb7f [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.075s
+sandbox ad1a1b25-c35a-4691-9bbf-6a72a951fdba [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.076s
+sandbox d722681a-aaf1-4f39-944a-f237ac291711 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.077s
+sandbox b7ba8538-4ce3-4dc9-8891-6735f6aa3a05 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.077s
+sandbox 64b4839d-a34c-456c-854e-8af1108580c3 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.078s
+sandbox 9e0f8be5-74cf-4148-b5f9-afef2f120a31 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.078s
+sandbox 5e374998-2a07-4299-84e5-0757e29fccc8 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.079s
+sandbox db14d871-1a58-4e35-8c72-6cd064d5d5c5 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.080s
+sandbox 55fc3b74-b2f2-4e75-8cbe-52509816e481 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.080s
+sandbox 738024f3-d7e1-4d7b-aba6-9208bb9d4f86 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.080s
+sandbox 169cdb3b-90b7-41de-95e9-5369846693f5 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.081s
+sandbox 8fb5c4d9-c5d1-4ed6-8dad-79631b2742f4 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.081s
+sandbox e70d694a-3d32-458a-81a6-fb0b7341838a [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.082s
+sandbox f92b457d-f6ed-409d-890a-fa6b570f53c4 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.084s
+sandbox 18afb35e-56f3-4ae1-968d-274cda750f45 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.136s
+sandbox 7dff1a58-815e-4b7d-b0fb-377cc3e93719 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.137s
+sandbox a73b7526-c764-465e-9289-9c8357a3cb34 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.138s
+sandbox 2b31edab-5ee1-48fc-b185-7467dce6c367 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.140s
+sandbox a4e231a4-7836-4f4d-80fb-41196f98a4e9 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.140s
+sandbox 3b05031c-4868-45eb-861c-361023c99509 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.142s
+sandbox 2d3c8028-7983-49dc-b7cf-e08776231d6b [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.142s
+sandbox f049a888-a826-4e2c-ae42-0d98cbf5d26c [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.142s
+sandbox 801b847b-5177-4032-8bcf-606fbc37ea4a [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.143s
+sandbox 6350dff5-4e17-407f-a938-b9798a797d43 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.145s
+sandbox bad2393b-cc9f-454f-b7c6-2b0322c57cdb [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.145s
+sandbox ab9e15ac-6bfd-4173-9521-5db3a39509f9 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.146s
+sandbox 79fc0874-4301-4ca7-888c-272a5a6addc9 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.146s
+sandbox 789b04e8-5757-4d04-8bee-3abd29595ead [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.149s
+sandbox 8c43a877-914d-4657-a5e4-db5f3d33edc6 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.149s
+sandbox a5c1d0ef-c022-4570-8d79-2ae9f2312f64 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.149s
+sandbox e84985c2-05c4-4e03-b0d7-87b98b089449 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.150s
+sandbox dca91b97-c423-45b3-910d-56b75913c392 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.150s
+sandbox 3b283f43-aa9e-44a6-a7ec-6f72880bad4d [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.152s
+sandbox 26b22468-2cad-42ea-8c48-9400594c3d77 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.155s
+sandbox 39132045-e437-48da-8568-704ce207b842 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.180s
+sandbox f57cbea0-6126-4b78-928c-3b466dd7830d [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.191s
+sandbox 96c92a23-ec86-494d-aab0-4c5e26226fe2 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.197s
+sandbox 76ef3eff-4ca1-4bf2-b6e4-451f8398d470 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.198s
+sandbox fa28aa06-96e0-4475-8743-e30b79902358 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.199s
+sandbox 57e51db0-d661-44ed-a6f8-95f3f8333bfc [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.199s
+sandbox 73affd6b-315b-4550-8e81-c2cf413710fc [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.200s
+sandbox 3d9167de-baac-4164-8ea6-2104856db70f [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.200s
+sandbox 6a40f530-897b-416d-aeaf-fbddb76df535 [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.202s
+sandbox 8eb920a9-c77c-4487-95f6-ac38d43bb93e [bb468965-b760-451e-ab47-] verify_paused 耗时: 0.205s
+   verify_paused: n=50 min=0.07s p50=0.14s max=0.20s
+── resume(connect)：50 台并发 ──
+resume 下发时间: 14:17:56.328  resume 结束时间: 14:17:57.478
+sandbox 3d9167de-baac-4164-8ea6-2104856db70f [bb468965-b760-451e-ab47-] resume 耗时: 0.703s
+sandbox 79fc0874-4301-4ca7-888c-272a5a6addc9 [bb468965-b760-451e-ab47-] resume 耗时: 0.757s
+sandbox 73affd6b-315b-4550-8e81-c2cf413710fc [bb468965-b760-451e-ab47-] resume 耗时: 0.759s
+sandbox 57e51db0-d661-44ed-a6f8-95f3f8333bfc [bb468965-b760-451e-ab47-] resume 耗时: 0.761s
+sandbox 26b22468-2cad-42ea-8c48-9400594c3d77 [bb468965-b760-451e-ab47-] resume 耗时: 0.762s
+sandbox 6a40f530-897b-416d-aeaf-fbddb76df535 [bb468965-b760-451e-ab47-] resume 耗时: 0.762s
+sandbox 8fb5c4d9-c5d1-4ed6-8dad-79631b2742f4 [bb468965-b760-451e-ab47-] resume 耗时: 0.769s
+sandbox 789b04e8-5757-4d04-8bee-3abd29595ead [bb468965-b760-451e-ab47-] resume 耗时: 0.770s
+sandbox bad2393b-cc9f-454f-b7c6-2b0322c57cdb [bb468965-b760-451e-ab47-] resume 耗时: 0.801s
+sandbox 8eb920a9-c77c-4487-95f6-ac38d43bb93e [bb468965-b760-451e-ab47-] resume 耗时: 0.804s
+sandbox fa28aa06-96e0-4475-8743-e30b79902358 [bb468965-b760-451e-ab47-] resume 耗时: 0.806s
+sandbox 18afb35e-56f3-4ae1-968d-274cda750f45 [bb468965-b760-451e-ab47-] resume 耗时: 0.807s
+sandbox 7dff1a58-815e-4b7d-b0fb-377cc3e93719 [bb468965-b760-451e-ab47-] resume 耗时: 0.809s
+sandbox b7ba8538-4ce3-4dc9-8891-6735f6aa3a05 [bb468965-b760-451e-ab47-] resume 耗时: 0.809s
+sandbox a73b7526-c764-465e-9289-9c8357a3cb34 [bb468965-b760-451e-ab47-] resume 耗时: 0.810s
+sandbox 2b31edab-5ee1-48fc-b185-7467dce6c367 [bb468965-b760-451e-ab47-] resume 耗时: 0.811s
+sandbox f049a888-a826-4e2c-ae42-0d98cbf5d26c [bb468965-b760-451e-ab47-] resume 耗时: 0.811s
+sandbox 169cdb3b-90b7-41de-95e9-5369846693f5 [bb468965-b760-451e-ab47-] resume 耗时: 0.812s
+sandbox a4e231a4-7836-4f4d-80fb-41196f98a4e9 [bb468965-b760-451e-ab47-] resume 耗时: 0.812s
+sandbox 39132045-e437-48da-8568-704ce207b842 [bb468965-b760-451e-ab47-] resume 耗时: 0.812s
+sandbox 3b05031c-4868-45eb-861c-361023c99509 [bb468965-b760-451e-ab47-] resume 耗时: 0.812s
+sandbox 8c43a877-914d-4657-a5e4-db5f3d33edc6 [bb468965-b760-451e-ab47-] resume 耗时: 0.816s
+sandbox ab9e15ac-6bfd-4173-9521-5db3a39509f9 [bb468965-b760-451e-ab47-] resume 耗时: 0.816s
+sandbox a5c1d0ef-c022-4570-8d79-2ae9f2312f64 [bb468965-b760-451e-ab47-] resume 耗时: 0.816s
+sandbox e84985c2-05c4-4e03-b0d7-87b98b089449 [bb468965-b760-451e-ab47-] resume 耗时: 0.818s
+sandbox 3b283f43-aa9e-44a6-a7ec-6f72880bad4d [bb468965-b760-451e-ab47-] resume 耗时: 0.821s
+sandbox 2832d61d-9821-49f1-a451-36def56df7f2 [bb468965-b760-451e-ab47-] resume 耗时: 0.822s
+sandbox 801b847b-5177-4032-8bcf-606fbc37ea4a [bb468965-b760-451e-ab47-] resume 耗时: 0.823s
+sandbox 2d3c8028-7983-49dc-b7cf-e08776231d6b [bb468965-b760-451e-ab47-] resume 耗时: 0.824s
+sandbox 6350dff5-4e17-407f-a938-b9798a797d43 [bb468965-b760-451e-ab47-] resume 耗时: 0.824s
+sandbox dca91b97-c423-45b3-910d-56b75913c392 [bb468965-b760-451e-ab47-] resume 耗时: 1.116s
+sandbox 20ff766c-d474-4b48-8d06-89b6f49c0db7 [bb468965-b760-451e-ab47-] resume 耗时: 1.118s
+sandbox 96c92a23-ec86-494d-aab0-4c5e26226fe2 [bb468965-b760-451e-ab47-] resume 耗时: 1.119s
+sandbox f92b457d-f6ed-409d-890a-fa6b570f53c4 [bb468965-b760-451e-ab47-] resume 耗时: 1.120s
+sandbox e70d694a-3d32-458a-81a6-fb0b7341838a [bb468965-b760-451e-ab47-] resume 耗时: 1.120s
+sandbox 64b4839d-a34c-456c-854e-8af1108580c3 [bb468965-b760-451e-ab47-] resume 耗时: 1.121s
+sandbox ad1a1b25-c35a-4691-9bbf-6a72a951fdba [bb468965-b760-451e-ab47-] resume 耗时: 1.121s
+sandbox f57cbea0-6126-4b78-928c-3b466dd7830d [bb468965-b760-451e-ab47-] resume 耗时: 1.124s
+sandbox 76ef3eff-4ca1-4bf2-b6e4-451f8398d470 [bb468965-b760-451e-ab47-] resume 耗时: 1.124s
+sandbox 12c714cc-bebc-4d7d-9c4c-f00b074f500e [bb468965-b760-451e-ab47-] resume 耗时: 1.125s
+sandbox 9e0f8be5-74cf-4148-b5f9-afef2f120a31 [bb468965-b760-451e-ab47-] resume 耗时: 1.125s
+sandbox e9e92701-3c5f-4490-b9f9-842aa82cbb7f [bb468965-b760-451e-ab47-] resume 耗时: 1.125s
+sandbox d722681a-aaf1-4f39-944a-f237ac291711 [bb468965-b760-451e-ab47-] resume 耗时: 1.128s
+sandbox db14d871-1a58-4e35-8c72-6cd064d5d5c5 [bb468965-b760-451e-ab47-] resume 耗时: 1.128s
+sandbox 9f88a75e-4000-47df-aa6c-987be16d5ea8 [bb468965-b760-451e-ab47-] resume 耗时: 1.128s
+sandbox c8ea4107-4080-424b-ab76-cfda545d3cd3 [bb468965-b760-451e-ab47-] resume 耗时: 1.129s
+sandbox a18dcb57-cdca-4d53-ad03-8c8444fde0f8 [bb468965-b760-451e-ab47-] resume 耗时: 1.130s
+sandbox 738024f3-d7e1-4d7b-aba6-9208bb9d4f86 [bb468965-b760-451e-ab47-] resume 耗时: 1.131s
+sandbox 55fc3b74-b2f2-4e75-8cbe-52509816e481 [bb468965-b760-451e-ab47-] resume 耗时: 1.137s
+sandbox 5e374998-2a07-4299-84e5-0757e29fccc8 [bb468965-b760-451e-ab47-] resume 耗时: 1.146s
+   resume: n=50 min=0.70s p50=0.82s max=1.15s
+── resume 后命令核实：50 台并发 ──
+resume_verify 下发时间: 14:17:57.478  resume_verify 结束时间: 14:17:58.007
+sandbox a18dcb57-cdca-4d53-ad03-8c8444fde0f8 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.244s
+sandbox f92b457d-f6ed-409d-890a-fa6b570f53c4 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.247s
+sandbox db14d871-1a58-4e35-8c72-6cd064d5d5c5 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.253s
+sandbox 9f88a75e-4000-47df-aa6c-987be16d5ea8 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.254s
+sandbox 76ef3eff-4ca1-4bf2-b6e4-451f8398d470 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.259s
+sandbox dca91b97-c423-45b3-910d-56b75913c392 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.260s
+sandbox e9e92701-3c5f-4490-b9f9-842aa82cbb7f [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.269s
+sandbox 9e0f8be5-74cf-4148-b5f9-afef2f120a31 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.281s
+sandbox d722681a-aaf1-4f39-944a-f237ac291711 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.295s
+sandbox ad1a1b25-c35a-4691-9bbf-6a72a951fdba [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.326s
+sandbox e70d694a-3d32-458a-81a6-fb0b7341838a [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.358s
+sandbox 738024f3-d7e1-4d7b-aba6-9208bb9d4f86 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.362s
+sandbox 20ff766c-d474-4b48-8d06-89b6f49c0db7 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.365s
+sandbox c8ea4107-4080-424b-ab76-cfda545d3cd3 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.376s
+sandbox f57cbea0-6126-4b78-928c-3b466dd7830d [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.379s
+sandbox 12c714cc-bebc-4d7d-9c4c-f00b074f500e [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.380s
+sandbox 64b4839d-a34c-456c-854e-8af1108580c3 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.382s
+sandbox 96c92a23-ec86-494d-aab0-4c5e26226fe2 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.384s
+sandbox 7dff1a58-815e-4b7d-b0fb-377cc3e93719 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.410s
+sandbox 2832d61d-9821-49f1-a451-36def56df7f2 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.411s
+sandbox 169cdb3b-90b7-41de-95e9-5369846693f5 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.422s
+sandbox 5e374998-2a07-4299-84e5-0757e29fccc8 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.459s
+sandbox 55fc3b74-b2f2-4e75-8cbe-52509816e481 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.476s
+sandbox ab9e15ac-6bfd-4173-9521-5db3a39509f9 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.488s
+sandbox 6350dff5-4e17-407f-a938-b9798a797d43 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.489s
+sandbox 2d3c8028-7983-49dc-b7cf-e08776231d6b [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.520s
+sandbox a5c1d0ef-c022-4570-8d79-2ae9f2312f64 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.531s
+sandbox e84985c2-05c4-4e03-b0d7-87b98b089449 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.536s
+sandbox 3b283f43-aa9e-44a6-a7ec-6f72880bad4d [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.536s
+sandbox b7ba8538-4ce3-4dc9-8891-6735f6aa3a05 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.539s
+sandbox a73b7526-c764-465e-9289-9c8357a3cb34 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.541s
+sandbox 801b847b-5177-4032-8bcf-606fbc37ea4a [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.542s
+sandbox 8eb920a9-c77c-4487-95f6-ac38d43bb93e [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.543s
+sandbox fa28aa06-96e0-4475-8743-e30b79902358 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.545s
+sandbox 57e51db0-d661-44ed-a6f8-95f3f8333bfc [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.552s
+sandbox 2b31edab-5ee1-48fc-b185-7467dce6c367 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.557s
+sandbox 8fb5c4d9-c5d1-4ed6-8dad-79631b2742f4 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.578s
+sandbox 789b04e8-5757-4d04-8bee-3abd29595ead [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.582s
+sandbox 73affd6b-315b-4550-8e81-c2cf413710fc [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.599s
+sandbox 8c43a877-914d-4657-a5e4-db5f3d33edc6 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.633s
+sandbox a4e231a4-7836-4f4d-80fb-41196f98a4e9 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.644s
+sandbox f049a888-a826-4e2c-ae42-0d98cbf5d26c [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.648s
+sandbox 39132045-e437-48da-8568-704ce207b842 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.667s
+sandbox 18afb35e-56f3-4ae1-968d-274cda750f45 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.668s
+sandbox bad2393b-cc9f-454f-b7c6-2b0322c57cdb [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.670s
+sandbox 6a40f530-897b-416d-aeaf-fbddb76df535 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.703s
+sandbox 79fc0874-4301-4ca7-888c-272a5a6addc9 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.712s
+sandbox 26b22468-2cad-42ea-8c48-9400594c3d77 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.716s
+sandbox 3d9167de-baac-4164-8ea6-2104856db70f [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.766s
+sandbox 3b05031c-4868-45eb-861c-361023c99509 [bb468965-b760-451e-ab47-] resume_verify 耗时: 0.846s
+   resume_verify: n=50 min=0.24s p50=0.50s max=0.85s
+── restart：50 台并发 ──
+── restart 后命令核实：50 台并发 ──
+── update_timeout(TTL+60s)：50 台并发 ──
+update_timeout 下发时间: 14:17:58.038  update_timeout 结束时间: 14:17:58.274
+sandbox 96c92a23-ec86-494d-aab0-4c5e26226fe2 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.075s
+sandbox e9e92701-3c5f-4490-b9f9-842aa82cbb7f [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.076s
+sandbox f92b457d-f6ed-409d-890a-fa6b570f53c4 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.077s
+sandbox e70d694a-3d32-458a-81a6-fb0b7341838a [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.078s
+sandbox ad1a1b25-c35a-4691-9bbf-6a72a951fdba [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.079s
+sandbox 5e374998-2a07-4299-84e5-0757e29fccc8 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.081s
+sandbox 738024f3-d7e1-4d7b-aba6-9208bb9d4f86 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.081s
+sandbox 9e0f8be5-74cf-4148-b5f9-afef2f120a31 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.081s
+sandbox db14d871-1a58-4e35-8c72-6cd064d5d5c5 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.082s
+sandbox b7ba8538-4ce3-4dc9-8891-6735f6aa3a05 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.082s
+sandbox 64b4839d-a34c-456c-854e-8af1108580c3 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.083s
+sandbox 12c714cc-bebc-4d7d-9c4c-f00b074f500e [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.083s
+sandbox 2832d61d-9821-49f1-a451-36def56df7f2 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.084s
+sandbox 9f88a75e-4000-47df-aa6c-987be16d5ea8 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.084s
+sandbox 8fb5c4d9-c5d1-4ed6-8dad-79631b2742f4 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.085s
+sandbox c8ea4107-4080-424b-ab76-cfda545d3cd3 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.086s
+sandbox d722681a-aaf1-4f39-944a-f237ac291711 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.087s
+sandbox a18dcb57-cdca-4d53-ad03-8c8444fde0f8 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.087s
+sandbox 20ff766c-d474-4b48-8d06-89b6f49c0db7 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.087s
+sandbox 55fc3b74-b2f2-4e75-8cbe-52509816e481 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.088s
+sandbox bad2393b-cc9f-454f-b7c6-2b0322c57cdb [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.147s
+sandbox 789b04e8-5757-4d04-8bee-3abd29595ead [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.148s
+sandbox 801b847b-5177-4032-8bcf-606fbc37ea4a [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.148s
+sandbox dca91b97-c423-45b3-910d-56b75913c392 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.149s
+sandbox 76ef3eff-4ca1-4bf2-b6e4-451f8398d470 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.150s
+sandbox f57cbea0-6126-4b78-928c-3b466dd7830d [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.150s
+sandbox 6a40f530-897b-416d-aeaf-fbddb76df535 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.150s
+sandbox 7dff1a58-815e-4b7d-b0fb-377cc3e93719 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.151s
+sandbox e84985c2-05c4-4e03-b0d7-87b98b089449 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.152s
+sandbox a73b7526-c764-465e-9289-9c8357a3cb34 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.152s
+sandbox 3d9167de-baac-4164-8ea6-2104856db70f [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.153s
+sandbox fa28aa06-96e0-4475-8743-e30b79902358 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.153s
+sandbox 2b31edab-5ee1-48fc-b185-7467dce6c367 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.154s
+sandbox 18afb35e-56f3-4ae1-968d-274cda750f45 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.156s
+sandbox 39132045-e437-48da-8568-704ce207b842 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.157s
+sandbox 8c43a877-914d-4657-a5e4-db5f3d33edc6 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.157s
+sandbox 3b283f43-aa9e-44a6-a7ec-6f72880bad4d [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.158s
+sandbox 169cdb3b-90b7-41de-95e9-5369846693f5 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.158s
+sandbox ab9e15ac-6bfd-4173-9521-5db3a39509f9 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.159s
+sandbox 3b05031c-4868-45eb-861c-361023c99509 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.171s
+sandbox 6350dff5-4e17-407f-a938-b9798a797d43 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.190s
+sandbox a4e231a4-7836-4f4d-80fb-41196f98a4e9 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.195s
+sandbox 79fc0874-4301-4ca7-888c-272a5a6addc9 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.196s
+sandbox 2d3c8028-7983-49dc-b7cf-e08776231d6b [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.198s
+sandbox 26b22468-2cad-42ea-8c48-9400594c3d77 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.202s
+sandbox f049a888-a826-4e2c-ae42-0d98cbf5d26c [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.205s
+sandbox a5c1d0ef-c022-4570-8d79-2ae9f2312f64 [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.211s
+sandbox 73affd6b-315b-4550-8e81-c2cf413710fc [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.211s
+sandbox 57e51db0-d661-44ed-a6f8-95f3f8333bfc [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.212s
+sandbox 8eb920a9-c77c-4487-95f6-ac38d43bb93e [bb468965-b760-451e-ab47-] update_timeout 耗时: 0.215s
+   update_timeout: n=50 min=0.07s p50=0.15s max=0.21s
+── kill：50 台并发 ──
+kill 下发时间: 14:17:58.290  kill 结束时间: 14:17:58.523
+sandbox 5e374998-2a07-4299-84e5-0757e29fccc8 [bb468965-b760-451e-ab47-] kill 耗时: 0.074s
+sandbox 3d9167de-baac-4164-8ea6-2104856db70f [bb468965-b760-451e-ab47-] kill 耗时: 0.083s
+sandbox e9e92701-3c5f-4490-b9f9-842aa82cbb7f [bb468965-b760-451e-ab47-] kill 耗时: 0.085s
+sandbox 9f88a75e-4000-47df-aa6c-987be16d5ea8 [bb468965-b760-451e-ab47-] kill 耗时: 0.086s
+sandbox 2832d61d-9821-49f1-a451-36def56df7f2 [bb468965-b760-451e-ab47-] kill 耗时: 0.086s
+sandbox b7ba8538-4ce3-4dc9-8891-6735f6aa3a05 [bb468965-b760-451e-ab47-] kill 耗时: 0.086s
+sandbox 6a40f530-897b-416d-aeaf-fbddb76df535 [bb468965-b760-451e-ab47-] kill 耗时: 0.086s
+sandbox 20ff766c-d474-4b48-8d06-89b6f49c0db7 [bb468965-b760-451e-ab47-] kill 耗时: 0.087s
+sandbox c8ea4107-4080-424b-ab76-cfda545d3cd3 [bb468965-b760-451e-ab47-] kill 耗时: 0.088s
+sandbox f92b457d-f6ed-409d-890a-fa6b570f53c4 [bb468965-b760-451e-ab47-] kill 耗时: 0.088s
+sandbox 9e0f8be5-74cf-4148-b5f9-afef2f120a31 [bb468965-b760-451e-ab47-] kill 耗时: 0.089s
+sandbox e70d694a-3d32-458a-81a6-fb0b7341838a [bb468965-b760-451e-ab47-] kill 耗时: 0.089s
+sandbox 738024f3-d7e1-4d7b-aba6-9208bb9d4f86 [bb468965-b760-451e-ab47-] kill 耗时: 0.090s
+sandbox d722681a-aaf1-4f39-944a-f237ac291711 [bb468965-b760-451e-ab47-] kill 耗时: 0.091s
+sandbox db14d871-1a58-4e35-8c72-6cd064d5d5c5 [bb468965-b760-451e-ab47-] kill 耗时: 0.091s
+sandbox a18dcb57-cdca-4d53-ad03-8c8444fde0f8 [bb468965-b760-451e-ab47-] kill 耗时: 0.091s
+sandbox 55fc3b74-b2f2-4e75-8cbe-52509816e481 [bb468965-b760-451e-ab47-] kill 耗时: 0.092s
+sandbox ad1a1b25-c35a-4691-9bbf-6a72a951fdba [bb468965-b760-451e-ab47-] kill 耗时: 0.092s
+sandbox 12c714cc-bebc-4d7d-9c4c-f00b074f500e [bb468965-b760-451e-ab47-] kill 耗时: 0.093s
+sandbox 64b4839d-a34c-456c-854e-8af1108580c3 [bb468965-b760-451e-ab47-] kill 耗时: 0.094s
+sandbox 76ef3eff-4ca1-4bf2-b6e4-451f8398d470 [bb468965-b760-451e-ab47-] kill 耗时: 0.140s
+sandbox 8c43a877-914d-4657-a5e4-db5f3d33edc6 [bb468965-b760-451e-ab47-] kill 耗时: 0.153s
+sandbox 79fc0874-4301-4ca7-888c-272a5a6addc9 [bb468965-b760-451e-ab47-] kill 耗时: 0.155s
+sandbox 169cdb3b-90b7-41de-95e9-5369846693f5 [bb468965-b760-451e-ab47-] kill 耗时: 0.155s
+sandbox e84985c2-05c4-4e03-b0d7-87b98b089449 [bb468965-b760-451e-ab47-] kill 耗时: 0.156s
+sandbox 2b31edab-5ee1-48fc-b185-7467dce6c367 [bb468965-b760-451e-ab47-] kill 耗时: 0.156s
+sandbox 8eb920a9-c77c-4487-95f6-ac38d43bb93e [bb468965-b760-451e-ab47-] kill 耗时: 0.156s
+sandbox a5c1d0ef-c022-4570-8d79-2ae9f2312f64 [bb468965-b760-451e-ab47-] kill 耗时: 0.156s
+sandbox 2d3c8028-7983-49dc-b7cf-e08776231d6b [bb468965-b760-451e-ab47-] kill 耗时: 0.156s
+sandbox dca91b97-c423-45b3-910d-56b75913c392 [bb468965-b760-451e-ab47-] kill 耗时: 0.157s
+sandbox fa28aa06-96e0-4475-8743-e30b79902358 [bb468965-b760-451e-ab47-] kill 耗时: 0.157s
+sandbox a4e231a4-7836-4f4d-80fb-41196f98a4e9 [bb468965-b760-451e-ab47-] kill 耗时: 0.159s
+sandbox 26b22468-2cad-42ea-8c48-9400594c3d77 [bb468965-b760-451e-ab47-] kill 耗时: 0.160s
+sandbox 73affd6b-315b-4550-8e81-c2cf413710fc [bb468965-b760-451e-ab47-] kill 耗时: 0.160s
+sandbox 789b04e8-5757-4d04-8bee-3abd29595ead [bb468965-b760-451e-ab47-] kill 耗时: 0.160s
+sandbox 57e51db0-d661-44ed-a6f8-95f3f8333bfc [bb468965-b760-451e-ab47-] kill 耗时: 0.163s
+sandbox f57cbea0-6126-4b78-928c-3b466dd7830d [bb468965-b760-451e-ab47-] kill 耗时: 0.163s
+sandbox 3b283f43-aa9e-44a6-a7ec-6f72880bad4d [bb468965-b760-451e-ab47-] kill 耗时: 0.164s
+sandbox 39132045-e437-48da-8568-704ce207b842 [bb468965-b760-451e-ab47-] kill 耗时: 0.165s
+sandbox f049a888-a826-4e2c-ae42-0d98cbf5d26c [bb468965-b760-451e-ab47-] kill 耗时: 0.166s
+sandbox bad2393b-cc9f-454f-b7c6-2b0322c57cdb [bb468965-b760-451e-ab47-] kill 耗时: 0.196s
+sandbox 801b847b-5177-4032-8bcf-606fbc37ea4a [bb468965-b760-451e-ab47-] kill 耗时: 0.199s
+sandbox a73b7526-c764-465e-9289-9c8357a3cb34 [bb468965-b760-451e-ab47-] kill 耗时: 0.201s
+sandbox ab9e15ac-6bfd-4173-9521-5db3a39509f9 [bb468965-b760-451e-ab47-] kill 耗时: 0.201s
+sandbox 8fb5c4d9-c5d1-4ed6-8dad-79631b2742f4 [bb468965-b760-451e-ab47-] kill 耗时: 0.208s
+sandbox 96c92a23-ec86-494d-aab0-4c5e26226fe2 [bb468965-b760-451e-ab47-] kill 耗时: 0.214s
+sandbox 18afb35e-56f3-4ae1-968d-274cda750f45 [bb468965-b760-451e-ab47-] kill 耗时: 0.214s
+sandbox 3b05031c-4868-45eb-861c-361023c99509 [bb468965-b760-451e-ab47-] kill 耗时: 0.215s
+sandbox 6350dff5-4e17-407f-a938-b9798a797d43 [bb468965-b760-451e-ab47-] kill 耗时: 0.218s
+sandbox 7dff1a58-815e-4b7d-b0fb-377cc3e93719 [bb468965-b760-451e-ab47-] kill 耗时: 0.219s
+   kill: n=50 min=0.07s p50=0.16s max=0.22s
+
+管理操作耗时统计（并发口径：50 个 sandbox 同一瞬间执行同一操作，队列深度=50）────────
+
+操作                n     min     p50     p90     p95     max    mean  失败/其他
+create           50    0.48    0.51    0.55    0.55    0.55    0.52  -
+print_ok         50    0.33    0.37    0.91    0.92    1.82    0.60  -
+pause            50    0.58    0.76    0.95    0.97    1.10    0.77  -
+verify_paused    50    0.07    0.14    0.20    0.20    0.20    0.13  -
+resume           50    0.70    0.82    1.13    1.13    1.15    0.93  -
+resume_verify    50    0.24    0.50    0.67    0.71    0.85    0.48  -
+restart           0       -       -       -       -       -       -  unsupported x50
+update_timeout   50    0.07    0.15    0.20    0.21    0.21    0.14  -
+kill             50    0.07    0.16    0.21    0.21    0.22    0.14  -
+
+ 总墙钟 6s
+ 报告 -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261112_141752.txt
+ CSV  -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261112_141752.csv
