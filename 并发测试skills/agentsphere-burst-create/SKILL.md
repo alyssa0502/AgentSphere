@@ -27,22 +27,38 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 
 依赖：`pip install e2b e2b-code-interpreter`（venv 已装）。
 
-## 快速开始
+## 快速开始（实测定版命令序列，2026-11-11 全通）
 
 ```powershell
 # 0) 冒烟：3 台确认环境通
 & $py burst_create.py --count 3
 
-# 0.5) 盘点模板下有多少快照（快照=模板的 build），列出全部快照 ID 并生成引用文件
+# 1) 盘点模板下有多少快照（快照=模板的 build），列出全部快照 ID 并生成引用文件
 & $py snapshot_probe.py --template <模板ID>          # --all-builds 连 error 的也列出
 
-# 1) 快照路线：用盘点出的引用并发拉起（引用=模板ID:快照ID 复合串，见"坑"3/7）
-& $py burst_create.py --snapshots @snapshots_found.txt --count 52 --sla 2.0
-& $py burst_create.py --snapshots <模板ID>:<快照ID> --count 50 --sla 2.0   # 1 个快照拉 50 台
+# 2) 同一模板直拉 50 台（最新状态），测完保留（--keep 留的台靠 TTL 回收）
+& $py burst_create.py --template <模板ID> --count 50 --keep
 
-# 2) 模板直拉路线
-& $py burst_create.py --template 92db8659-f980-4576-80ec-c7cf9b69348f --count 50
+# 3) N 个快照各拉 1 台（多快照并发交付；引用文件=第 1 步 snapshot_probe 产出；
+#    PowerShell 里 @文件 必须带引号，否则被当数组展开）
+& $py burst_create.py --snapshots "@snapshots_found.txt" --count 50 --sla 2.0 --keep --timeout 3600
+
+# 4) 1 个快照循环复用拉 50 台（引用=模板ID:快照ID 复合串，见"坑"3/7）
+& $py burst_create.py --snapshots "<模板ID>:<快照ID>" --count 50 --sla 2.0
 ```
+
+## 新用户接入：把 5 处信息换成你自己的
+
+拿到 skill 后按顺序改，改完先冒烟（`--count 3`）再上量：
+
+1. **Python**：任何装了依赖的 Python 3 均可——`pip install e2b e2b-code-interpreter`，把示例里的 `$py` 换成你的 python 路径（示例的 venv 路径只在本机有效）
+2. **脚本路径**：skill 文件夹整个拷到哪里，命令就指向哪里的 `burst_create.py` / `snapshot_probe.py`
+3. **区域三件套**（只走环境变量，绝不写进脚本/文件）：
+   - `E2B_API_KEY` = 你的 key：临时 `$env:E2B_API_KEY='<key>'`，永久 `setx E2B_API_KEY <key>`（重开终端生效）
+   - `E2B_API_URL` = 你区域的 API 域名（示例 cn-southwest-2；**必须 `agentsandbox.` 前缀**，见"坑"1）
+   - `E2B_SANDBOX_URL` = 你区域的沙箱网关域名（随区域开通信息下发，整体随区域换）
+4. **模板 ID**：换成你自己的（`--template <你的模板ID>` 或 `setx TEMPLATE_ID <ID>`）。**模板 ID 不跨区**——换区域必须连三件套一起换，只换 ID 必 404；新模板首发无热池，首轮数字不能对标热池基线
+5. **快照引用**：快照是平台侧资产，先 `snapshot_probe.py --template <你的模板ID>` 盘点你自己的模板拿引用；引用必须拼成 `模板ID:快照ID` 复合串（裸快照 UUID 直接传 404，见"坑"3）
 
 ## 参数
 
