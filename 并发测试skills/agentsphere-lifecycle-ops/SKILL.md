@@ -44,13 +44,27 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 & $py lifecycle_ops_bench.py --skip-ttl
 & $py lifecycle_ops_bench.py --skip-ops --ttl 120 --ttl-count 5
 
-# 场景：1 个快照引用拉 N 台跑并发生命周期（循环复用同一引用）
-& $py lifecycle_ops_bench.py --snapshots <templateID:buildID> --mode volley --count 20 --skip-ttl
+# ★ 场景一（实测定版）：1 个快照引用拉 50 台，并发生命周期操作
+#   （N 个 sandbox 先全部 create 到位，然后同一瞬间并发 pause / 并发 resume / 并发 kill）
+& $py lifecycle_ops_bench.py --snapshots "<模板ID>:<快照ID>" --count 50 --mode volley --skip-ttl
 
-# 场景：N 个快照同时拉 N 台并发生命周期管理（引用不足自动循环）
-& $py lifecycle_ops_bench.py --snapshots <ref1>,<ref2>,<ref3> --mode volley --skip-ttl
-& $py lifecycle_ops_bench.py --snapshots @refs.txt --mode volley --count 30 --skip-ttl
+# ★ 场景二（实测定版）：N 个快照各拉 1 台，并发生命周期操作
+#   （引用文件 = burst-create skill 的 snapshot_probe.py 产出；PowerShell 里 @文件 必须带引号）
+& $py lifecycle_ops_bench.py --snapshots "@snapshots_found.txt" --count 50 --mode volley --skip-ttl
 ```
+
+## 新用户接入：把 5 处信息换成你自己的
+
+拿到 skill 后按顺序改，改完先冒烟（`--count 1 --ttl-count 0 --skip-ttl`）再上量：
+
+1. **Python**：任何装了依赖的 Python 3 均可——`pip install e2b e2b-code-interpreter`，把示例里的 `$py` 换成你的 python 路径（示例的 venv 路径只在本机有效）
+2. **脚本路径**：skill 文件夹整个拷到哪里，命令就指向哪里的 `lifecycle_ops_bench.py`
+3. **区域三件套**（只走环境变量，绝不写进脚本/文件）：
+   - `E2B_API_KEY` = 你的 key：临时 `$env:E2B_API_KEY='<key>'`，永久 `setx E2B_API_KEY <key>`（重开终端生效）
+   - `E2B_API_URL` = 你区域的 API 域名（示例 cn-southwest-2；**必须 `agentsandbox.` 前缀**，见"坑"1）
+   - `E2B_SANDBOX_URL` = 你区域的沙箱网关域名（随区域开通信息下发，整体随区域换）
+4. **模板 ID / 快照引用**：模板换成你自己的（`--template <ID>` 或 `setx TEMPLATE_ID <ID>`，**模板 ID 不跨区**，换区域连三件套整体换）；快照是平台侧资产，用 burst-create skill 的 `snapshot_probe.py --template <你的模板ID>` 盘点你自己的模板拿引用，引用必须拼成 `模板ID:快照ID` 复合串（裸快照 UUID 直接传 404，见"坑"7）
+5. **规模与时限**：`--count` 台数、`--sla` 达标阈值（默认 2s）、`--ttl`/`--ttl-count` 观察时长与台数按你的报告口径调；`--skip-ttl` 跳过 TTL 观察只测管理操作
 
 ## 参数
 
