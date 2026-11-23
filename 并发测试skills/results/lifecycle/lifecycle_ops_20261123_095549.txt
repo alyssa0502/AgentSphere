@@ -1,0 +1,17 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  来源: 模板 bb468965-b760-451e-ab47-e04930296073
+ 2026-11-23 09:55:49  操作台数 5  TTL 台数 2  模式 serial  TTL=120s
+════════════════════════════════════════════════════════════════
+
+══ TTL 自动销毁观察：2 台 / TTL=120s / 轮询 2.0s ══
+  TTL[0] 7ca56109 ref=bb468965-b760-451e-ab47-e049 create=0.53s，120s 后到期
+  TTL[1] b7611735 ref=bb468965-b760-451e-ab47-e049 create=0.10s，120s 后到期
+  TTL[0] 7ca56109 判死: 到期 +61.4s
+  TTL[1] b7611735 判死: 到期 +61.3s
+
+  TTL销毁延迟（计划到期→观察到死亡，n=2，未观察到 0 台）:
+    min +61.3s   p50 +61.3s   max +61.4s   mean +61.3s
+
+ 总墙钟 186s
+ 报告 -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261123_095549.txt
+ CSV  -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261123_095549.csv

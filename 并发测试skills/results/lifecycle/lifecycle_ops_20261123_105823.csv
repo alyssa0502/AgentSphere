@@ -1,0 +1,46 @@
+﻿phase,idx,sid,op,elapsed,status,off,detail
+ops,0,7b3edd92-b5ca-430c-bf90-04a40beb5e22,create,0.503,ok,0.503,ref=bb468965-b760-451e-ab47-e04930296073
+ops,0,7b3edd92-b5ca-430c-bf90-04a40beb5e22,create_verify,0.61,ok,1.113,attempt1
+ops,0,7b3edd92-b5ca-430c-bf90-04a40beb5e22,pause,0.567,ok,1.68,
+ops,0,7b3edd92-b5ca-430c-bf90-04a40beb5e22,verify_paused,0.096,ok,1.776,state=paused
+ops,0,7b3edd92-b5ca-430c-bf90-04a40beb5e22,resume,0.652,ok,2.428,connect(paused)
+ops,0,7b3edd92-b5ca-430c-bf90-04a40beb5e22,resume_verify,0.271,ok,2.699,attempt1
+ops,0,7b3edd92-b5ca-430c-bf90-04a40beb5e22,restart,-1,unsupported,2.699,SDK/平台无 restart 接口
+ops,0,7b3edd92-b5ca-430c-bf90-04a40beb5e22,update_timeout,0.096,ok,2.795,TTL+60s
+ops,0,7b3edd92-b5ca-430c-bf90-04a40beb5e22,kill,0.087,ok,2.882,
+ops,1,7499ca99-4ac7-4a1b-8a44-f4b88d5a6605,create,0.096,ok,0.096,ref=bb468965-b760-451e-ab47-e04930296073
+ops,1,7499ca99-4ac7-4a1b-8a44-f4b88d5a6605,create_verify,0.147,ok,0.243,attempt1
+ops,1,7499ca99-4ac7-4a1b-8a44-f4b88d5a6605,pause,0.586,ok,0.829,
+ops,1,7499ca99-4ac7-4a1b-8a44-f4b88d5a6605,verify_paused,0.079,ok,0.908,state=paused
+ops,1,7499ca99-4ac7-4a1b-8a44-f4b88d5a6605,resume,1.151,ok,2.059,connect(paused)
+ops,1,7499ca99-4ac7-4a1b-8a44-f4b88d5a6605,resume_verify,0.242,ok,2.3,attempt1
+ops,1,7499ca99-4ac7-4a1b-8a44-f4b88d5a6605,restart,-1,unsupported,2.301,SDK/平台无 restart 接口
+ops,1,7499ca99-4ac7-4a1b-8a44-f4b88d5a6605,update_timeout,0.085,ok,2.385,TTL+60s
+ops,1,7499ca99-4ac7-4a1b-8a44-f4b88d5a6605,kill,0.086,ok,2.472,
+ops,2,831da3d0-a26e-4711-8756-b7dc1c63dde0,create,0.098,ok,0.098,ref=bb468965-b760-451e-ab47-e04930296073
+ops,2,831da3d0-a26e-4711-8756-b7dc1c63dde0,create_verify,0.148,ok,0.246,attempt1
+ops,2,831da3d0-a26e-4711-8756-b7dc1c63dde0,pause,0.595,ok,0.842,
+ops,2,831da3d0-a26e-4711-8756-b7dc1c63dde0,verify_paused,0.075,ok,0.917,state=paused
+ops,2,831da3d0-a26e-4711-8756-b7dc1c63dde0,resume,0.612,ok,1.529,connect(paused)
+ops,2,831da3d0-a26e-4711-8756-b7dc1c63dde0,resume_verify,0.241,ok,1.77,attempt1
+ops,2,831da3d0-a26e-4711-8756-b7dc1c63dde0,restart,-1,unsupported,1.77,SDK/平台无 restart 接口
+ops,2,831da3d0-a26e-4711-8756-b7dc1c63dde0,update_timeout,0.085,ok,1.856,TTL+60s
+ops,2,831da3d0-a26e-4711-8756-b7dc1c63dde0,kill,0.081,ok,1.936,
+ops,3,ad10358c-f6c4-499c-b66b-ba59f3e166da,create,0.095,ok,0.095,ref=bb468965-b760-451e-ab47-e04930296073
+ops,3,ad10358c-f6c4-499c-b66b-ba59f3e166da,create_verify,0.161,ok,0.256,attempt1
+ops,3,ad10358c-f6c4-499c-b66b-ba59f3e166da,pause,0.58,ok,0.836,
+ops,3,ad10358c-f6c4-499c-b66b-ba59f3e166da,verify_paused,0.074,ok,0.91,state=paused
+ops,3,ad10358c-f6c4-499c-b66b-ba59f3e166da,resume,0.618,ok,1.529,connect(paused)
+ops,3,ad10358c-f6c4-499c-b66b-ba59f3e166da,resume_verify,0.248,ok,1.777,attempt1
+ops,3,ad10358c-f6c4-499c-b66b-ba59f3e166da,restart,-1,unsupported,1.777,SDK/平台无 restart 接口
+ops,3,ad10358c-f6c4-499c-b66b-ba59f3e166da,update_timeout,0.083,ok,1.86,TTL+60s
+ops,3,ad10358c-f6c4-499c-b66b-ba59f3e166da,kill,0.084,ok,1.943,
+ops,4,fe77f38f-d915-43db-beef-b843f87b2d23,create,0.097,ok,0.097,ref=bb468965-b760-451e-ab47-e04930296073
+ops,4,fe77f38f-d915-43db-beef-b843f87b2d23,create_verify,0.16,ok,0.257,attempt1
+ops,4,fe77f38f-d915-43db-beef-b843f87b2d23,pause,0.568,ok,0.826,
+ops,4,fe77f38f-d915-43db-beef-b843f87b2d23,verify_paused,0.085,ok,0.911,state=paused
+ops,4,fe77f38f-d915-43db-beef-b843f87b2d23,resume,0.649,ok,1.56,connect(paused)
+ops,4,fe77f38f-d915-43db-beef-b843f87b2d23,resume_verify,0.226,ok,1.785,attempt1
+ops,4,fe77f38f-d915-43db-beef-b843f87b2d23,restart,-1,unsupported,1.785,SDK/平台无 restart 接口
+ops,4,fe77f38f-d915-43db-beef-b843f87b2d23,update_timeout,0.099,ok,1.884,TTL+60s
+ops,4,fe77f38f-d915-43db-beef-b843f87b2d23,kill,0.098,ok,1.983,

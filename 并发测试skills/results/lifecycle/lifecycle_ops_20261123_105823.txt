@@ -1,0 +1,66 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  来源: 模板 bb468965-b760-451e-ab47-e04930296073
+ 2026-11-23 10:58:23  操作台数 5  TTL 台数 3  模式 serial  TTL=关
+════════════════════════════════════════════════════════════════
+[1] 7b3edd92 ref=bb468965-b760-451e-ab47-e049 create=0.50s
+    create_verify=0.610s (create返回→可用; 全程累计 1.11s)
+    pause=0.57s
+    verify_paused=0.10s state=paused
+    resume(connect)=0.65s
+    resume_verify=0.271s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.10s (TTL+60s)
+    kill=0.09s
+[2] 7499ca99 ref=bb468965-b760-451e-ab47-e049 create=0.10s
+    create_verify=0.147s (create返回→可用; 全程累计 0.24s)
+    pause=0.59s
+    verify_paused=0.08s state=paused
+    resume(connect)=1.15s
+    resume_verify=0.242s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    kill=0.09s
+[3] 831da3d0 ref=bb468965-b760-451e-ab47-e049 create=0.10s
+    create_verify=0.148s (create返回→可用; 全程累计 0.25s)
+    pause=0.59s
+    verify_paused=0.08s state=paused
+    resume(connect)=0.61s
+    resume_verify=0.241s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.09s (TTL+60s)
+    kill=0.08s
+[4] ad10358c ref=bb468965-b760-451e-ab47-e049 create=0.09s
+    create_verify=0.161s (create返回→可用; 全程累计 0.26s)
+    pause=0.58s
+    verify_paused=0.07s state=paused
+    resume(connect)=0.62s
+    resume_verify=0.248s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    kill=0.08s
+[5] fe77f38f ref=bb468965-b760-451e-ab47-e049 create=0.10s
+    create_verify=0.160s (create返回→可用; 全程累计 0.26s)
+    pause=0.57s
+    verify_paused=0.09s state=paused
+    resume(connect)=0.65s
+    resume_verify=0.226s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.10s (TTL+60s)
+    kill=0.10s
+
+──────── 管理操作耗时统计 ────────
+
+操作                n     min     p50     p90     p95     max    mean  失败/其他
+create            5    0.10    0.10    0.34    0.42    0.50    0.18  -
+create_verify     5    0.15    0.16    0.43    0.52    0.61    0.25  -
+pause             5    0.57    0.58    0.59    0.59    0.59    0.58  -
+verify_paused     5    0.07    0.08    0.09    0.09    0.10    0.08  -
+resume            5    0.61    0.65    0.95    1.05    1.15    0.74  -
+resume_verify     5    0.23    0.24    0.26    0.27    0.27    0.25  -
+restart           0       -       -       -       -       -       -  unsupported x5
+update_timeout    5    0.08    0.09    0.10    0.10    0.10    0.09  -
+kill              5    0.08    0.09    0.09    0.10    0.10    0.09  -
+
+ 总墙钟 11s
+ 报告 -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261123_105823.txt
+ CSV  -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261123_105823.csv

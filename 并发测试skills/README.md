@@ -7,7 +7,9 @@
 | 目录 | 测什么 | 核心口径 |
 |---|---|---|
 | `agentsphere-burst-create/` | **并发拉起测试**：同一瞬间批量创建，平台容量、批量交付、快照恢复速度（附 `snapshot_probe.py` 按模板盘点快照——快照=build，走 GET /templates/{id}） | 单请求 = 发出→返回；端到端 = 最早发出→最晚返回 |
-| `agentsphere-lifecycle-ops/` | **并发生命周期操作**：pause / resume(connect) / print(ok) / restart / update_timeout(TTL 更新，覆盖 updated 事件) / kill 计时 + TTL 到期销毁延迟 | serial=精准口径（队列深度=1）；**volley=并发（N 个 sandbox 同一瞬间执行同一操作：并发 pause/resume/kill——并发生命周期的严格口径）**；burst=独立流水对照；排队分量 ≈ 并发p50 − 串行p50 |
+| `agentsphere-lifecycle-ops/` | **并发生命周期操作**：create_verify / pause / resume(connect) / resume_verify / restart / update_timeout(TTL 更新，覆盖 updated 事件) / kill 计时 + TTL 到期销毁延迟 | serial=精准口径（队列深度=1）；**volley=并发（N 个 sandbox 同一瞬间执行同一操作——并发生命周期的严格口径）**；burst=独立流水对照；`gen_excel.py` 把 CSV 汇成 volley/burst 对照 Excel |
+
+两个 verify 统一「锚点返回→真正可用」口径：探针同为 exec `echo ok`，只换锚点——**create_verify 锚点=create 返回**（拉起后多久真正可用），**resume_verify 锚点=resume(connect) 返回**（恢复后多久真正可用）；读数含失败尝试、重试间隔与被平台 hold 的等待，首条命令成功那一刻=可用时刻。（`print_ok` 为旧名，11-23 前历史 CSV 兼容，语义同 create_verify）
 
 详细参数、坑表、新模板接入清单见各自 `SKILL.md`。
 
@@ -20,8 +22,11 @@ $env:E2B_API_KEY = "<你的key>"   # setx E2B_API_KEY <key> 可永久
 # 并发拉起 50 台
 & $py agentsphere-burst-create\burst_create.py --count 50
 
-# 并发生命周期操作（N 个 sandbox 并发 pause/resume/kill）
+# 并发生命周期操作（N 个 sandbox 同一瞬间执行同一操作）
 & $py agentsphere-lifecycle-ops\lifecycle_ops_bench.py --mode volley --count 20 --skip-ttl
+
+# 独立流水对照（每台各自完整链路、相位错开）
+& $py agentsphere-lifecycle-ops\lifecycle_ops_bench.py --mode burst --count 20 --skip-ttl
 
 # 生命周期计时（串行 5 台 + TTL 3 台/180s）
 & $py agentsphere-lifecycle-ops\lifecycle_ops_bench.py
@@ -29,15 +34,15 @@ $env:E2B_API_KEY = "<你的key>"   # setx E2B_API_KEY <key> 可永久
 
 环境默认 cn-southwest-2（agentsandbox 域名），模板默认 92db8659（pilotdeck）；换区域三件套整体换，模板 ID 不跨区。
 
-## 实测基线（2026-11-10，cn-southwest-2）
+## 实测基线（2026-11-23，cn-southwest-2，模板 bb468965 / template-swe-50snapshot，52 ready 快照）
 
-- 并发拉起：热池交付 p50 ≈ 0.86s（30 并发打不空热池），热池单台 create ≈ 0.11–0.48s
-- 快照恢复（2026-11-11，模板 bb468965，引用=`模板ID:快照ID` 复合串）：1 引用×50 台 50/50 全通（p50 0.584s，吞吐 52.3 个/s）；**52 快照×各 1 台 52/52 全通（p50 0.552s，stddev 0.017s）——多快照并发交付无互相争抢**
-- 快照枚举：`GET /templates/{模板ID}` 已发布（builds[] 即快照库，bb468965 下 55 build/52 ready）；`GET /snapshots`、`GET /templates` 团队级接口未发布（APIGW.0101）；裸快照 UUID 直接当引用传会 404，必须拼 `模板ID:快照ID`
-- 生命周期（模板 bb468965，串行 n=5）：pause p50 0.60s、resume(connect) p50 0.64s、kill 0.09s、print_ok p50 0.15s
-- 并发生命周期（volley 并发 n=3 冒烟，模板 92db8659）：pause p50 0.89s、resume p50 1.13s、kill 0.10s——对比串行可见排队分量；正式并发基线待更大规模实测
-- **并发生命周期两场景实测（11-11，volley 50 台，bb468965，均 50/50 全成功，墙钟 21~23s）**：场景一（1 快照×50 台）create p50 0.85s、pause 1.22s、resume(connect) 0.28s 但 resume_verify p50 3.14s/p90 8.0s；场景二（52 快照×各 1 台）create p50 0.44s、pause 0.77s、resume_verify 0.21s。**结论：对同一快照的并发还原/恢复存在单源排队（resume_verify 最长 9.25s），多快照几乎无互相干扰；场景一 print_ok 齐刷刷 ~8s = 快照台从 create 返回到命令通道可用的平台就绪时间，一致性极高（min=p50=7.95, max 8.52）**
-- **11-12 新口径三轮复测均复现同源排队（volley 50 台，均 50/50 零重试）**：场景一 resume_verify p50 3.99/p95 9.0/max 9.9 vs 场景二 p50 0.50/max 0.85（上轮 3.75/9.06/9.99 vs 0.38/0.89，轮间稳定）；**场景一 print_ok/resume_verify 逐台读数呈等差楼梯（~20 台 1.1s 先回，其余按 ~0.2s/台 步长线性爬升至 8.9/9.9s）= 同快照单源逐台还原的直接证据**（50 台 × ~0.2s ≈ 10s 与 max 吻合；11-11 那轮 print_ok 均匀 ~8s 是同一排队被平台 hold 到全员就绪的另一种表现）；create 吞吐 43.95 个/s（1 快照）vs 90.51 个/s（50 快照）；同快照并发 pause 偶发 500 NA.95600 本轮 0/50（间歇性，累计 1/3 轮出现）
-- **TTL 到期回收滞后 ~60s，且为周期性批量清扫**（跨模板 + 三场景确认）：92db8659 单台 +60.8s；bb468965 三台 +60.1/60.2/60.3s；10 台不同快照 TTL180 全部在 +60.6~+61.6s（p50 +61.1s）同一 2s 轮询窗内判死，死亡时刻随创建顺序递减（=创建时间差）——平台周期性批量清扫而非逐台定时器。报 TTL 行为按"设 T 实际活 ~T+60s"表述
+- **并发拉起 50 台**：模板直拉 p50 0.585s / stddev 0.143 / 吞吐 43.8 个/s（尾部 3 台 1.0–1.1s，同源）；**50 快照各拉 1 台 p50 0.390s / stddev 0.021 / 吞吐 109.8 个/s——多快照分散全面优于同源**（p50 快 1.5×、离散 1/7、吞吐 2.5×）
+- **生命周期 serial（队列深度=1）**：create_verify p50 0.16s、pause 0.58s、verify_paused 0.08s、resume(connect) 0.65s、resume_verify 0.24s、update_timeout 0.09s、kill 0.09s；restart 平台无接口（UNSUPPORTED）
+- **volley 同相齐发 50 台（均 50/50 全成功）**：场景一（1 快照×50）create_verify p50 2.49s/p90 7.22/max 8.43，resume_verify p50 4.73/p90 9.19/max 10.19——**同快照楼梯还原的直接量化**（echo 被平台 hold 到逐台就绪）；场景二（50 快照各 1）create_verify p50 0.43s、resume_verify p50 0.93s、墙钟 6s——分散快照零互相拖拽
+- **burst 独立流水对照（50 台/轮）**：场景一 resume_verify p50 8.69s/max 18.7s，**比 volley 更长——同源楼梯是平台还原带宽固有的串行，与全场对齐测法无关**；场景二 resume_verify p50 0.36s，比 volley 更顺——错开还原无瞬时争抢。两个口径共同证明 resume_verify/create_verify 的差距来自「还原本身」（connect 返回≠恢复完成），不是测法 artifact
+- **create_verify vs resume_verify 差约 2 倍**（同探针只差锚点）：分散快照 0.43 vs 0.93s（2.2×）——「暂停挂起→继续使用」的体验按 resume_verify 口径评估
+- 快照引用铁律：`模板ID:快照ID` 复合串（裸快照 UUID 404）；枚举走 `GET /templates/{模板ID}` 的 builds[]（`/snapshots`、`/templates` 团队级接口未发布）
+- **TTL 到期回收滞后 ~60s，周期性批量清扫**（跨模板确认）：本轮 2 台 TTL=120s 均在到期 +61.3s 判死（+60s 清扫周期 + 巡检余量）。报 TTL 行为按「设 T 实际活 ~T+60s」表述
+- 同快照并发 pause 偶发 500 NA.95600（间歇性平台缺陷）：历史 0/50、2/50，11-23 上午 3/50、下午两轮 0/50；pause 500 后该台 resume 409 卡过渡态，kill 正常
 
-样例数据：`results/burst/` 与 `results/lifecycle/` 内按时间戳命名的 `*.csv/.txt` 为真实运行留档（92db8659 冒烟、bb468965 冒烟 + 全量），可作为输出格式参照；skill 目录内只保留 SKILL.md + 脚本 + 输入快照清单。
+样例数据：`results/burst/` 与 `results/lifecycle/` 内按时间戳命名的 `*.csv/.txt` 为 **2026-11-23 最新口径全量留档**（冒烟 + 直拉/快照 50 台 + serial + volley×2 + burst×2 + TTL），可作为输出格式参照；`gen_excel.py` 把 lifecycle CSV 汇成对照 Excel（改文件头四个 CSV 名即可复用）；skill 目录内只保留 SKILL.md + 脚本 + 输入快照清单。
