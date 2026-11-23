@@ -53,6 +53,61 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 & $py lifecycle_ops_bench.py --snapshots "@snapshots_found.txt" --count 50 --mode volley --skip-ttl
 ```
 
+## volley vs burst：机制差异与着重测试点
+
+### 下发执行机制（怎么跑的）
+
+**volley（同相齐发）——每相一发令枪，全场硬对齐：**
+
+```text
+create 相:   N 台同时下发 create（barrier 发令枪）→ 各台陆续返回
+             ⛔ 全场屏障：等最慢一台 create 返回
+verify 相:   发令枪 → N 台同一瞬间下发 echo
+pause 相:    发令枪 → N 台同一瞬间下发 pause
+             ⛔（此后 resume / resume_verify / kill 每相都硬对齐）
+```
+
+- 代码实现：每个操作相一个 `threading.Barrier(N+1)`，上一相全员返回才放行下一相
+- 任何一台慢，全场陪等——等待如实计入每台读数（每台锚点=该台自己前一相的返回时刻）
+- 测的是"队列深度=N"的最恶劣口径
+
+**burst（独立流水）——每台各跑各的完整链路：**
+
+```text
+台1: create → verify → pause → resume → verify → kill   （一条龙跑完）
+台2:   create → verify → pause → … → kill               （相位自然错开）
+台N:     create → …                                      （互不等）
+```
+
+- 每台独立执行完整链路，无任何屏障；N 路流水同时进行、相位错开
+- 墙钟含平台排队，读数 = 该台链路各操作在"真实混合负载"下的耗时
+
+### 着重测试点
+
+| | volley | burst |
+|---|---|---|
+| 测什么 | 并发度=N 时单操作耗时分布（管理面瞬时 N 路承压） | N 个用户各自独立操作的混合负载与吞吐 |
+| 口径性质 | 最恶劣（人为全场对齐） | 自然（相位错开，无人工等待） |
+| 读数含 | 等最慢台 + 被平台 hold + 重试 | 平台自然排队 + 被平台 hold + 重试 |
+| 分量分解 | volley − serial ≈ 对齐等待+hold 分量 | burst − serial ≈ 平台自然排队分量 |
+| 典型问题 | "50 个用户同一瞬间全点暂停，单台多慢" | "50 个用户各自操作，总吞吐/墙钟多少" |
+
+### 两者必须对照跑（11-23 实测，bb468965，各 50 台）
+
+| 读数 p50 | 场景一 volley | 场景一 burst | 场景二 volley | 场景二 burst |
+|---|--:|--:|--:|--:|
+| create_verify | 2.49s | 2.82s | 0.43s | 0.44s |
+| resume_verify | 4.73s | **8.69s**（max 18.7） | 0.93s | **0.36s** |
+| 总墙钟 | 22s | 22s | 6s | 5s |
+
+- **同快照：burst 反而更长**——流水持续占满同源还原通道，证明"楼梯"是平台还原带宽固有的串行，不是 volley 对齐的测法 artifact
+- **异快照：burst 更顺**——相位错开无瞬时还原争抢
+- 结论只有对照才拿得到：单独任一模式的读数都分不清"等待"来自测法还是平台
+
+### 输出标识
+
+结果文件名自带模式：`lifecycle_ops_<时间戳>_<serial|volley|burst>.csv/.txt`；txt 报告头有 `模式` 字段；CSV 结构可判（volley 按操作分段、50 行一相、off≈0；burst 单台链路交错、off 单调递增）。
+
 ## 新用户接入：把 5 处信息换成你自己的
 
 拿到 skill 后按顺序改，改完先冒烟（`--count 1 --ttl-count 0 --skip-ttl`）再上量：
