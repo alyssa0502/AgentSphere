@@ -1,0 +1,472 @@
+════════════════════════════════════════════════════════════════
+ 生命周期管理操作计时  来源: 快照引用 x52（循环复用至 50 台）
+ 2026-11-23 16:21:49  操作台数 50  TTL 台数 3  模式 burst  TTL=关
+════════════════════════════════════════════════════════════════
+[16:21:49] === 50 个 sandbox 并发生命周期操作（独立流水） ===
+[41] e7dec130 ref=bb468965-b760-451e-ab47-e049 create=0.51s
+[34] 4996367b ref=bb468965-b760-451e-ab47-e049 create=0.51s
+[21] a6eef7c9 ref=bb468965-b760-451e-ab47-e049 create=0.51s
+[18] 5f698a46 ref=bb468965-b760-451e-ab47-e049 create=0.51s
+[49] bc6b8a2b ref=bb468965-b760-451e-ab47-e049 create=0.51s
+[46] 074c71a9 ref=bb468965-b760-451e-ab47-e049 create=0.51s
+[42] e56ed5ba ref=bb468965-b760-451e-ab47-e049 create=0.52s
+[50] 7babce8c ref=bb468965-b760-451e-ab47-e049 create=0.52s
+[44] 236162d7 ref=bb468965-b760-451e-ab47-e049 create=0.52s
+[30] 70a723f6 ref=bb468965-b760-451e-ab47-e049 create=0.53s
+[28] 92840dcd ref=bb468965-b760-451e-ab47-e049 create=0.53s
+[6] 2680d648 ref=bb468965-b760-451e-ab47-e049 create=0.53s
+[4] 96218b0a ref=bb468965-b760-451e-ab47-e049 create=0.53s
+[15] 2ca50dae ref=bb468965-b760-451e-ab47-e049 create=0.53s
+[35] 91c07c0e ref=bb468965-b760-451e-ab47-e049 create=0.53s
+[20] 8a20ae39 ref=bb468965-b760-451e-ab47-e049 create=0.53s
+[23] c7c7c3ca ref=bb468965-b760-451e-ab47-e049 create=0.53s
+[5] ce348587 ref=bb468965-b760-451e-ab47-e049 create=0.53s
+[17] fc5e30f7 ref=bb468965-b760-451e-ab47-e049 create=0.53s
+[19] 82204edd ref=bb468965-b760-451e-ab47-e049 create=0.54s
+[24] 7ca7b157 ref=bb468965-b760-451e-ab47-e049 create=0.54s
+[29] c6b1e1be ref=bb468965-b760-451e-ab47-e049 create=0.54s
+[22] 2b03d69f ref=bb468965-b760-451e-ab47-e049 create=0.54s
+[16] 75d4d556 ref=bb468965-b760-451e-ab47-e049 create=0.54s
+[1] d7e0d94a ref=bb468965-b760-451e-ab47-e049 create=0.54s
+[27] b6c244f6 ref=bb468965-b760-451e-ab47-e049 create=0.55s
+[33] 2f05979b ref=bb468965-b760-451e-ab47-e049 create=0.55s
+[7] 5076bfac ref=bb468965-b760-451e-ab47-e049 create=0.56s
+[26] 2381a1bf ref=bb468965-b760-451e-ab47-e049 create=0.57s
+[47] c5e25304 ref=bb468965-b760-451e-ab47-e049 create=0.56s
+[13] 0b491c8b ref=bb468965-b760-451e-ab47-e049 create=0.57s
+[3] 07cca725 ref=bb468965-b760-451e-ab47-e049 create=0.57s
+[31] 67399169 ref=bb468965-b760-451e-ab47-e049 create=0.57s
+[40] ef000236 ref=bb468965-b760-451e-ab47-e049 create=0.57s
+[36] 23bf6340 ref=bb468965-b760-451e-ab47-e049 create=0.57s
+[10] dbb14bbe ref=bb468965-b760-451e-ab47-e049 create=0.57s
+[37] b4702e51 ref=bb468965-b760-451e-ab47-e049 create=0.57s
+[14] ae2a42f1 ref=bb468965-b760-451e-ab47-e049 create=0.58s
+[39] 98cb0b21 ref=bb468965-b760-451e-ab47-e049 create=0.57s
+[11] 9fe23b32 ref=bb468965-b760-451e-ab47-e049 create=0.58s
+[12] 5df89ffd ref=bb468965-b760-451e-ab47-e049 create=0.58s
+[2] 2cee4eab ref=bb468965-b760-451e-ab47-e049 create=0.57s
+[45] 10015203 ref=bb468965-b760-451e-ab47-e049 create=0.58s
+[48] dbfdd601 ref=bb468965-b760-451e-ab47-e049 create=0.58s
+[9] f2149959 ref=bb468965-b760-451e-ab47-e049 create=0.58s
+[32] d4f52de1 ref=bb468965-b760-451e-ab47-e049 create=0.58s
+[25] 4a21df06 ref=bb468965-b760-451e-ab47-e049 create=0.58s
+[43] 458dd93b ref=bb468965-b760-451e-ab47-e049 create=0.58s
+[8] 497d9794 ref=bb468965-b760-451e-ab47-e049 create=0.58s
+[38] 5f7a3798 ref=bb468965-b760-451e-ab47-e049 create=0.58s
+    create_verify=0.242s (create返回→可用; 全程累计 0.77s)
+    create_verify=0.271s (create返回→可用; 全程累计 0.78s)
+    create_verify=0.250s (create返回→可用; 全程累计 0.79s)
+    create_verify=0.253s (create返回→可用; 全程累计 0.79s)
+    create_verify=0.275s (create返回→可用; 全程累计 0.84s)
+    create_verify=0.260s (create返回→可用; 全程累计 0.84s)
+    create_verify=0.395s (create返回→可用; 全程累计 0.97s)
+    create_verify=0.467s (create返回→可用; 全程累计 0.99s)
+    create_verify=0.415s (create返回→可用; 全程累计 0.99s)
+    create_verify=0.410s (create返回→可用; 全程累计 0.99s)
+    create_verify=0.486s (create返回→可用; 全程累计 0.99s)
+    create_verify=0.466s (create返回→可用; 全程累计 1.00s)
+    create_verify=0.442s (create返回→可用; 全程累计 1.01s)
+    create_verify=0.436s (create返回→可用; 全程累计 1.02s)
+    create_verify=0.443s (create返回→可用; 全程累计 1.02s)
+    create_verify=0.483s (create返回→可用; 全程累计 1.03s)
+    create_verify=0.451s (create返回→可用; 全程累计 1.02s)
+    create_verify=0.525s (create返回→可用; 全程累计 1.04s)
+    create_verify=0.518s (create返回→可用; 全程累计 1.05s)
+    create_verify=0.535s (create返回→可用; 全程累计 1.05s)
+    create_verify=0.513s (create返回→可用; 全程累计 1.05s)
+    create_verify=0.542s (create返回→可用; 全程累计 1.06s)
+    create_verify=0.475s (create返回→可用; 全程累计 1.06s)
+    create_verify=0.493s (create返回→可用; 全程累计 1.06s)
+    create_verify=0.514s (create返回→可用; 全程累计 1.06s)
+    create_verify=0.550s (create返回→可用; 全程累计 1.08s)
+    create_verify=0.546s (create返回→可用; 全程累计 1.08s)
+    create_verify=0.562s (create返回→可用; 全程累计 1.08s)
+    create_verify=0.787s (create返回→可用; 全程累计 1.32s)
+    pause=0.59s
+    pause=0.57s
+    pause=0.57s
+    create_verify=0.819s (create返回→可用; 全程累计 1.39s)
+    create_verify=0.824s (create返回→可用; 全程累计 1.40s)
+    create_verify=0.856s (create返回→可用; 全程累计 1.42s)
+    pause=0.60s
+    verify_paused=0.08s state=paused
+    pause=0.65s
+    verify_paused=0.08s state=paused
+    pause=0.61s
+    verify_paused=0.16s state=paused
+    verify_paused=0.09s state=paused
+    create_verify=1.017s (create返回→可用; 全程累计 1.55s)
+    create_verify=1.037s (create返回→可用; 全程累计 1.56s)
+    pause=0.59s
+    pause=0.57s
+    create_verify=0.998s (create返回→可用; 全程累计 1.58s)
+    create_verify=0.999s (create返回→可用; 全程累计 1.58s)
+    create_verify=1.056s (create返回→可用; 全程累计 1.58s)
+    pause=0.59s
+    pause=0.57s
+    create_verify=1.014s (create返回→可用; 全程累计 1.59s)
+    pause=0.57s
+    verify_paused=0.16s state=paused
+    pause=0.60s
+    verify_paused=0.15s state=paused
+    create_verify=1.027s (create返回→可用; 全程累计 1.60s)
+    create_verify=1.042s (create返回→可用; 全程累计 1.61s)
+    create_verify=1.098s (create返回→可用; 全程累计 1.61s)
+    pause=0.59s
+    create_verify=1.040s (create返回→可用; 全程累计 1.61s)
+    pause=0.59s
+    pause=0.61s
+    pause=0.59s
+    create_verify=1.045s (create返回→可用; 全程累计 1.61s)
+    pause=0.64s
+    create_verify=1.102s (create返回→可用; 全程累计 1.63s)
+    pause=0.60s
+    create_verify=1.067s (create返回→可用; 全程累计 1.64s)
+    create_verify=1.067s (create返回→可用; 全程累计 1.64s)
+    pause=0.59s
+    create_verify=1.110s (create返回→可用; 全程累计 1.65s)
+    pause=0.60s
+    verify_paused=0.09s state=paused
+    verify_paused=0.09s state=paused
+    verify_paused=0.09s state=paused
+    create_verify=1.156s (create返回→可用; 全程累计 1.68s)
+    verify_paused=0.10s state=paused
+    verify_paused=0.09s state=paused
+    create_verify=1.148s (create返回→可用; 全程累计 1.70s)
+    verify_paused=0.10s state=paused
+    verify_paused=0.10s state=paused
+    verify_paused=0.11s state=paused
+    verify_paused=0.10s state=paused
+    verify_paused=0.11s state=paused
+    verify_paused=0.12s state=paused
+    verify_paused=0.12s state=paused
+    verify_paused=0.13s state=paused
+    verify_paused=0.13s state=paused
+    pause=0.73s
+    pause=0.76s
+    pause=0.78s
+    pause=0.76s
+    pause=0.78s
+    pause=0.78s
+    pause=0.78s
+    resume(connect)=0.10s
+    pause=0.83s
+    verify_paused=0.08s state=paused
+    verify_paused=0.08s state=paused
+    verify_paused=0.08s state=paused
+    verify_paused=0.09s state=paused
+    verify_paused=0.08s state=paused
+    verify_paused=0.09s state=paused
+    verify_paused=0.08s state=paused
+    verify_paused=0.07s state=paused
+    resume(connect)=0.66s
+    resume(connect)=0.70s
+    pause=0.85s
+    resume(connect)=0.66s
+    pause=0.80s
+    resume(connect)=0.67s
+    resume_verify=0.310s
+    restart=UNSUPPORTED（平台未提供）
+    pause=0.78s
+    pause=0.84s
+    verify_paused=0.08s state=paused
+    verify_paused=0.08s state=paused
+    verify_paused=0.08s state=paused
+    pause=0.72s
+    update_timeout=0.09s (TTL+60s)
+    pause=0.73s
+    verify_paused=0.08s state=paused
+    resume_verify=0.234s
+    restart=UNSUPPORTED（平台未提供）
+    pause=0.72s
+    pause=0.76s
+    pause=0.75s
+    pause=0.73s
+    pause=0.75s
+    pause=0.77s
+    pause=0.75s
+    verify_paused=0.09s state=paused
+    kill=0.09s
+    pause=0.76s
+    verify_paused=0.08s state=paused
+    pause=0.77s
+    verify_paused=0.07s state=paused
+    pause=0.85s
+    resume_verify=0.264s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.09s (TTL+60s)
+    verify_paused=0.07s state=paused
+    verify_paused=0.07s state=paused
+    pause=0.78s
+    pause=0.78s
+    verify_paused=0.08s state=paused
+    verify_paused=0.08s state=paused
+    pause=0.75s
+    pause=0.79s
+    verify_paused=0.08s state=paused
+    verify_paused=0.10s state=paused
+    verify_paused=0.09s state=paused
+    verify_paused=0.08s state=paused
+    pause=0.78s
+    verify_paused=0.08s state=paused
+    update_timeout=0.09s (TTL+60s)
+    kill=0.09s
+    verify_paused=0.08s state=paused
+    verify_paused=0.07s state=paused
+    verify_paused=0.08s state=paused
+    resume_verify=0.322s
+    restart=UNSUPPORTED（平台未提供）
+    verify_paused=0.09s state=paused
+    resume_verify=0.328s
+    restart=UNSUPPORTED（平台未提供）
+    resume(connect)=0.10s
+    verify_paused=0.07s state=paused
+    resume(connect)=0.61s
+    kill=0.09s
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.09s (TTL+60s)
+    kill=0.09s
+    kill=0.09s
+    create_verify=2.160s (create返回→可用; 全程累计 2.69s)
+    resume_verify=0.241s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    resume(connect)=0.65s
+    resume(connect)=0.63s
+    resume(connect)=0.62s
+    resume(connect)=0.63s
+    kill=0.08s
+    resume(connect)=0.61s
+    resume(connect)=0.63s
+    resume(connect)=0.61s
+    resume(connect)=0.62s
+    resume(connect)=1.13s
+    resume(connect)=0.63s
+    resume(connect)=1.13s
+    resume(connect)=0.61s
+    resume(connect)=0.62s
+    resume(connect)=0.62s
+    resume(connect)=0.64s
+    resume(connect)=0.62s
+    resume_verify=0.579s
+    restart=UNSUPPORTED（平台未提供）
+    resume(connect)=0.64s
+    resume(connect)=0.64s
+    resume(connect)=0.60s
+    resume(connect)=0.64s
+    resume(connect)=0.64s
+    update_timeout=0.09s (TTL+60s)
+    resume(connect)=1.65s
+    resume(connect)=1.66s
+    kill=0.08s
+    resume_verify=0.379s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.391s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.401s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.252s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.291s
+    restart=UNSUPPORTED（平台未提供）
+    resume(connect)=1.69s
+    resume_verify=0.405s
+    restart=UNSUPPORTED（平台未提供）
+    resume(connect)=1.67s
+    resume(connect)=1.67s
+    resume(connect)=1.64s
+    resume(connect)=1.64s
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.09s (TTL+60s)
+    resume(connect)=1.67s
+    resume(connect)=1.64s
+    update_timeout=0.09s (TTL+60s)
+    update_timeout=0.08s (TTL+60s)
+    resume_verify=0.376s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.08s
+    kill=0.08s
+    kill=0.09s
+    kill=0.09s
+    resume_verify=0.475s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.447s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.405s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.358s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.08s
+    kill=0.09s
+    update_timeout=0.08s (TTL+60s)
+    resume_verify=0.280s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.548s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.511s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    resume_verify=0.308s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.09s (TTL+60s)
+    kill=0.09s
+    resume_verify=0.460s
+    restart=UNSUPPORTED（平台未提供）
+    pause=0.91s
+    resume_verify=0.454s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    resume_verify=0.528s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.644s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.09s (TTL+60s)
+    kill=0.08s
+    update_timeout=0.08s (TTL+60s)
+    kill=0.08s
+    resume_verify=0.325s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.10s
+    kill=0.09s
+    verify_paused=0.08s state=paused
+    update_timeout=0.09s (TTL+60s)
+    update_timeout=0.09s (TTL+60s)
+    kill=0.08s
+    resume_verify=0.357s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.08s (TTL+60s)
+    resume_verify=0.368s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.08s
+    resume_verify=0.368s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.573s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.10s
+    resume_verify=0.336s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.09s
+    update_timeout=0.09s (TTL+60s)
+    resume_verify=0.374s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.08s
+    kill=0.10s
+    update_timeout=0.08s (TTL+60s)
+    kill=0.09s
+    kill=0.09s
+    update_timeout=0.08s (TTL+60s)
+    resume_verify=0.454s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.09s (TTL+60s)
+    update_timeout=0.09s (TTL+60s)
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.08s (TTL+60s)
+    kill=0.09s
+    resume_verify=0.766s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.09s
+    kill=0.08s
+    kill=0.08s
+    update_timeout=0.10s (TTL+60s)
+    resume_verify=0.756s
+    restart=UNSUPPORTED（平台未提供）
+    kill=0.11s
+    kill=0.09s
+    kill=0.09s
+    update_timeout=0.09s (TTL+60s)
+    update_timeout=0.08s (TTL+60s)
+    kill=0.09s
+    resume(connect)=2.10s
+    resume(connect)=2.12s
+    kill=0.09s
+    resume(connect)=1.63s
+    resume(connect)=2.12s
+    resume(connect)=2.13s
+    resume(connect)=2.15s
+    kill=0.09s
+    resume_verify=1.170s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.283s
+    restart=UNSUPPORTED（平台未提供）
+    resume(connect)=2.66s
+    resume_verify=0.279s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.09s (TTL+60s)
+    resume(connect)=2.68s
+    resume(connect)=2.63s
+    resume(connect)=2.65s
+    resume(connect)=2.66s
+    update_timeout=0.08s (TTL+60s)
+    resume_verify=0.385s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.354s
+    restart=UNSUPPORTED（平台未提供）
+    resume(connect)=2.65s
+    update_timeout=0.08s (TTL+60s)
+    kill=0.08s
+    kill=0.08s
+    resume_verify=0.393s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.09s (TTL+60s)
+    kill=0.09s
+    update_timeout=0.08s (TTL+60s)
+    kill=0.08s
+    kill=0.09s
+    kill=0.09s
+    resume_verify=0.325s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.293s
+    resume_verify=0.288s
+    restart=UNSUPPORTED（平台未提供）
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.317s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.654s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    resume_verify=0.360s
+    restart=UNSUPPORTED（平台未提供）
+    resume_verify=0.318s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.09s (TTL+60s)
+    update_timeout=0.08s (TTL+60s)
+    update_timeout=0.09s (TTL+60s)
+    kill=0.08s
+    update_timeout=0.09s (TTL+60s)
+    kill=0.08s
+    kill=0.08s
+    update_timeout=0.09s (TTL+60s)
+    kill=0.08s
+    kill=0.08s
+    kill=0.08s
+    kill=0.09s
+    resume(connect)=1.65s
+    resume_verify=0.618s
+    restart=UNSUPPORTED（平台未提供）
+    update_timeout=0.09s (TTL+60s)
+    kill=0.08s
+
+──────── 管理操作耗时统计 ────────
+
+操作                n     min     p50     p90     p95     max    mean  失败/其他
+create           50    0.51    0.55    0.58    0.58    0.58    0.55  -
+create_verify    50    0.24    0.54    1.10    1.13    2.16    0.71  -
+pause            50    0.57    0.74    0.80    0.84    0.91    0.70  -
+verify_paused    50    0.07    0.08    0.12    0.14    0.16    0.09  -
+resume           50    0.10    0.68    2.64    2.65    2.68    1.25  -
+resume_verify    50    0.23    0.37    0.62    0.71    1.17    0.42  -
+restart           0       -       -       -       -       -       -  unsupported x50
+update_timeout   50    0.08    0.09    0.09    0.09    0.10    0.09  -
+kill             50    0.08    0.09    0.09    0.10    0.11    0.09  -
+
+ 总墙钟 6s
+ 报告 -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261123_162149_burst.txt
+ CSV  -> C:\Users\Administrator\.claude\skills\agentsphere-lifecycle-ops\lifecycle_ops_20261123_162149_burst.csv

@@ -23,8 +23,8 @@ TTL_CSV = "lifecycle_ops_20261123_095549_ttl.csv"
 RUNS = [
     ("场景一 volley：1快照×50同相齐发", "lifecycle_ops_20261123_105846_volley.csv"),
     ("场景二 volley：50快照各1台同相齐发", "lifecycle_ops_20261123_105916_volley.csv"),
-    ("场景一 burst：1快照×50独立流水", "lifecycle_ops_20261123_112907_burst.csv"),
-    ("场景二 burst：50快照各1台独立流水", "lifecycle_ops_20261123_112949_burst.csv"),
+    ("场景一 burst：1快照×50独立流水", "lifecycle_ops_20261123_162114_burst.csv"),
+    ("场景二 burst：50快照各1台独立流水", "lifecycle_ops_20261123_162149_burst.csv"),
 ]
 OPS = ["create", "create_verify", "pause", "verify_paused", "resume",
        "resume_verify", "update_timeout", "kill", "restart"]
