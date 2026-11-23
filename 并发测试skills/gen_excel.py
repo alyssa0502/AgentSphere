@@ -18,13 +18,13 @@ except Exception:
 DIR = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(r"C:\Users\Administrator\Desktop", "场景对比_20261123.xlsx")
 
-SERIAL_CSV = "lifecycle_ops_20261123_105823.csv"
-TTL_CSV = "lifecycle_ops_20261123_095549.csv"
+SERIAL_CSV = "lifecycle_ops_20261123_105823_serial.csv"
+TTL_CSV = "lifecycle_ops_20261123_095549_ttl.csv"
 RUNS = [
-    ("场景一 volley：1快照×50同相齐发", "lifecycle_ops_20261123_105846.csv"),
-    ("场景二 volley：50快照各1台同相齐发", "lifecycle_ops_20261123_105916.csv"),
-    ("场景一 burst：1快照×50独立流水", "lifecycle_ops_20261123_112907.csv"),
-    ("场景二 burst：50快照各1台独立流水", "lifecycle_ops_20261123_112949.csv"),
+    ("场景一 volley：1快照×50同相齐发", "lifecycle_ops_20261123_105846_volley.csv"),
+    ("场景二 volley：50快照各1台同相齐发", "lifecycle_ops_20261123_105916_volley.csv"),
+    ("场景一 burst：1快照×50独立流水", "lifecycle_ops_20261123_112907_burst.csv"),
+    ("场景二 burst：50快照各1台独立流水", "lifecycle_ops_20261123_112949_burst.csv"),
 ]
 OPS = ["create", "create_verify", "pause", "verify_paused", "resume",
        "resume_verify", "update_timeout", "kill", "restart"]
@@ -185,7 +185,7 @@ r += 2
 notes = [
     "口径：create_verify = create 返回 → 首条 echo ok 跑通（含失败重试与等待）；resume_verify = resume(connect) 返回 → 首条 echo ok 跑通。首条命令成功那一刻 = 可用时刻。",
     "volley=每相一发令枪全场硬对齐（含等最慢台）；burst=每台独立流水相位错开（无全场等待，但平台排队如实计入）。",
-    "数据源：_105846/_105916（volley）+ _112907/_112949（burst），2026-11-23；分位数=线性插值，与 bench 控制台同法。",
+    "数据源：_105846_volley/_105916_volley + _112907_burst/_112949_burst，2026-11-23；文件名已带模式后缀；分位数=线性插值，与 bench 控制台同法。",
 ]
 for t in notes:
     cell(ws, r, 1, t, F_TXT, None, LEFT, border=False)

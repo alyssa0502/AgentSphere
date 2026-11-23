@@ -613,8 +613,8 @@ def main():
     src_desc = (f"快照引用 x{n_src}（循环复用至 {display_n} 台）" if args.snapshots
                 else f"模板 {args.template}")
 
-    rep = Report(os.path.join(BASE, f"lifecycle_ops_{TS}.txt"))
-    csv_path = os.path.join(BASE, f"lifecycle_ops_{TS}.csv")
+    rep = Report(os.path.join(BASE, f"lifecycle_ops_{TS}_{args.mode}.txt"))
+    csv_path = os.path.join(BASE, f"lifecycle_ops_{TS}_{args.mode}.csv")
     all_rows = []
     t0 = time.monotonic()
     rep.emit("═" * 64)
