@@ -4,8 +4,8 @@ AgentSphere 沙箱生命周期管理操作批量计时
 ════════════════════════════════════════════════════════════════
 精准统计每台沙箱的管理操作耗时（默认串行口径 = 纯执行耗时，不含下发队列）：
 
-  create → print(ok) → pause → 状态核实(paused) → resume(connect)
-        → print(ok)核实 → restart(平台无此接口则标 UNSUPPORTED) → update_timeout
+  create → create_verify(echo) → pause → 状态核实(paused) → resume(connect)
+        → resume_verify(echo核实) → restart(平台无此接口则标 UNSUPPORTED) → update_timeout
         (set_timeout 把 TTL 延长 60s，覆盖平台 updated 事件) → kill(主动销毁参照)
 
 外加 TTL 自动销毁观察：M 台 timeout=T 的沙箱，双确认轮询测
@@ -21,9 +21,10 @@ AgentSphere 沙箱生命周期管理操作批量计时
 
 计时口径（全部 perf_counter 单调时钟）：
   - 每个操作：调用发出前最后一个打点 → 返回后第一个打点，窗口内零打印零日志零额外网络调用
-  - print(ok)：只对成功那次调用计时；重试等待单列（*_verify 列的 off 起点可见）
-  - resume_verify：该台 resume(connect) 返回后到首条命令真正跑通的耗时
-    （锚点 = 该台 resume 返回时刻，含失败重试——回答"恢复后多久能真正执行代码/业务"）
+  - create_verify / resume_verify / restart_verify：统一"锚点后多久真正可用"口径——
+    探针同为 exec `echo ok`，只换锚点：create_verify 锚点=create 返回（拉起后多久真正可用）、
+    resume_verify 锚点=resume 返回（恢复后多久真正可用）；读数含失败尝试与 0.1s 重试间隔，
+    首条命令成功那一刻即为可用时刻（attempt 次数在 detail）
   - 状态核实（get_info==paused）单列 verify_paused，不混入 pause 耗时
 
 拉起来源：--template 模板直拉，或 --snapshots 快照引用（templateID:buildID，逗号分隔或 @refs.txt，
@@ -67,7 +68,7 @@ except Exception:
 BASE = os.path.dirname(os.path.abspath(__file__))
 TS = time.strftime("%Y%m%d_%H%M%S")
 
-OPS_ORDER = ["create", "print_ok", "pause", "verify_paused", "resume",
+OPS_ORDER = ["create", "create_verify", "pause", "verify_paused", "resume",
              "resume_verify", "restart", "restart_verify", "update_timeout", "kill"]
 
 
@@ -134,9 +135,10 @@ class Report:
 
 def echo_timed(sb, label, idx, sid, t0, rows, ready_timeout, anchor=None):
     """echo ok 直到成功。返回 (成功时刻, 计时值)。
-    anchor=None：只对成功那次调用计时（print_ok / restart_verify 口径）。
-    anchor=时刻：成功时刻−anchor（resume_verify 口径 = resume 返回后到真正能执行
-    命令的耗时，含失败尝试与重试间隔——首条命令成功那一刻才算真正可用）。"""
+    anchor=None：只对成功那次调用计时（兼容口径，不推荐新用）。
+    anchor=时刻：成功时刻−anchor，含失败尝试与 0.1s 重试间隔——统一"锚点返回后
+    多久真正可用"口径。create_verify 锚点=create 返回，resume_verify 锚点=resume
+    返回，restart_verify 锚点=restart 返回；首条命令成功那一刻即为可用时刻。"""
     t_start = time.perf_counter()
     attempt = 0
     while True:
@@ -181,9 +183,10 @@ def run_ops_one(idx, ref, args, rep):
     rows.append(R("ops", idx, sid, "create", a1 - a0, "ok", off(), f"ref={ref}"))
     rep.emit(f"[{idx + 1}] {sid[:8]} ref={ref[:28]} create={a1 - a0:.2f}s")
 
-    t_ok, ok_s = echo_timed(sb, "print_ok", idx, sid, t0, rows, args.ready_timeout)
+    t_ok, ok_s = echo_timed(sb, "create_verify", idx, sid, t0, rows, args.ready_timeout,
+                            anchor=a1)
     if ok_s is not None:
-        rep.emit(f"    print_ok={ok_s:.3f}s (通道就绪累计 {t_ok - t0:.2f}s)")
+        rep.emit(f"    create_verify={ok_s:.3f}s (create返回→可用; 全程累计 {t_ok - t0:.2f}s)")
 
     a0 = time.perf_counter()
     sb.pause()
@@ -230,7 +233,7 @@ def run_ops_one(idx, ref, args, rep):
         rows.append(R("ops", idx, sid, "restart", a1 - a0, "ok", off()))
         rep.emit(f"    restart={a1 - a0:.2f}s")
         _, ok_s = echo_timed(sb2, "restart_verify", idx, sid, t0, rows,
-                             args.ready_timeout)
+                             args.ready_timeout, anchor=a1)
         if ok_s is not None:
             rep.emit(f"    restart_verify={ok_s:.3f}s")
 
@@ -340,7 +343,7 @@ def run_volley(args, refs, rep):
             a1 = time.perf_counter()
             times[i] = (a0, a1)
             recs[i] = {"sid": sb.sandbox_id, "sb": sb, "sb2": None,
-                       "ref": refs[i], "dead": False}
+                       "ref": refs[i], "dead": False, "create_ret": a1}
             local.append(R("ops", i, recs[i]["sid"], "create", a1 - a0, "ok",
                            0.0, f"ref={refs[i]}"))
         except threading.BrokenBarrierError:
@@ -382,11 +385,12 @@ def run_volley(args, refs, rep):
     if lats:
         print_lat_stats(lats, args.sla, rep)
 
-    def w_print_ok(i, rec, local):
-        echo_timed(rec["sb"], "print_ok", i, rec["sid"],
-                   time.perf_counter(), local, args.ready_timeout)
+    def w_create_verify(i, rec, local):
+        echo_timed(rec["sb"], "create_verify", i, rec["sid"],
+                   time.perf_counter(), local, args.ready_timeout,
+                   anchor=rec.get("create_ret"))
 
-    phase("print_ok", "print(ok) 通道就绪", living(), w_print_ok)
+    phase("create_verify", "create返回→真正可用(echo)", living(), w_create_verify)
 
     def w_pause(i, rec, local):
         a0 = time.perf_counter()
@@ -437,8 +441,9 @@ def run_volley(args, refs, rep):
             return
         a0 = time.perf_counter()
         fn()
+        rec["restart_ret"] = time.perf_counter()
         local.append(R("ops", i, rec["sid"], "restart",
-                       time.perf_counter() - a0, "ok", 0.0))
+                       rec["restart_ret"] - a0, "ok", 0.0))
 
     phase("restart", "restart", living(), w_restart)
 
@@ -446,7 +451,8 @@ def run_volley(args, refs, rep):
         if getattr(rec["sb2"], "restart", None) is None:
             return
         echo_timed(rec["sb2"], "restart_verify", i, rec["sid"],
-                   time.perf_counter(), local, args.ready_timeout)
+                   time.perf_counter(), local, args.ready_timeout,
+                   anchor=rec.get("restart_ret"))
 
     phase("restart_verify", "restart 后命令核实", living(), w_restart_verify)
 
@@ -592,7 +598,7 @@ def main():
     ap.add_argument("--ops-timeout", type=int, default=3600,
                     help="管理操作阶段沙箱的 TTL（秒）")
     ap.add_argument("--ready-timeout", type=float, default=120,
-                    help="print(ok) 重试上限（秒）")
+                    help="create_verify/resume_verify 的 echo 重试上限（秒）")
     ap.add_argument("--keep", action="store_true",
                     help="不执行 kill（跳过主动销毁参照）")
     args = ap.parse_args()

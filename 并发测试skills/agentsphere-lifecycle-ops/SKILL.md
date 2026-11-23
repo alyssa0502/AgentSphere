@@ -1,6 +1,6 @@
 ---
 name: agentsphere-lifecycle-ops
-description: AgentSphere 沙箱生命周期管理操作计时（含并发生命周期压测）。三种模式：serial 精准统计 pause、resume(connect)、print(ok)、restart（平台无接口则标注）、update_timeout（set_timeout 更新 TTL，覆盖 updated 事件）、kill 的纯执行耗时；volley 并发模式（N 个 sandbox 先全部到位，然后同一瞬间全员执行同一操作——50 个 sandbox 并发 pause / 并发 resume / 并发 kill）= "n 个快照同时执行生命周期管理"的严格口径；burst 独立流水并发对照。另含 TTL 到期自动销毁的回收延迟观察（双确认轮询，实测平台批量清扫 +60s）。当用户要测沙箱暂停/恢复/重连/命令执行/销毁耗时、并发生命周期管理、TTL 回收速度、管理面操作延迟分位数时使用此技能。
+description: AgentSphere 沙箱生命周期管理操作计时（含并发生命周期压测）。三种模式：serial 精准统计 pause、resume(connect)、create_verify（echo 探针，create→可用）、restart（平台无接口则标注）、update_timeout（set_timeout 更新 TTL，覆盖 updated 事件）、kill 的纯执行耗时；volley 并发模式（N 个 sandbox 先全部到位，然后同一瞬间全员执行同一操作——50 个 sandbox 并发 pause / 并发 resume / 并发 kill）= "n 个快照同时执行生命周期管理"的严格口径；burst 独立流水并发对照。另含 TTL 到期自动销毁的回收延迟观察（双确认轮询，实测平台批量清扫 +60s）。当用户要测沙箱暂停/恢复/重连/命令执行/销毁耗时、并发生命周期管理、TTL 回收速度、管理面操作延迟分位数时使用此技能。
 ---
 
 # AgentSphere 生命周期管理操作计时（串行精准 / 并发 / TTL 观察）
@@ -86,7 +86,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 
 - 每台逐操作即时明细（`pause=0.42s` 一目了然），末尾按操作汇总分位数表
 - volley 的 create 相输出完整拉起报告：计划拉起/SLA、成功率 + 总墙钟（发令->全部返回）、端到端 + 吞吐、create 下发时间与结束时间、逐台拉起延迟（按耗时升序）、分位数统计块（p50~p99.9/mean/stddev）+ SLA 达标率——口径与 burst_create 一致
-- `print_ok` / `resume_verify`：print_ok 只对成功那次 echo 调用计时（attempt 次数在 detail，attempt2 = 首次未通）；**resume_verify = 该台 resume(connect) 返回后到首条命令真正跑通的耗时**（锚点=该台 resume 返回时刻，含失败重试——回答"恢复之后多久能真正执行代码/业务"，首条命令成功那一刻即为可用时刻）
+- `create_verify` / `resume_verify`：同一探针（exec `echo ok`）、同一"锚点后多久真正可用"口径——读数 = 锚点返回 → 首条 echo 跑通，**含失败尝试与重试间隔**，attempt 次数在 detail；区别只在锚点：**create_verify 锚点 = create 返回**（回答"拉起之后多久真正可用"），**resume_verify 锚点 = resume(connect) 返回**（回答"恢复之后多久真正可用"），首条命令成功那一刻即为可用时刻。（历史 CSV 里的 `print_ok` = 旧名，语义同 create_verify）
 - `restart=UNSUPPORTED`：当前 SDK/平台无 restart 接口，脚本标注而非报错——接口上线后自动开始测量
 - `update_timeout`：运行中调 `set_timeout` 把 TTL 延长 60s（覆盖平台 updated 事件，与 create/pause/resume/kill 事件并列凑齐）；SDK 有此接口，平台若未支持会记 fail 而非 UNSUPPORTED
 - `ttl_destroy` 读数 = 计划到期 → 观察到死亡；**含 0~poll 秒轮询粒度**，负值 = 提前回收
@@ -102,7 +102,7 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 2. **volley 并发模式**（并发生命周期操作的严格口径）：N 个 sandbox 先全部 create 到位，然后**每个操作全员同时执行**——同一瞬间 50 个 sandbox 并发 pause、并发 verify、并发 resume、并发 kill。每个操作的读数 = "该操作在并发度=N 时的单台耗时分布"，操作间互不重叠、同一相内并发度恰好是 N。与 serial 相减得排队分量（11-11 冒烟 n=3：serial pause 0.60s → volley 0.89s，resume 0.64s → 1.13s）。
 3. **burst 独立流水对照**：N 台各自跑完整链路、相位错开，测的是"N 个用户各自独立操作"的真实混合负载，墙钟含平台排队。
 4. **状态核实与操作分离**：pause 的耗时只含 pause 调用本身；"状态真的变成 paused 了吗"用单独的 `verify_paused`（get_info）行记录，不污染 pause 读数。
-5. **print(ok) 只计成功那次，resume_verify 锚定 resume 返回**：print_ok 的重试等待属于"就绪时间"，只对最终成功那次 echo 计时；resume_verify 的语义就是"resume 返回后多久真正能执行"——所以从**该台 resume 返回时刻**起算到首条命令成功（含中间失败尝试与重试间隔），首条成功那一刻 = 可用时刻。同快照并发还原未完成时，echo 请求会被平台 hold 到就绪才返回，读数即真实可用等待
+5. **create_verify 与 resume_verify 同探针同口径，只换锚点**：都用 `commands.run("echo ok")` 循环重试直到成功。create_verify 从 **create 返回时刻**起算、resume_verify 从**该台 resume 返回时刻**起算，到首条命令成功为止（含中间失败尝试与 0.1s 重试间隔），首条成功那一刻 = 可用时刻——分别回答"拉起后多久真正可用"与"恢复后多久真正可用"。同快照并发还原未完成时，echo 请求会被平台 hold 到就绪才返回，读数即真实可用等待。（`print_ok` 为旧名，11-23 起改名 create_verify）
 6. **TTL 销毁用双确认**：SDK 状态枚举只有 PAUSED/RUNNING，没有"已销毁"。网络抖动也会抛异常，所以连续 2 次轮询失败才判死，死亡时刻取**第一次**失败的时间戳，粒度误差 = ±一个轮询周期（--poll 可调小到 1s）。
 
 ## 坑
