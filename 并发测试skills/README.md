@@ -7,7 +7,7 @@
 | 目录 | 测什么 | 核心口径 |
 |---|---|---|
 | `agentsphere-burst-create/` | **并发拉起测试**：同一瞬间批量创建，平台容量、批量交付、快照恢复速度（附 `snapshot_probe.py` 按模板盘点快照——快照=build，走 GET /templates/{id}） | 单请求 = 发出→返回；端到端 = 最早发出→最晚返回 |
-| `agentsphere-lifecycle-ops/` | **并发生命周期操作**：create_verify / pause / resume(connect) / resume_verify / restart / update_timeout(TTL 更新，覆盖 updated 事件) / kill 计时 + TTL 到期销毁延迟 | serial=精准口径（队列深度=1）；**volley=并发（N 个 sandbox 同一瞬间执行同一操作——并发生命周期的严格口径）**；burst=独立流水对照；`gen_excel.py` 把 CSV 汇成 volley/burst 对照 Excel |
+| `agentsphere-lifecycle-ops/` | **并发生命周期操作**：create_verify / pause / resume(connect) / resume_verify / restart / update_timeout(TTL 更新，覆盖 updated 事件) / kill 计时 + TTL 到期销毁延迟 | serial=精准口径（队列深度=1）；**volley=并发（N 个 sandbox 同一瞬间执行同一操作——并发生命周期的严格口径）**；burst=独立流水对照；**每轮跑完自动产出双 sheet Excel**（`make_excel.py` 自动发现数据，Sheet1=场景一/场景二对比，Sheet2=逐台明细；`LIFECYCLE_EXCEL_OUT` 可重定向落盘位置） |
 
 两个 verify 统一「锚点返回→真正可用」口径：探针同为 exec `echo ok`，只换锚点——**create_verify 锚点=create 返回**（拉起后多久真正可用），**resume_verify 锚点=resume(connect) 返回**（恢复后多久真正可用）；读数含失败尝试、重试间隔与被平台 hold 的等待，首条命令成功那一刻=可用时刻。（`print_ok` 为旧名，11-23 前历史 CSV 兼容，语义同 create_verify）
 
@@ -45,4 +45,4 @@ $env:E2B_API_KEY = "<你的key>"   # setx E2B_API_KEY <key> 可永久
 - **TTL 到期回收滞后 ~60s，周期性批量清扫**（跨模板确认）：本轮 2 台 TTL=120s 均在到期 +61.3s 判死（+60s 清扫周期 + 巡检余量）。报 TTL 行为按「设 T 实际活 ~T+60s」表述
 - 同快照并发 pause 偶发 500 NA.95600（间歇性平台缺陷）：历史 0/50、2/50，11-23 上午 3/50、下午两轮 0/50；pause 500 后该台 resume 409 卡过渡态，kill 正常
 
-样例数据：`results/burst/` 与 `results/lifecycle/` 内按时间戳命名的 `*.csv/.txt` 为 **2026-11-23 最新口径全量留档**（冒烟 + 直拉/快照 50 台 + serial + volley×2 + burst×2 + TTL），可作为输出格式参照；`gen_excel.py` 把 lifecycle CSV 汇成对照 Excel（改文件头四个 CSV 名即可复用）；skill 目录内只保留 SKILL.md + 脚本 + 输入快照清单。
+样例数据：`results/burst/` 与 `results/lifecycle/` 内按时间戳+模式命名的 `*.csv/.txt` 为 **2026-11-23 最新口径全量留档**（冒烟 + 直拉/快照 50 台 + serial + volley×2 + burst×2 + TTL），可作为输出格式参照；`agentsphere-lifecycle-ops/make_excel.py` 把 lifecycle CSV 汇成双 sheet 对照 Excel（数据源自动发现，无需改文件名）；skill 目录内只保留 SKILL.md + 脚本 + 输入快照清单。

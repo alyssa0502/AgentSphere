@@ -53,6 +53,8 @@ $env:E2B_API_KEY    = "<你的key>"     # setx E2B_API_KEY <key> 可永久
 & $py lifecycle_ops_bench.py --snapshots "@snapshots_found.txt" --count 50 --mode volley --skip-ttl
 ```
 
+每轮跑完**自动产出 Excel**（`生命周期场景对比.xlsx`，Sheet1=场景一/场景二对比+场景说明+存在问题，Sheet2=逐台 sandbox 明细），默认与 CSV 同目录；设环境变量 `LIFECYCLE_EXCEL_OUT`（如 `setx LIFECYCLE_EXCEL_OUT "C:\Users\<你>\Desktop"`）可重定向落盘位置。数据源自动发现：扫描目录里 `lifecycle_ops_*.csv`，按文件名后缀（无后缀旧文件按内容判别）取各「模式×场景」最新一轮，无需手工指定文件名。
+
 ## volley vs burst：机制差异与着重测试点
 
 ### 下发执行机制（怎么跑的）
@@ -106,7 +108,9 @@ pause 相:    发令枪 → N 台同一瞬间下发 pause
 
 ### 输出标识
 
-结果文件名自带模式：`lifecycle_ops_<时间戳>_<serial|volley|burst>.csv/.txt`；txt 报告头有 `模式` 字段；CSV 结构可判（volley 按操作分段、50 行一相、off≈0；burst 单台链路交错、off 单调递增）。
+- **XLSX（每轮自动刷新）**：`生命周期场景对比.xlsx`——Sheet1「场景对比」= 场景一/场景二 × volley/burst 各组 p50/p90/max + 失败数 + 场景说明 + 存在问题；Sheet2「逐台明细」= 全量 sandbox_id/模板/快照引用/各操作耗时/状态
+- CSV/TXT 文件名自带模式：`lifecycle_ops_<时间戳>_<serial|volley|burst>.csv/.txt`；txt 报告头有 `模式` 字段；CSV 结构可判（volley 按操作分段、50 行一相、off≈0；burst 单台链路交错、off 单调递增）
+- 只想重建 Excel 不跑压测：`python make_excel.py [--base CSV目录] [--out 路径]`（数据源自动发现，取各组合最新一轮）
 
 ## 新用户接入：把 5 处信息换成你自己的
 

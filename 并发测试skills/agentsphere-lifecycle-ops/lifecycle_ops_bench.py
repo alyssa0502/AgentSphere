@@ -670,6 +670,15 @@ def main():
     finally:
         save_csv(all_rows, csv_path)
         rep.close()
+        # 固化产出：跑完自动刷新双 sheet Excel（Sheet1 场景对比 / Sheet2 逐台明细）
+        try:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            sys.path.insert(0, base_dir)
+            import make_excel
+            xlsx_path, rows_n = make_excel.build(base_dir)
+            print(f" XLSX -> {xlsx_path}  (逐台 {rows_n} 行)")
+        except Exception as e:
+            print(f" XLSX 生成失败（CSV/TXT 已落盘不受影响）: {type(e).__name__}: {str(e)[:100]}")
 
 
 if __name__ == "__main__":
