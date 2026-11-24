@@ -1,0 +1,9 @@
+{
+ "R1_list_limit": "OK 共6条 含当前=True",
+ "R2_pty": "含pty-ok=False 原始片段='<iter err AttributeError>'",
+ "R3_download_url": "host=default-sandbox-gateway-mq4gcnrxgj.agentgateway.cn-southwest 状态=400 (AgentSphere域=True)",
+ "R4_upload_url": "host=default-sandbox-gateway-mq4gcnrxgj.agentgateway.cn-southwest 状态=400 (AgentSphere域=True)",
+ "R5_opts_type": "_TypedDictMeta ann=['allow_out', 'deny_out', 'rules', 'egress_proxy', 'allow_public_traffic', 'mask_request_host']",
+ "R5_sig": "(self, network: e2b.sandbox.sandbox_api.SandboxNetworkUpdate, **opts: Unpack[e2b.connection_config.ApiParams]) -> None",
+ "R5_update_network": "dict 形态: KeyError: 'code'"
+}

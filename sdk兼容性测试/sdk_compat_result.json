@@ -1,0 +1,410 @@
+[
+ {
+  "domain": "沙箱生命周期",
+  "api": "Sandbox.create(默认参数)",
+  "status": "PASS",
+  "e2b_native": "创建成功, 默认 TTL≈300s (end_at≈now+300)",
+  "actual": "OK, 剩余 TTL=300s",
+  "note": "create 耗时 0.58s"
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "get_info 字段: sandbox_id/template_id/state/cpu_count/memory_mb/envd_version/started_at/end_at/metadata",
+  "status": "PASS",
+  "e2b_native": "E2B: 全部字段齐备",
+  "actual": "齐备",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "get_info.lifecycle 回显",
+  "status": "PASS",
+  "e2b_native": "E2B: 回显 lifecycle={on_timeout, auto_resume}",
+  "actual": "lifecycle={'on_timeout': <SandboxOnTimeout.KILL: 'kill'>, 'auto_resume': False}",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "get_info.allow_internet_access 回显",
+  "status": "PASS",
+  "e2b_native": "E2B: create 传参后回显 True/False",
+  "actual": "allow_internet_access=False",
+  "note": "已知: 出网是模板级配置, create 参数无效"
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "get_info.name(模板别名)",
+  "status": "INFO",
+  "e2b_native": "E2B: name=模板别名(如 'base')",
+  "actual": "name=None",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "get_info.sandbox_domain",
+  "status": "INFO",
+  "e2b_native": "E2B: 返回沙箱域名(有公网入流时)",
+  "actual": "sandbox_domain=None",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "create(metadata=…) → get_info 回显",
+  "status": "PASS",
+  "e2b_native": "metadata 原样回显",
+  "actual": "metadata={'compat': 'sdk-matrix'}",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "create(timeout=600) → end_at",
+  "status": "PASS",
+  "e2b_native": "end_at≈now+600",
+  "actual": "剩余 TTL=600s",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "create(envs=…) → 沙箱内可见",
+  "status": "PASS",
+  "e2b_native": "$VAR 在 commands.run 中可见",
+  "actual": "stdout='hello-e2b\\n'",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "E2B_* 默认环境变量注入",
+  "status": "PASS",
+  "e2b_native": "E2B: 沙箱内注入 E2B_SANDBOX_ID 等 E2B_* 变量",
+  "actual": "E2B_* 变量个数=3",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "connect TTL 语义(timeout=600 时 connect)",
+  "status": "PASS",
+  "e2b_native": "只延长: max(剩余, now+300)",
+  "actual": "connect 前 599s → 后 599s",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "set_timeout(120)",
+  "status": "PASS",
+  "e2b_native": "end_at=调用时刻+120",
+  "actual": "剩余 TTL=120s",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "Sandbox.list",
+  "status": "FAIL",
+  "e2b_native": "列表含刚创建的沙箱",
+  "actual": "分页取数失败: SandboxException: 400: Key: 'ListSandboxesQuery.Limit' Error:Field validation for 'Limit' failed on the 'required' tag",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "is_running(sandbox_id)",
+  "status": "PASS",
+  "e2b_native": "True",
+  "actual": "True",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "create(lifecycle={'on_timeout':'pause'})",
+  "status": "INFO",
+  "e2b_native": "E2B: 接受 lifecycle 参数",
+  "actual": "创建成功",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "create(lifecycle={…,'auto_resume':True})",
+  "status": "INFO",
+  "e2b_native": "E2B: 接受 auto_resume",
+  "actual": "创建成功",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "on_timeout=pause 到期后状态",
+  "status": "PASS",
+  "e2b_native": "deadline 后转 paused",
+  "actual": "state=paused",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "auto_resume=True: 流量触发自动恢复",
+  "status": "FAIL",
+  "e2b_native": "E2B: 请求触发自动 resume, 命令成功",
+  "actual": "state=paused, 命令: InvalidArgumentException: {\"code\":400,\"data\":null,\"message\":\"Session not found\"}",
+  "note": "AgentSphere 已知: auto_resume 无增量行为, 恢复唯一入口=connect()"
+ },
+ {
+  "domain": "命令执行",
+  "api": "commands.run('echo hi') 默认参数",
+  "status": "FAIL",
+  "e2b_native": "E2B: 默认 user=user, cwd=/home/user 开箱即用",
+  "actual": "AuthenticationException: invalid default user: 'user'",
+  "note": "AgentSphere 模板无 user 账户 → 必须显式 user=root/cwd=/root"
+ },
+ {
+  "domain": "命令执行",
+  "api": "commands.run(echo, user='root', cwd='/root')",
+  "status": "PASS",
+  "e2b_native": "stdout/stderr/exit_code 齐备",
+  "actual": "stdout='hi'",
+  "note": ""
+ },
+ {
+  "domain": "命令执行",
+  "api": "非零退出码语义",
+  "status": "PASS",
+  "e2b_native": "抛 CommandExitException 且带 exit_code",
+  "actual": "CommandExitException: Command exited with code 3 and error:\nerr-line\n",
+  "note": ""
+ },
+ {
+  "domain": "命令执行",
+  "api": "run(timeout=2) 超时语义",
+  "status": "PASS",
+  "e2b_native": "抛 TimeoutException",
+  "actual": "TimeoutException: Request timed out: This error is likely due to exceeding 'timeout' — the total time a long running request (like process or directory watch) can be active — or 'request_timeout'. You can modify these by passing 'timeout' or 'request_timeout' when making the request. Use '0' to disa",
+  "note": ""
+ },
+ {
+  "domain": "命令执行",
+  "api": "on_stdout 流式回调",
+  "status": "PASS",
+  "e2b_native": "回调收到行事件",
+  "actual": "回调行数=1",
+  "note": ""
+ },
+ {
+  "domain": "命令执行",
+  "api": "background=True + commands.list",
+  "status": "PASS",
+  "e2b_native": "后台进程出现在 list 中",
+  "actual": "handle.pid=233 list=[155, 233]",
+  "note": ""
+ },
+ {
+  "domain": "命令执行",
+  "api": "后台进程 kill",
+  "status": "PASS",
+  "e2b_native": "进程终止",
+  "actual": "OK",
+  "note": ""
+ },
+ {
+  "domain": "命令执行",
+  "api": "PTY 交互终端",
+  "status": "DIFF",
+  "e2b_native": "E2B: PTY 会话可写读",
+  "actual": "读回片段含 pty-ok=False",
+  "note": ""
+ },
+ {
+  "domain": "文件系统",
+  "api": "files.write + files.read(文本)",
+  "status": "FAIL",
+  "e2b_native": "读写回环一致",
+  "actual": "read=None | AuthenticationException: error looking up user 'user': user: unknown user user",
+  "note": ""
+ },
+ {
+  "domain": "文件系统",
+  "api": "files.write + files.read(二进制)",
+  "status": "FAIL",
+  "e2b_native": "字节回环一致",
+  "actual": "read=None | AuthenticationException: error looking up user 'user': user: unknown user user",
+  "note": ""
+ },
+ {
+  "domain": "文件系统",
+  "api": "files.list('/') 目录面貌",
+  "status": "DIFF",
+  "e2b_native": "E2B: 含 /home/user(默认用户家目录)",
+  "actual": "含/root=False 含/home/user=False 共0项",
+  "note": ""
+ },
+ {
+  "domain": "文件系统",
+  "api": "files.exists",
+  "status": "FAIL",
+  "e2b_native": "True",
+  "actual": "None | AuthenticationException: invalid default user: 'user'",
+  "note": ""
+ },
+ {
+  "domain": "文件系统",
+  "api": "make_dir + rename + remove",
+  "status": "FAIL",
+  "e2b_native": "目录操作回环",
+  "actual": "AuthenticationException: invalid default user: 'user'",
+  "note": ""
+ },
+ {
+  "domain": "文件系统",
+  "api": "files.watch 目录事件",
+  "status": "FAIL",
+  "e2b_native": "返回 WatchHandle 迭代事件",
+  "actual": "AuthenticationException: invalid default user: 'user'",
+  "note": ""
+ },
+ {
+  "domain": "Volume",
+  "api": "Volume.list",
+  "status": "FAIL",
+  "e2b_native": "返回团队卷列表",
+  "actual": "VolumeException: 404: b'{\"error_code\":\"APIGW.0101\",\"error_msg\":\"The API does not exist or has not been published in the environment\",\"request_id\":\"d0aa04439a6eba3026c1fd6508050a27\"}\\n'",
+  "note": ""
+ },
+ {
+  "domain": "Secret",
+  "api": "SDK Secret 类面",
+  "status": "INFO",
+  "e2b_native": "E2B: Secret.create/list/get/update/delete",
+  "actual": "可用类成员=['iam_token']",
+  "note": ""
+ },
+ {
+  "domain": "Secret",
+  "api": "Secret.create",
+  "status": "INFO",
+  "e2b_native": "E2B: Secret CRUD 经 client 暴露",
+  "actual": "SDK 本版 Secret 类无 CRUD 入口(SDK 版本未覆盖, 无法经 SDK 测平台 /secrets)",
+  "note": ""
+ },
+ {
+  "domain": "Template",
+  "api": "Template.exists(92db8659…)",
+  "status": "FAIL",
+  "e2b_native": "True",
+  "actual": "None | KeyError: 'code'",
+  "note": "KeyError:code=SDK 错误解析假设响应含 code 字段, 掩盖了后端真实 404(模板元数据端点未按 E2B 形态发布)"
+ },
+ {
+  "domain": "Template",
+  "api": "Template.get_tags",
+  "status": "FAIL",
+  "e2b_native": "返回标签列表",
+  "actual": "KeyError: 'code'",
+  "note": "同上: KeyError:code 掩盖后端 404"
+ },
+ {
+  "domain": "Template",
+  "api": "Template.alias_exists('base')",
+  "status": "INFO",
+  "e2b_native": "E2B: 公共 base 模板别名存在",
+  "actual": "None | KeyError: 'code'",
+  "note": "同上: KeyError:code 掩盖后端 404"
+ },
+ {
+  "domain": "快照",
+  "api": "create_snapshot(name)",
+  "status": "FAIL",
+  "e2b_native": "返回 SnapshotInfo",
+  "actual": "KeyError: 'code'",
+  "note": "KeyError:code 掩盖后端真实错误(显式快照端点大概率未实现; AgentSphere 快照语义走 pause)"
+ },
+ {
+  "domain": "fork",
+  "api": "fork(count=1)",
+  "status": "FAIL",
+  "e2b_native": "派生沙箱列表",
+  "actual": "KeyError: 'code'",
+  "note": ""
+ },
+ {
+  "domain": "网络",
+  "api": "get_host(3000) 公网入流",
+  "status": "DIFF",
+  "e2b_native": "E2B: {port}-{sandboxId}.域名 通配域公网直达沙箱端口",
+  "actual": "SDK 拼出 host=3000-e376a374-688b-49c2-a2a7-f886bc4df420.e2b.app → HTTP 301",
+  "note": "SDK 用的是默认域名 e2b.app——E2B_SANDBOX_URL(网关)未参与 get_host 域名推导; AgentSphere 网关为固定主机、无 {sid}/{port} 通配 DNS, 公网入流功能未提供"
+ },
+ {
+  "domain": "观测",
+  "api": "sandbox.logs",
+  "status": "INFO",
+  "e2b_native": "E2B: 日志流迭代器",
+  "actual": "SDK 本版 Sandbox 无 logs 属性(SDK 版本未覆盖); 平台日志端点 /v2/sandboxes/{id}/logs 亦未发布",
+  "note": ""
+ },
+ {
+  "domain": "观测",
+  "api": "get_metrics",
+  "status": "FAIL",
+  "e2b_native": "返回 CPU/内存时序",
+  "actual": "KeyError: 'code'",
+  "note": ""
+ },
+ {
+  "domain": "网络",
+  "api": "download_url(预签名下载)",
+  "status": "PASS",
+  "e2b_native": "返回带签名的 URL",
+  "actual": "OK",
+  "note": ""
+ },
+ {
+  "domain": "网络",
+  "api": "upload_url(预签名上传)",
+  "status": "PASS",
+  "e2b_native": "返回带签名的 URL",
+  "actual": "OK",
+  "note": ""
+ },
+ {
+  "domain": "网络",
+  "api": "update_network(空配置整体替换)",
+  "status": "FAIL",
+  "e2b_native": "E2B: 接受并整体替换 egress 配置",
+  "actual": "TypeError: must be called with a dataclass type or instance",
+  "note": "注意 E2B 语义: 省略字段=清除"
+ },
+ {
+  "domain": "暂停恢复",
+  "api": "pause() 返回值+状态",
+  "status": "PASS",
+  "e2b_native": "返回 True, state=paused",
+  "actual": "pause返回=True state=paused",
+  "note": ""
+ },
+ {
+  "domain": "暂停恢复",
+  "api": "connect 恢复 paused 沙箱",
+  "status": "PASS",
+  "e2b_native": "恢复成功命令可用",
+  "actual": "恢复成功, 剩余TTL=299s",
+  "note": ""
+ },
+ {
+  "domain": "暂停恢复",
+  "api": "恢复后文件状态保留(fs 快照)",
+  "status": "DIFF",
+  "e2b_native": "文件系统随快照恢复",
+  "actual": "stdout='NOFILE'",
+  "note": ""
+ },
+ {
+  "domain": "暂停恢复",
+  "api": "pause(keep_memory=False) + 恢复",
+  "status": "PASS",
+  "e2b_native": "无内存冷恢复路径可用",
+  "actual": "OK",
+  "note": ""
+ },
+ {
+  "domain": "沙箱生命周期",
+  "api": "kill → get_info(立即)",
+  "status": "PASS",
+  "e2b_native": "E2B: kill 后 get_info 立即 404",
+  "actual": "kill=True get_info=404/NotFound",
+  "note": ""
+ }
+]
